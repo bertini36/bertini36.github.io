@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    {% block headers %}
+
+        <title>Alberto Pou</title>
+        <link href="{% static 'img/black_logo.png' %}" rel='shortcut icon' type='image/png'>
+
+        {% include 'partials/analytics.html' %}
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Alberto Pou">
+        <meta name="description" content="Coding blog">
+
+        <!-- Open Graph Data -->
+        <meta property="og:title" content="Alberto Pou. Programador"/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:url" content="https://albertopou.herokuapp.com/"/>
+        <meta property="og:description" content="Coding blog"/>
+        <meta property="og:site_name" content="Alberto Pou"/>
+        <meta property="og:image" content="{% static 'img/black_logo.png' %}"/>
+
+        <!-- Twitter Card data -->
+        <meta name="twitter:card" content="Alberto Pou. Coding blog">
+        <meta name="twitter:title" content="Alberto Pou">
+        <meta name="twitter:description" content="Coding blog">
+        <meta name="twitter:creator" content="@bertini_36">
+
+    {% endblock headers %}
+
+    {% block styles %}
+
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic" rel="stylesheet" type=text/css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css">
+
+        <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/lib/noty/noty.css">
+        <link rel="stylesheet" href="/static/lib/noty/themes/nest.css">
+        <link rel="stylesheet" href="/static/lib/font-awesome-4.6.2/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/static/lib/common.css">
+
+    {% endblock styles %}
+
+    <!-- Svelte app -->
+	<link rel="stylesheet" href="{% static 'build/bundle.css' %}">
+    <script defer src="{% static 'build/bundle.js' %}"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Google captcha -->
+    <script src="//www.google.com/recaptcha/api.js"></script>
+    <script type="text/javascript">
+        let ReCaptchaCallbackV3 = function() {
+            grecaptcha.ready(function() {
+                grecaptcha.execute("site_key").then(function(token) {});
+            });
+        };
+    </script>
+
+</head>
+
+<body>
+
+    <!-- Svelte app will be generated here -->
+
+    {% block scripts %}
+
+        <script type="text/javascript">
+
+            window.DEBUG = "{{ DEBUG }}" === "True";
+            window.RECAPTCHA_SITE_KEY = "{{ RECAPTCHA_SITE_KEY }}";
+            window.GA_MEASUREMENT_ID = "{{ GA_MEASUREMENT_ID }}";
+
+        </script>
+
+    {% endblock scripts %}
+
+</body>
+
+</html>

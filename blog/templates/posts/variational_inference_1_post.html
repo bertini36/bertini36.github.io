@@ -1,0 +1,366 @@
+{% load static %}
+
+<p>
+    In the next posts I'm going to speak about probabilistic machine learning. Last months I was learning about this
+    field, specifically about a type of inference on these models known as Variational Inference, and I reckon can be
+    interesting to write a set of posts summarizing my experience about it thanks to my teacher
+    <a href="https://twitter.com/CapdevilaPujol" target="_blank">Joan Capdevila</a>.
+</p>
+<h4>Probabilistic Machine Learning</h4>
+<p>
+    Last decades studies about machine learning has caused the appearance of a wide variety of algorithms to solve
+    a large set of problems covering areas such as driving autonomous vehicles, medical diagnosis, speech recognition
+    or user ranking for marketing campaigns. These algorithms are mainly based on the construction of a model which
+    describes the data as closely as possible.
+</p>
+<p>
+    A model is a compact description of a set of data that avoids us to make predictions about future samples. The main
+    difference between a conventional machine learning model and a probabilistic one is that the last avoids to model
+    uncertainty, in other words, it avoids to know how probably is the prediction to be fulfilled. This aspect can
+    be very valuable in areas such as medicine or economy where risk about to take a bad decision can be detrimental to
+    a person's health or lead to financial loss.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/esquema_situacion.png' %}"
+         alt="Probabilistic Machine Learning situation">
+    <figcaption>
+        <small>Probabilistic machine learning situation at artificial intelligence area</small>
+    </figcaption>
+</figure>
+<p>
+    This kind of models uses the probability theory to model priori information, in this way the algorithm is not
+    based just on the sample data. These models permit the use of different datasets to learn (this is useful when
+    we have a small quantity of data) and to define complex models with the quantity of random variables required.
+    They also support online leaning, you don't need to retrain the full model each time you obtain new data, you just
+    require to update some probabilities. They are also very useful in decision-making, when a robust explanation of the
+    model is required. Finally they are generative models, thanks to the distributions that they infer, they allow
+    to generate new data simulating values ​​of any random variable of the model.
+</p>
+<p>
+    Unlike discriminant models which only model the probability of the variable to be predicted, a generative model is
+    a complete model which uses all the variables (observed and latent), allowing multiple questions to be
+    answered.
+</p>
+<p>
+    The construction of this type of models with latent variables is done following the Box Loop philosophy. This loop
+    was created by the statistician
+    <a href="https://en.wikipedia.org/wiki/George_E._P._Box" target="_blank">George E. P. Box</a>. This loop is
+    iterated several times during the construction of a probabilistic model.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/box_loop.png' %}"
+         alt="Box loop">
+    <figcaption>
+        <small>Box loop graphical scheme</small>
+    </figcaption>
+</figure>
+<ul>
+    <li>First, probabilistic model is made based on environment knowledge that we already have.</li>
+    <li>After some patterns are discovered using the model previously defined and with an inference method.</li>
+    <li>
+        Finally the model has to be validated. If it was not good enough we would go back to step 1 unless it would be
+        used to describe or predict new data.
+    </li>
+</ul>
+<h4>Bayesian inference</h4>
+<p>
+    Bayesian inference tries to reveal the hidden structure in data that cannot be directly observed. For
+    traditional machine learning methods parameters are values that are determined by optimization algorithms
+    minimizing an error function. The bayesian point of view is a little bit different. For a bayesian all the
+    unknown parameters are described by probability distributions and the observation of evidence avoids to update
+    these distrubutions using the Bayes rule.
+</p>
+<h5>Bayes rule</h5>
+<p>
+    The first thing you need to be clear about to understand Bayesian inference is the Bayes rule. Bayes rule indicates
+    how a priori probability about an event has to be updated after observe evidences about it. From a bayesian point
+    of view there are no differences between parameters and observed variables, both are random variables. I'm going to
+    use x to reference observed variables and θ to reference latent variables.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered" style="width: 20%"
+         src="{% static 'img/posts/variational_inference/bayes_rule.png' %}"
+         alt="Bayes rule">
+</figure>
+<p>
+    The following explains what is each term of the formula, being x and &theta; the data and model
+    parameters respectively:
+</p>
+<ul>
+    <li>
+        <strong>Posterior p(&theta;|x)</strong>: It is the probability of the data, the probability that the model with &theta;
+        parameters has generated x data.
+    </li>
+    <li>
+        <strong>Likelihood p(x|&theta;)</strong>: It is the probability of the data assuming that are modeled by a
+        parametrized distribution. The way to calculate it depends on the model. Usually it is used to assess
+        the quality of a model.
+    </li>
+    <li>
+        <strong>Prior p(&theta;)</strong>: It is the probability of the parameters. In this factor of the formula
+        is where prior knowledge is reflected, the information that we have before to observe any data
+        observation.
+    </li>
+    <li>
+        <strong>Evidence p(x)</strong>: This is the evidence from the data. It is calculated as &int; p(x,&theta;)d&theta;. Usually it
+        can't be calculated but, as it is a normalizing constant of the model, it does not affect. When two
+        probabilistic models are compared the important factors are the ones which depend on θ because p(x) will be
+        the same for each model because it just depends on the data.
+    </li>
+</ul>
+<div class="alert alert-warning" role="warning">
+    Product p(x|θ)p(θ) is also known as joint probability: p(θ,x).
+</div>
+<p>
+    Use the likelihood to estimate θ parameters is known as Maximum Likelihood Estimation (MLE) while if you take
+    the prior into account then is known as Maximum A Posteriori estimation (MAP). MLE and MAP are equivalents if
+    there is an uniform prior. However these methods only allow estimating the mean, the median and the mode of the
+    posterior and maybe your goal requires to model uncertainty or to generate new data. In theses cases we would need
+    to know posterior distribution. As we will see, methods as Variational Inference (VI) or Markov Chain Monte Carlo
+    (MCMC) allow to infer this distribution. Taking into account the Bayes normalizer constant p(x) is what allows
+    these methods to calculate the posterior distribution.
+</p>
+<p>
+    A summary of this formula would be: At the beginning we have a belief (prior) about an event θ (p(θ)), for example,
+    that the height of Barcelona population is described by a Normal distribution. After we observe evidences (x),
+    a sample of the heights of Barcelona population. With this evidence our belief about θ has to be updated, in
+    other words, the Normal distribution which described the height of Barcelona population has to be updated. This
+    change is reflected by the posterior distribution (p(θ|x)). In this example we can appreciate the support to
+    online learning that offers this kind of models.
+</p>
+<figure class="centered">
+    <img class="img-fluid"
+         src="{% static 'img/posts/variational_inference/online_learning.png' %}"
+         alt="Online learning">
+</figure>
+<p>
+    At the end it is an iterative process of updating beliefs (prior) based on evidences (x) where posterior of one
+    iteration will be the prior of the next.
+</p>
+<p>
+    Posterior inference algorithms avoid to analyze information under certain assumptions (priors) discovering the
+    hidden structure which best fits with our data. When all relations between model random variable are
+    <a href="https://en.wikipedia.org/wiki/Conjugate_prior" target="_blank">conjugated</a>, this is, when joint
+    distribution has the same form as the prior, posterior can be calculated analytically. This is the
+    case of models like Dirichlet-Categorical o Normal Inverse Wishart-Normal. In the opposite case, the problem of
+    this formula resides in the calculation of the evidence (p(x)). For many models of interest (no conjugated) to
+    calculate the posterior is computationally intractable because the integral over all latent variables of the data
+    that requires to calculate the evidence. For these models, another strategy is required to obtain the posterior,
+    for that reason the calculation of the posterior becomes an approximation problem.
+</p>
+<h5>Posterior approximation</h5>
+<p>
+    Probabilistic machine learning uses latent variables to describe the data hidden structure, some relations
+    between observed and latent variables are modeled using probability distributions and inference algorithms are used
+    to estimate the posterior, that is the conditional distribution about latent variables given the observed
+    variables. Due to the fact that in most cases we are working in spaces with many dimensions, the calculation of
+    posterior expectation, E(p(θ|x)), is impossible to obtain analytically and computationally, for this reason some
+    inference methods have been created to approximate this distribution. Bayesian inference concept comes from the
+    set of tools which have been developed to approximate this posterior and it is one of the central problems in
+    bayesian statistics. Nowadays there are 2 algorithmic branches:
+</p>
+<ul>
+    <li>
+        <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo" target="_blank">
+            Markov Chain Monte Carlo (MCMC)
+        </a>:
+        Sampling approximate inference.
+    </li>
+    <li>
+        <a href="https://en.wikipedia.org/wiki/Variational_Bayesian_methods" target="_blank">
+            Variational Inference (VI)
+        </a>:
+        Structural approximate inference.
+    </li>
+</ul>
+<p>
+    On the one hand, MCMC is based on the construction of a Markov chain over all latent variables being the posterior
+    its stationary distribution. After the chain is executed till it arrives to its equilibrium point.
+    Finally the results obtained sampling the Markov chain in its stationary section are the posterior samples. The
+    best known algorithms of this family are
+    <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" target="_blank">Metropolis–Hastings</a>
+    , <a href="https://en.wikipedia.org/wiki/Gibbs_sampling" target="_blank">Gibbs sampling</a> and
+    <a href="{https://en.wikipedia.org/wiki/Hybrid_Monte_Carlo">Hamiltonian Monte Carlo</a>.
+</p>
+<p>
+    On the other hand, Variational Inference approximates the posterior creating an analytical approximation, the
+    variational model, which is adjusted in order to reduce the distance with the posterior. In this family the
+    problem is transformed from an approximation one to an optimization one.
+</p>
+<h5>Probabilistic Graphical Models</h5>
+<p>
+    In the bayesian field, a model represents a joint probability over all random variables of the problem.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/joint_dist.png' %}"
+         alt="Joint distribution" style="width: 25%">
+</figure>
+<p>
+    A very practical way of representing these models is using
+    <a href="https://en.wikipedia.org/wiki/Graphical_model" target="_blank">probabilistic graphical models</a>. A
+    probabilistic graphical model is a directed graph where nodes are random variables and edges are dependency
+    relations between those variables. For example, joint distribution probabilistic graphical model is:
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/joint_dist2.png' %}"
+         alt="Joint distribution" style="width: 30%">
+</figure>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/graphical_model.png' %}"
+         alt="Joint distribution">
+</figure>
+<p>
+    At this context, p(x|y) represents the conditional probability in which <i>x</i> variable depends on the
+    value of y. At this kind of diagrams also exists another components called plates.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/plate.png' %}"
+         alt="Plate">
+</figure>
+<p>
+    This notation indicates a vector of n random variables <i>x</i>.
+</p>
+<h5>Local and global variables</h5>
+<p>
+    In a probabilistic model two types of random variables can be distinguished: globals and locals. A global variable
+    is the one which is shared between all dataset examples while a local variable is owned by each example. For
+    example, the following probabilistic graphical model, <i>y</i> variable is local while <i>z</i> variable is a
+    global one. When a node appears obscured it means that it is an observed variable.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/global_local_variables.png' %}"
+         alt="Model example">
+</figure>
+<h4>Variational inference</h4>
+<p>
+    In the next posts we will focus on the different variational strategies for posterior approach.
+</p>
+<h5>Strategy</h5>
+<p>
+    As already mentioned, Variational Inference consists in defining a distribution, q(&theta;|&lambda;), whose parameters &lambda;
+    will be optimized in order to reduce the differences with the posterior p(&theta;|x). This new distribution is known as
+    variational model and the posterior as probabilistic model. To summarize, VI goal is to optimize variational model
+    &lambda; parameters in order to reduce the distance with probabilistic model p(&theta;|x). &lambda; parameters are known also as
+    variational parameters.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered" style="width: 90%"
+         src="{% static 'img/posts/variational_inference/variational_inference.jpg' %}"
+         alt="Variational inference">
+</figure>
+<h5>Kullback-Leibler divergence</h5>
+<p>
+    To calculate Euclidean distance between distribution parameters to establish the similarity between both is an
+    imperfect measure since we are comparing distributions and not points. Imagine a Normal distribution with 0 mean
+    and 5 variance, N(0, 5), and another one with 5 mean and 5 variance, N(5, 5). These two distributions are very
+    similar but they are separated by an Euclidean distance of 5. If now we compare first defined Normal distribution
+    N(0, 5) with another Normal distribution with 2 mean and 7 variance, N(2, 7), looks like they are more different
+    but Euclidean distance that separates them is 4. For this reason we have to use another measure: Kullback-Leibler
+    divergence (KL).
+</p>
+<p>
+    KL is a divergence, in other words, a non-simmetric distance, it isn't the same to calculate KL[p(θ|x)||q(θ|λ)]
+    (forwards KL) than KL[q(θ|λ)||p(θ|x)] (reverse KL). The fact of use one or another rises to different algorithms:
+     <a href="https://tminka.github.io/papers/ep/minka-ep-uai.pdf" target="_blank">Expectation Propagation</a> uses
+    forwards KL while VI uses reverse KL. In general terms, Expectation Propagation is more computationally expensive.
+    KL quantifies loss information when you approximate one distribution with another. It is based on the concept of
+    entropy. Entropy measures the quantity of information that own the data and is defined as follows:
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/entropia.png' %}"
+         alt="Entropy">
+</figure>
+<p>
+    KL definition consists in modify entropy formula to take q distribution into account.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/kl1.png' %}"
+         alt="Kullback-Leibler divergence">
+</figure>
+<p>
+    If we adapt this form to the VI problem and we apply logarithms properties we have:
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/kl_rule.png' %}"
+         alt="Kullback-Leibler definition" style="width: 40%">
+</figure>
+<p>
+    This divergence avoids us to find the real similarity between two probability distributions and it is the measure
+    that is minimized at VI algorithm.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/kullback-leibler1.png' %}"
+         alt="Kullback-Leibler divergence">
+    <figcaption>
+        <small>
+            Forwards and reverse KL comparison to approximate a bimodal distribution. Blue part represents distribution
+            to be approximated and red one the approximation. <strong>a</strong> image is an approximation
+            with forwards KL and <strong>b</strong> and <strong>c</strong> are approximation with reverse KL.
+        </small>
+    </figcaption>
+</figure>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/kullback-leibler2.png' %}"
+         alt="Kullback-Leibler visualization">
+    <figcaption>
+        <small>
+            Forwards and reverse KL comparison to approximate a unimodal distribution. Blue part represents distribution
+            to be approximated and red one the approximation. <strong>a</strong> image is an approximation
+            with forwards KL and <strong>b</strong> is an approximation with reverse KL.
+        </small>
+    </figcaption>
+</figure>
+<h5>Mean-Field assumption</h5>
+<p>
+    In order to define a treatable distribution over all latent variables to approximate the posterior we can
+    simplify variational model optimization assuming that it is a factorized model. It is to suppose that q(&theta;|&lambda;) is
+    composed by a set of distributions q<sub>i</sub>(&theta;<sub>i</sub>|&lambda;<sub>i</sub>) (of the
+    <a href="https://en.wikipedia.org/wiki/Exponential_family" target="_blank">Exponential Family</a>). Each one of
+    these distributions has its own parameters &lambda;<sub>i</sub> which could be optimized individually.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/mean_field.png' %}"
+         alt="Mean-Field assumption" style="width: 20%">
+</figure>
+<div class="alert alert-info">
+    Main goal of this post is not more than to present the basic idea of Variational Inference and its main players.
+    In following posts we will go deeper into these algorithms and programming tools to code this models will be
+    presented.
+</div>
+<h4>References</h4>
+<ul>
+    <li>
+        Journal of the American Statistical AssociationGeorge (E. P. Box)
+    </li>
+    <li>
+        Build, Compute, Critique, Repeat: Data Analysis with Latent Variable Models
+        (David M. Blei)
+    </li>
+    <li>
+        Probabilistic graphical models: principles and techniques
+        (Koller, Daphne, and Nir Friedman)
+    </li>
+    <li>
+        Model-based Machine Learning
+        (Christopher M. Bishop)
+    </li>
+    <li>
+        Machine Learning. A probabilistic perspective
+        (Kevin P. Murphy)
+    </li>
+</ul>
+
+<h5 style="text-align: center;">Date: 09/02/2017</h5>

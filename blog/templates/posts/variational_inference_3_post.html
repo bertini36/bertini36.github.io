@@ -1,0 +1,226 @@
+{% load static %}
+
+<p>
+    In this post I'm going to continue explaining concepts that I introduced in previous posts
+    (<a href="https://albertopou.herokuapp.com/#variational_inference_1" target="_blank">1</a> and
+    <a href="https://albertopou.herokuapp.com/#variational_inference_2" target="_blank">2</a>) about Variational
+    inference (VI). Algorithms presented till now have scalability problems. For each iteration the algorithm
+    requires to go through all the data and this, for massive volumes of data, is impracticable. An alternative to
+    solve this problem is: Sthocastic Variational Inference. This version is based on using a batch (set of points)
+    of data in each iteration. In this way, after more iterations than the conventional solutions, the solution
+    will tend to a local optimum. The main advantage of this mechanism is that it doesn't require to keep all dataset in
+    memory, solving the bottleneck that could be formed by using VI with very big datasets.
+</p>
+<h4>Sthocastic Variational Inference</h4>
+<h5>Sthocastic optimization</h5>
+<p>
+    This technique obtains estimations of the real gradient of an objective function.
+    Thus we obtain an algorithm which iterates each batch and adjusts the hidden structure of the model based only
+    on that batch of data. Stochastic optimization finds a function relative maximum or minimum using real gradient
+    estimations. Estimations expectation  E(∇λC(λ,x)), being x a batch of data, is equivalent to the
+    real gradient ∇λC(λ,X), being X the full dataset.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/svi.png' %}"
+         alt="Sthocastic Optimization">
+</figure>
+<p>
+    Under ideal conditions these stochastic algorithms converge to a local optimum of the function
+    if ρ meets the Robins-Monro conditions:
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/robins.png' %}"
+         alt="Robins-Monro">
+</figure>
+<p>
+    The use of this technique results in the algorithm Stochastic Gradient Ascent Variational Inference (SGAVI)
+    and Stochastic Natural Gradient Ascent Variational Inference (SNGAVI) if natural gradients are used to estimate.
+    These algorthims, thanks to the real gradient estimations, can avoid saddle points.
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/saddle-point.png' %}"
+         alt="Saddle point">
+    <figcaption>Saddle point. (Source: Wikipedia)</figcaption>
+</figure>
+<h5>Algorithm</h5>
+<p>
+    In VI, the function to be optimized is called ELBO. If variational parameters are updated by closed analytical
+    formulas, the algorithm is known as Sthocastic Coordinate Ascent Variational Inference (SCAVI) while if we use
+    sthocastic optimization the algorithm is known as SGAVI. This version uses a corrector term using calculations
+    from previous iterations. The generic algorithm would be as follows:
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered" style="width: 90%"
+         src="{% static 'img/posts/variational_inference/svi-algorithm.png' %}"
+         alt="Sthocastic Variational Inference Algorithm">
+</figure>
+<h4>Black Box Variational Inference</h4>
+<p>
+    Starting from the ELBO formula that was reached in the
+    <a href="https://albertopou.herokuapp.com/#variational_inference_2" target="_blank">previous post</a>:
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/elbo2.png' %}"
+         alt="ELBO">
+</figure>
+<p>
+    The main idea of Black Box Variational Inference (BBVI) consists of sampling the variational model q(θ|λ) with
+    the purpose of obtain an approach of formula expectations. Such expectations regarding the variational model
+    can be computationally expensive and can be a bottleneck at computer memory level.
+</p>
+<h5>Score Gradients</h5>
+<p>
+    Now we apply gradients and some algebraic transformations into the analytic ELBO formula (complete derivation
+    is not shown):
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/elbo3.png' %}"
+         alt="ELBO">
+</figure>
+<p>
+    After these transformations you could notice that it is not necesary to obtain gradients of complete ELBO, it
+    is enough to derive the variational model (q(θ|λ)).
+</p>
+<h5>Monte-Carlo Integration</h5>
+<p>
+    Monte-Carlo integration is a mechanism to approximate integrals. It consists of sampling the variable
+    with respect to which we are integrating and do a summation of function values given those samples.
+    The more samples are taken from the variable more exact will be the approximation. In our case we are going
+    to use this mechanism to approximate ELBO integral, which integrates with respect to the q(θ|λ) distribution.
+    Then a set of samples (θs) obtained from the q(θ|λ) distribution will allow us to get an approximation of
+    the integral. The formula would be as follows:
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered"
+         src="{% static 'img/posts/variational_inference/montecarlo.png' %}"
+         alt="Monte-Carlo Integration">
+</figure>
+<h5>Algorithm</h5>
+<p>
+    Below is the BBVI algorithm:
+</p>
+<figure class="centered">
+    <img class="img-fluid img-centered" style="width: 90%"
+         src="{% static 'img/posts/variational_inference/bbvi.png' %}"
+         alt="Black Box Variational Inference Algorithm">
+</figure>
+<h4>Considerations</h4>
+<p>
+    This algorithm is the result of get some measures that can question the convergence of VI algorithm. Starting by
+    supposing q(θ|λ) factorizes (mean field assumption) to approximate ELBO integral using Monte-Carlo.
+    All this causes that this algorithm is subjected to a high variance, and depending on the model, slow convergence.
+    In order to reduce the variance that this method can cause some mechanisms have appeared:
+</p>
+<ul>
+    <li>
+        <strong>Rao-Blackwellization</strong>. This method reduces the variance of an aleatory variable replacing it
+        by its conditional expectation with respect to a subset of variables.
+    </li>
+    <li>
+        <strong>Control variates</strong>. This method replaces Monte-Carlo expectation by another function with
+        less variance.
+    </li>
+</ul>
+<p>
+    A positive aspect of this method is that it is not necessary to derive the analytical formulas used to update
+    the variational parameters either analytical ELBO. This permits the access to these algorithms to people who have
+    less statistical knowledge (as me). It exists another approximation called Automatic Differentiation Variational
+    Inference (ADVI). This method also has these advantages and improves the convergence of unconjugated models
+    that can be a challenge for the rest of VI variants.
+</p>
+<p>
+    Formerly with VI only conjugated models could be inferred since the unconjugated models didn't be easily derivable.
+    The discovery of algorithms like ADVI and BBVI allowed the inference of this kind of models because they changed
+    the analytical calculus for an approximate strategy.
+</p>
+<h4>Variational inference libraries</h4>
+<p>
+    Best-known libraries for the use of VI and Markov Chain Monte-Carlo (MCMC):
+</p>
+<ul>
+    <li>
+        <a href="http://edwardlib.org/" target="_blank">Edward</a>: It uses Tensorflow for gradients computations
+        and has BBVI, reparameterization BBVI and Metropolis-Hastings implementations.
+    </li>
+    <li>
+        <a href="http://mc-stan.org/" target="_blank">Stan</a>: It uses C++ Automatic Differentiation
+        reverse mode for gradients computation and has ADVI and HMC implementations.
+    </li>
+    <li>
+        <a href="https://github.com/pymc-devs/pymc3" target="_blank">PyMC3</a>: It uses Theano for gradient computations
+        and has ADVI, Gibbs sampling and Metropolis-Hastings implementations.
+    </li>
+    <li>
+        <a href="https://www.tensorflow.org/versions/r0.12/api_docs/python/contrib.bayesflow.variational_inference/" target="_blank">Bayesflow</a>:
+        Young Google module for VI.
+    </li>
+</ul>
+<p>
+    If you want to learn more about Variational Inference and its uses in probabilistic models inference you can take
+    a look to my <a href="https://github.com/bertini36/GMM/blob/master/docs/doc.pdf" target="_blank">
+    master thesis</a>. It focuses on the use of automatic differentiation tools to apply Variational Inference into a
+    Gaussian Mixture Model (GMM). At the <a href="https://github.com/bertini36/GMM" target="_blank">repository</a> you can
+    find implementations of Gaussian Mixture Model with different technologies like
+    <a href="https://www.tensorflow.org/" target="_blank">Tensorflow</a>, Python,
+    <a href="https://github.com/blei-lab/edward" target="_blank">Edward</a>,
+    <a href="https://github.com/HIPS/autograd" target="_blank">Autograd</a>, ...
+    And also other probabilistic models that helped me to learn.
+</p>
+<h4>References</h4>
+<ul>
+    <li>
+        Journal of the American Statistical AssociationGeorge
+        (E. P. Box)
+    </li>
+    <li>
+        Build, Compute, Critique, Repeat: Data Analysis with Latent Variable Models
+        (David M. Blei)
+    </li>
+    <li>
+        Probabilistic graphical models: principles and techniques
+        (Koller, Daphne, and Nir Friedman)
+    </li>
+    <li>
+        Model-based Machine Learning
+        (Christopher M. Bishop)
+    </li>
+    <li>
+        Machine Learning. A probabilistic perspective
+        (Kevin P. Murphy)
+    </li>
+    <li>
+        An overview of gradient descent optimization algorithms
+        (Sebastian Rudes)
+    </li>
+    <li>
+        Variational Bayesian inference (slides)
+        (Kay H. Brodersen)
+    </li>
+    <li>
+        Variational Inference
+        (David M. Blei)
+    </li>
+    <li>
+        Sthocastic Variational Inference
+        (Matthew D. Hoffman, David M. Blei, Chong Wang and John Paisley)
+    </li>
+    <li>
+        Black Box Variational Inference
+        (Rajesh Ranganath, Sean Gerrish and David M. Blei)
+    </li>
+    <li>
+        The Stan Math Library: Reverse-Mode Automatic Differentiation in C++
+        (Bob Carpenter, Matthew D. Hoffman, Marcus Brubaker, Daniel Lee, Peter Li and Michael Betancourt)
+    </li>
+    <li>
+        Automatic Differentiation Variational Inference
+        (Alp Kucukelbir, Dustin Tran, Rajesh Ranganath, Andrew Gelman and David M. Blei)
+    </li>
+</ul>
+
+<h5 style="text-align: center;">Date: 11/05/2017</h5>
