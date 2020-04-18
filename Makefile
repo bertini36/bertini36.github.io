@@ -46,7 +46,7 @@ clean:
 	$(DOCKER_COMPOSE) down -v --rmi all --remove-orphans
 
 run_tests:
-	$(DOCKER_COMPOSE) run --user=${UID} --rm --entrypoint pytest tests-runner --cov-report term --cov=blog/blog/
+	$(DOCKER_COMPOSE) run --user=${UID} --rm --entrypoint coverage tests-runner run -m pytest
 	$(DOCKER_COMPOSE) run --user=${UID} --rm --entrypoint rm  tests-runner -rf .pytest_cache/
 
 # Django commands

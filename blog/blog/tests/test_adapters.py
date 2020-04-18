@@ -1,11 +1,8 @@
 # -*- coding: UTF-8 -*-
 
-import pytest
-
 from ..adapters import DjangoDataAdapter
 
 
-@pytest.mark.unit
 class TestDjangoDataAdapter:
 
     def test_transform_normal_dict(self):

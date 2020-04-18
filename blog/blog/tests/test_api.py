@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 
-import pytest
 from mock import Mock, patch
 
 from ..api import blog_api
@@ -16,7 +15,6 @@ from ..requests import (
 from ..validators import SendMessageRequestValidator
 
 
-@pytest.mark.unit
 class TestCreatePost:
 
     dummy_post = Post(
@@ -58,7 +56,6 @@ class TestCreatePost:
         assert 'name' in response['data']
 
 
-@pytest.mark.unit
 class TestFilterPosts:
 
     dummy_posts = [
@@ -92,7 +89,6 @@ class TestFilterPosts:
         assert len(response['data']) == 2
 
 
-@pytest.mark.unit
 class TestGetPost:
 
     dummy_post = Post(
@@ -125,7 +121,6 @@ class TestGetPost:
         assert 'slug' in response['data']
 
 
-@pytest.mark.unit
 class TestSendMessage:
 
     dummy_contact = Contact(id=1, name='Dummy contact', email='dummy@dummy.com')

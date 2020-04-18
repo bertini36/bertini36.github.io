@@ -1,7 +1,5 @@
 # -*- coding: UTF-8 -*-
 
-import pytest
-
 from datetime import date
 from dataclasses import dataclass
 
@@ -25,7 +23,6 @@ class Response:
     status_code: int
 
 
-@pytest.mark.unit
 class TestUtils:
 
     @patch('blog.blog.utils.EmailMultiAlternatives.send')
