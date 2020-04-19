@@ -11,6 +11,3 @@ before_install:
   - docker-compose build tests-runner
 script:
   - docker-compose run --rm --entrypoint pytest tests-runner --cov-report term --cov=blog/blog/
-after_success:
-  - cd ../..
-  - codecov

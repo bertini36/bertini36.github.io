@@ -1,6 +1,5 @@
 ![Heroku](https://heroku-badge.herokuapp.com/?app=heroku-badge)
 [![Build Status](https://api.travis-ci.org/bertini36/blog.svg?branch=master)](https://travis-ci.org/bertini36/blog)
-[![codecov](https://codecov.io/gh/bertini36/blog/branch/master/graph/badge.svg)](https://codecov.io/gh/bertini36/blog)
 
 # Blog
 
@@ -115,7 +114,12 @@ make createsuperuser
 
 **Generate frontend dependencies**
 ```bash
-make svinstall
+make npminstall
+```
+
+**Compile Svelte files to Javascript**
+```bash
+make svbuild
 ```
 
 ## Run tests
