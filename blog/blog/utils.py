@@ -19,7 +19,8 @@ def send_email(subject: str, text: str):
         to=[settings.TO_DEFAULT_EMAIL]
     )
     msg.attach_alternative(render_to_string(
-        'emails/contact_email.html', {'text': text}
+        'emails/contact_email.html',
+        {'text': text}
     ), 'text/html')
     try:
         msg.send()

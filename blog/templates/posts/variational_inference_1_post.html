@@ -1,7 +1,7 @@
 {% load static %}
 
 <p>
-    In the next posts I'm going to speak about probabilistic machine learning. Last months I was learning about this
+    In next posts I'm going to speak about probabilistic machine learning. Last months I was learning about this
     field, specifically about a type of inference on these models known as Variational Inference, and I reckon can be
     interesting to write a set of posts summarizing my experience about it thanks to my teacher
     <a href="https://twitter.com/CapdevilaPujol" target="_blank">Joan Capdevila</a>.
@@ -10,13 +10,13 @@
 <p>
     Last decades studies about machine learning has caused the appearance of a wide variety of algorithms to solve
     a large set of problems covering areas such as driving autonomous vehicles, medical diagnosis, speech recognition
-    or user ranking for marketing campaigns. These algorithms are mainly based on the construction of a model which
-    describes the data as closely as possible.
+    or user ranking for marketing campaigns. These algorithms are mainly based on aa construction of a model which
+    describes data as closely as possible.
 </p>
 <p>
     A model is a compact description of a set of data that avoids us to make predictions about future samples. The main
     difference between a conventional machine learning model and a probabilistic one is that the last avoids to model
-    uncertainty, in other words, it avoids to know how probably is the prediction to be fulfilled. This aspect can
+    uncertainty, in other words, it avoids to know how probably is a prediction to be fulfilled. This aspect can
     be very valuable in areas such as medicine or economy where risk about to take a bad decision can be detrimental to
     a person's health or lead to financial loss.
 </p>
@@ -30,10 +30,10 @@
 </figure>
 <p>
     This kind of models uses the probability theory to model priori information, in this way the algorithm is not
-    based just on the sample data. These models permit the use of different datasets to learn (this is useful when
-    we have a small quantity of data) and to define complex models with the quantity of random variables required.
+    based just on sample data. These models permit the use of different datasets to learn (this is useful when
+    we have a small quantity of data) and to define complex models with a quantity of random variables required.
     They also support online leaning, you don't need to retrain the full model each time you obtain new data, you just
-    require to update some probabilities. They are also very useful in decision-making, when a robust explanation of the
+    require to update some probabilities. They are also very useful in decision-making, when a robust explanation of a
     model is required. Finally they are generative models, thanks to the distributions that they infer, they allow
     to generate new data simulating values ​​of any random variable of the model.
 </p>
@@ -43,7 +43,7 @@
     answered.
 </p>
 <p>
-    The construction of this type of models with latent variables is done following the Box Loop philosophy. This loop
+    The construction of this type of models with latent variables is done following Box Loop philosophy. This loop
     was created by the statistician
     <a href="https://en.wikipedia.org/wiki/George_E._P._Box" target="_blank">George E. P. Box</a>. This loop is
     iterated several times during the construction of a probabilistic model.
@@ -66,15 +66,15 @@
 </ul>
 <h4>Bayesian inference</h4>
 <p>
-    Bayesian inference tries to reveal the hidden structure in data that cannot be directly observed. For
+    Bayesian inference tries to reveal a hidden structure in data that cannot be directly observed. For
     traditional machine learning methods parameters are values that are determined by optimization algorithms
     minimizing an error function. The bayesian point of view is a little bit different. For a bayesian all the
-    unknown parameters are described by probability distributions and the observation of evidence avoids to update
-    these distrubutions using the Bayes rule.
+    unknown parameters are described by probability distributions and observation of evidence avoids to update
+    these distrubutions using Bayes rule.
 </p>
 <h5>Bayes rule</h5>
 <p>
-    The first thing you need to be clear about to understand Bayesian inference is the Bayes rule. Bayes rule indicates
+    The first thing you need to be clear about to understand Bayesian inference is Bayes rule. Bayes rule indicates
     how a priori probability about an event has to be updated after observe evidences about it. From a bayesian point
     of view there are no differences between parameters and observed variables, both are random variables. I'm going to
     use x to reference observed variables and θ to reference latent variables.
@@ -85,29 +85,29 @@
          alt="Bayes rule">
 </figure>
 <p>
-    The following explains what is each term of the formula, being x and &theta; the data and model
+    The following explains what is each term of the formula, being x and &theta; data and model
     parameters respectively:
 </p>
 <ul>
     <li>
-        <strong>Posterior p(&theta;|x)</strong>: It is the probability of the data, the probability that the model with &theta;
+        <strong>Posterior p(&theta;|x)</strong>: It is the probability of data, the probability that the model with &theta;
         parameters has generated x data.
     </li>
     <li>
-        <strong>Likelihood p(x|&theta;)</strong>: It is the probability of the data assuming that are modeled by a
+        <strong>Likelihood p(x|&theta;)</strong>: It is the probability of data assuming that are modeled by a
         parametrized distribution. The way to calculate it depends on the model. Usually it is used to assess
         the quality of a model.
     </li>
     <li>
         <strong>Prior p(&theta;)</strong>: It is the probability of the parameters. In this factor of the formula
-        is where prior knowledge is reflected, the information that we have before to observe any data
+        is where prior knowledge is reflected, information that we have before to observe any data
         observation.
     </li>
     <li>
-        <strong>Evidence p(x)</strong>: This is the evidence from the data. It is calculated as &int; p(x,&theta;)d&theta;. Usually it
+        <strong>Evidence p(x)</strong>: This is the evidence from data. It is calculated as &int; p(x,&theta;)d&theta;. Usually it
         can't be calculated but, as it is a normalizing constant of the model, it does not affect. When two
-        probabilistic models are compared the important factors are the ones which depend on θ because p(x) will be
-        the same for each model because it just depends on the data.
+        probabilistic models are compared, important factors are the ones which depend on θ because p(x) will be
+        the same for each model because it just depends on data.
     </li>
 </ul>
 <div class="alert alert-warning" role="warning">
@@ -116,17 +116,17 @@
 <p>
     Use the likelihood to estimate θ parameters is known as Maximum Likelihood Estimation (MLE) while if you take
     the prior into account then is known as Maximum A Posteriori estimation (MAP). MLE and MAP are equivalents if
-    there is an uniform prior. However these methods only allow estimating the mean, the median and the mode of the
+    there is an uniform prior. However these methods only allow estimating a mean, a median and a mode of the
     posterior and maybe your goal requires to model uncertainty or to generate new data. In theses cases we would need
     to know posterior distribution. As we will see, methods as Variational Inference (VI) or Markov Chain Monte Carlo
     (MCMC) allow to infer this distribution. Taking into account the Bayes normalizer constant p(x) is what allows
-    these methods to calculate the posterior distribution.
+    these methods to calculate a posterior distribution.
 </p>
 <p>
     A summary of this formula would be: At the beginning we have a belief (prior) about an event θ (p(θ)), for example,
     that the height of Barcelona population is described by a Normal distribution. After we observe evidences (x),
     a sample of the heights of Barcelona population. With this evidence our belief about θ has to be updated, in
-    other words, the Normal distribution which described the height of Barcelona population has to be updated. This
+    other words, Normal distribution which described the height of Barcelona population has to be updated. This
     change is reflected by the posterior distribution (p(θ|x)). In this example we can appreciate the support to
     online learning that offers this kind of models.
 </p>
@@ -137,22 +137,22 @@
 </figure>
 <p>
     At the end it is an iterative process of updating beliefs (prior) based on evidences (x) where posterior of one
-    iteration will be the prior of the next.
+    iteration will be the prior of next one.
 </p>
 <p>
-    Posterior inference algorithms avoid to analyze information under certain assumptions (priors) discovering the
+    Posterior inference algorithms avoid to analyze information under certain assumptions (priors) discovering a
     hidden structure which best fits with our data. When all relations between model random variable are
     <a href="https://en.wikipedia.org/wiki/Conjugate_prior" target="_blank">conjugated</a>, this is, when joint
     distribution has the same form as the prior, posterior can be calculated analytically. This is the
     case of models like Dirichlet-Categorical o Normal Inverse Wishart-Normal. In the opposite case, the problem of
     this formula resides in the calculation of the evidence (p(x)). For many models of interest (no conjugated) to
-    calculate the posterior is computationally intractable because the integral over all latent variables of the data
+    calculate a posterior is computationally intractable because the integral over all latent variables of data
     that requires to calculate the evidence. For these models, another strategy is required to obtain the posterior,
     for that reason the calculation of the posterior becomes an approximation problem.
 </p>
 <h5>Posterior approximation</h5>
 <p>
-    Probabilistic machine learning uses latent variables to describe the data hidden structure, some relations
+    Probabilistic machine learning uses latent variables to describe data hidden structure, some relations
     between observed and latent variables are modeled using probability distributions and inference algorithms are used
     to estimate the posterior, that is the conditional distribution about latent variables given the observed
     variables. Due to the fact that in most cases we are working in spaces with many dimensions, the calculation of
@@ -178,7 +178,7 @@
 <p>
     On the one hand, MCMC is based on the construction of a Markov chain over all latent variables being the posterior
     its stationary distribution. After the chain is executed till it arrives to its equilibrium point.
-    Finally the results obtained sampling the Markov chain in its stationary section are the posterior samples. The
+    Finally, results obtained sampling the Markov chain in its stationary section, are the posterior samples. The
     best known algorithms of this family are
     <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" target="_blank">Metropolis–Hastings</a>
     , <a href="https://en.wikipedia.org/wiki/Gibbs_sampling" target="_blank">Gibbs sampling</a> and
@@ -240,7 +240,7 @@
 </figure>
 <h4>Variational inference</h4>
 <p>
-    In the next posts we will focus on the different variational strategies for posterior approach.
+    In next posts we will focus on the different variational strategies for posterior approach.
 </p>
 <h5>Strategy</h5>
 <p>
@@ -271,7 +271,7 @@
      <a href="https://tminka.github.io/papers/ep/minka-ep-uai.pdf" target="_blank">Expectation Propagation</a> uses
     forwards KL while VI uses reverse KL. In general terms, Expectation Propagation is more computationally expensive.
     KL quantifies loss information when you approximate one distribution with another. It is based on the concept of
-    entropy. Entropy measures the quantity of information that own the data and is defined as follows:
+    entropy. Entropy measures the quantity of information that own data and is defined as follows:
 </p>
 <figure class="centered">
     <img class="img-fluid img-centered"
