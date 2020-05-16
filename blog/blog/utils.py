@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 
 from datetime import date
-from smtplib import SMTPAuthenticationError
 
 import requests
 from django.conf import settings
@@ -22,11 +21,7 @@ def send_email(subject: str, text: str):
         'emails/contact_email.html',
         {'text': text}
     ), 'text/html')
-    try:
-        msg.send()
-    except SMTPAuthenticationError:
-        logger.error('Authentication error when try to send notification email')
-
+    msg.send()
 
 def get_client_ip(request: HttpRequest):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
