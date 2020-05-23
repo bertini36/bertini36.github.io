@@ -12,7 +12,6 @@ resource "heroku_app" "default" {
     DJANGO_SECRET_KEY = ""
     EMAIL_HOST_PASSWORD = ""
     EMAIL_HOST_USER = ""
-    GA_MEASUREMENT_ID = ""
     POSTGRES_DB = ""
     POSTGRES_PASSWORD = ""
     POSTGRES_USER = ""
