@@ -10,10 +10,7 @@
 <footer>
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
-                <span>Coded by Alberto Pou</span>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <ul class="list-inline social-buttons">
                     <li class="list-inline-item"><a href="{instagram_url}" target="_blank"><i class="fa fa-instagram"></i></a></li>
                     <li class="list-inline-item"><a href={twitter_url} target="_blank"><i class="fa fa-twitter"></i></a></li>
