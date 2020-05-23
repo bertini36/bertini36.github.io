@@ -1,6 +1,6 @@
 <script>
 
-    import { createEventDispatcher, onDestroy, onMount } from "svelte";
+    import {createEventDispatcher, onDestroy, onMount} from "svelte";
     import Blog from "../pages/Blog.svelte";
     import {routes, active_route, posts, selected_post} from "../stores.js";
     import Post from "../classes/Post.js";
@@ -8,6 +8,8 @@
     import PageNotFound from "../pages/PageNotFound.svelte";
 
     const logo_img_url = "/static/img/logo.png";
+    const blog_github_url = "https://github.com/bertini36/blog";
+    const github_img_url = "/static/img/github.png";
     const dispatcher = createEventDispatcher();
     let page_has_background_image;
 
@@ -45,30 +47,29 @@
 
 </script>
 
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="#"><img src={logo_img_url}></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active"><a class="nav-link" href="#"></a></li>
-                <li class="nav-item active"><a class="nav-link" href="#posts">Posts</a></li>
-                <li class="nav-item active"><a class="nav-link" href="#contact">Contact</a></li>
-            </ul>
-        </div>
+<nav class="fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-dark-500">
+    <a class="px-2 md:px-8 flex items-center" href="#">
+        <img alt="Smelte logo" src="{logo_img_url}" width="35" height="35">
+    </a>
+    <div class="flex-grow"></div>
+    <div class="y-0 h-full items-center relative mx-auto z-20 hidden md:flex max-w-2xl ">
+        <a class="transition-fast relative overflow-hidden text-center h-full p-6 cursor-pointer flex mx-auto items-center text-sm h-full flex text-md text-white hover:bg-white-transLight hover:text-white" href="#posts">
+            <div class="flex flex-col items-center content-center text-base">
+                Posts
+            </div>
+        </a>
+        <a class="transition-fast relative overflow-hidden text-cente h-full p-6 cursor-pointer flex mx-auto items-center text-sm h-full flex text-md text-white hover:bg-white-transLight hover:text-white" href="#contact">
+            <div class="flex flex-col items-center content-center text-base">
+                Contact
+            </div>
+        </a>
     </div>
+    <div class="md:hidden">
+        <button class=" px-4 uppercase text-sm font-medium relative overflow-hidden bg-transparent border-none px-4 hover:bg-transparent p-4 flex items-center pt-1 pb-1 pl-2 pr-2 text-xs flex items-center justify-center h-8 w-8 rounded-full rounded hover:bg-transparent hover:bg-primary-transLight">
+            <i aria-hidden="true" class="material-icons icon text-xl text-white transition svelte-zzky5a text-base" style="color: white">menu</i>
+        </button>
+    </div>
+    <a class="px-4 github svelte-1d0txue mr-5" href="{blog_github_url}" target="_blank">
+        <img alt="Blog Github" src="{github_img_url}" width="24" height="24">
+    </a>
 </nav>
-
-<style>
-
-    a {
-        cursor: pointer;
-    }
-
-    .nav-item a {
-        color: white;
-    }
-
-</style>
