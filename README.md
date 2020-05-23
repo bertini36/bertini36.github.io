@@ -3,8 +3,10 @@
 
 # Blog
 
-Source code of my blog. In this blog I should write about different technologies which I have used 
-in my degree or at work.
+In this blog I used to write posts about different technologies that I have 
+found interesting. Also I usually use it to test new technologies. My last 
+updates of it were to update the frontend using Svelte and to deploy using 
+Terraform.
 
 ## Project structure
 
