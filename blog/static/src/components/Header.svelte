@@ -1,5 +1,5 @@
-<header>
-    <div class="intro-text">
+<header class="flex h-screen">
+    <div class="m-auto">
         <div class="intro-heading">Alberto Pou</div>
         <div class="intro-lead-in">Coder</div>
     </div>
@@ -17,12 +17,7 @@
         color: #fff;
     }
 
-    .intro-text {
-        padding-top: 50%;
-        padding-bottom: 20%;
-    }
-
-    .intro-text .intro-lead-in {
+    .intro-lead-in {
         margin-bottom: 25px;
         font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: 22px;
@@ -30,7 +25,7 @@
         line-height: 22px;
     }
 
-    .intro-text .intro-heading {
+    .intro-heading {
         margin-bottom: 25px;
         text-transform: uppercase;
         font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -41,20 +36,7 @@
 
     @media (min-width: 768px) {
 
-        .intro-text {
-            padding-top: 40%;
-            padding-bottom: 50%;
-        }
-
-        .intro-text .intro-lead-in {
-            margin-bottom: 25px;
-            font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 40px;
-            font-style: italic;
-            line-height: 40px;
-        }
-
-        .intro-text .intro-heading {
+        .intro-heading {
             margin-bottom: 50px;
             text-transform: uppercase;
             font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -63,15 +45,15 @@
             line-height: 75px;
         }
 
-    }
-
-    @media (min-width: 1900px) {
-
-        .intro-text {
-            padding-top: 20%;
-            padding-bottom: 30%;
+        .intro-lead-in {
+            margin-bottom: 25px;
+            font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 40px;
+            font-style: italic;
+            line-height: 40px;
         }
 
     }
+
 
 </style>

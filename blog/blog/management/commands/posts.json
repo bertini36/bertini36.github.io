@@ -31,7 +31,7 @@
             "main_photo_path": "img/posts/multitenant_architecture/main.png"
         },
         {
-            "name": "Playing with Tensorflow, Spark & Cassandra",
+            "name": "Tensorflow, Spark & Cassandra",
             "slug": "tensorsparkandra_post",
             "technology": "Scala",
             "main_photo_path": "img/posts/tensorsparkandra/main.jpg"

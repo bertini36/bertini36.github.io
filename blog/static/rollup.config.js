@@ -83,9 +83,6 @@ export default {
         copy({
             targets: [
                 {
-                    src: 'node_modules/bootstrap/dist/**/*',
-                    dest: 'lib/bootstrap'
-                }, {
                     src: 'node_modules/noty/lib/**/*',
                     dest: 'lib/noty'
                 }

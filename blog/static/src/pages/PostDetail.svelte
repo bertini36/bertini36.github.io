@@ -53,7 +53,7 @@
 
                     <div class="border-top my-3"></div>
 
-                    <Comments />
+                    <Comments/>
 
                 {/if}
             </div>
@@ -61,4 +61,3 @@
     </div>
 </section>
 
-<!-- Text styles are in common.css for Svelte limitations -->
