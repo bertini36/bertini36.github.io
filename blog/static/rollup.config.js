@@ -7,6 +7,7 @@ import copy from 'rollup-plugin-copy';
 import babel from "rollup-plugin-babel";
 
 const production = !process.env.ROLLUP_WATCH;
+const smelte = require("smelte/rollup-plugin-smelte");
 
 export default {
 	input: 'src/index.js',
@@ -17,6 +18,7 @@ export default {
 		file: 'build/bundle.js'
 	},
 	plugins: [
+
 		svelte({
 			// enable run-time checks when not in production
 			dev: !production,
@@ -88,7 +90,27 @@ export default {
                     dest: 'lib/noty'
                 }
             ]
-        })
+        }),
+
+        smelte({
+            purge: production,
+            output: "build/smelte.css",
+            postcss: [],
+            whitelist: [],
+            whitelistPatterns: [],
+            tailwind: {
+                colors: {
+                    primary: "#f44336",
+                    secondary: "#009688",
+                    error: "#f44336",
+                    success: "#4caf50",
+                    alert: "#ff9800",
+                    blue: "#2196f3",
+                    dark: "#212121"
+                },
+                darkMode: true
+            },
+        }),
 
 	],
 	watch: {

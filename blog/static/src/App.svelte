@@ -1,8 +1,9 @@
 <script>
 
-  import Navbar from "./components/Navbar.svelte";
+    import "smelte/src/tailwind.css";
+    import Navbar from "./components/Navbar.svelte";
 
-  let active_page;
+    let active_page;
 
 </script>
 

@@ -78,7 +78,7 @@ loadbackup:
 # Node commands
 
 npminstall:
-	$(DOCKER_COMPOSE) run --rm --entrypoint npm svelte-app install
+	$(DOCKER_COMPOSE) run --rm --entrypoint npm svelte-app install ${args}
 
 svbuild:
 	$(DOCKER_COMPOSE) run --user=${UID} --rm --entrypoint npm svelte-app run build

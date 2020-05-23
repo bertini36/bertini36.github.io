@@ -29,6 +29,7 @@
     "livereload-js": "^3.2.2",
     "noty": "^3.2.0-beta",
     "popper.js": "^1.16.1",
-    "sirv-cli": "^0.4.4"
+    "sirv-cli": "^0.4.4",
+    "smelte": "^1.0.12"
   }
 }
