@@ -21,11 +21,9 @@
 
 <section id="posts" class="px-4 md:px-8 lg:px-8 xl:px-34">
 
-    <div class="flex mt-20 mb-12">
+    <div class="flex mt-20 mb-10">
         <div class="w-full">
-            <h2 class="text-center text-3xl">
-                Posts
-            </h2>
+            <h2 class="text-3xl text-center font-hairline">Posts</h2>
         </div>
     </div>
 

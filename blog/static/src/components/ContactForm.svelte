@@ -72,30 +72,20 @@
 
 </script>
 
-<section id="contact" class="py-24 md:py-32 lg:py-64">
-
-    <div class="flex mt-20 mb-12">
-        <div class="w-full">
-            <h2 class="text-center text-3xl text-white">
-                Contact
-            </h2>
-            <h5 class="text-center text-xl text-white">
-                Send me a message for any questions
-            </h5>
-        </div>
+<section id="contact" class="flex h-screen">
+    <div class="m-auto">
+        <h2 class="text-3xl text-center text-white font-hairline">
+            Contact
+        </h2>
+        <h3 class="text-xl text-center text-white font-hairline mb-10">
+            Send me a message for any questions
+        </h3>
+        <TextField label="Name" bind:value={message_data.name} error={errors.name}/>
+        <TextField label="Email" bind:value={message_data.email} error={errors.email}/>
+        <div class="g-recaptcha pb-4" data-sitekey="{RECAPTCHA_SITE_KEY}"></div>
+        <TextField label="Message text" textarea rows="3" bind:value={message_data.text} error={errors.text}/>
+        <Button color="primary" dark block on:click={send_message}>Send</Button>
     </div>
-
-    <div class="flex flex-wrap px-4 md:px-12 lg:px-64">
-        <div class="lg:w-1/3"></div>
-        <div class="w-full lg:w-1/3 sm:px:12 text-center">
-            <TextField label="Name" bind:value={message_data.name} error={errors.name}/>
-            <TextField label="Email" bind:value={message_data.email} error={errors.email}/>
-            <div class="g-recaptcha pb-4" data-sitekey="{RECAPTCHA_SITE_KEY}"></div>
-            <TextField label="Message text" textarea rows="3" bind:value={message_data.text} error={errors.text}/>
-            <Button color="primary" dark block on:click={send_message}>Send</Button>
-        </div>
-    </div>
-
 </section>
 
 <style>

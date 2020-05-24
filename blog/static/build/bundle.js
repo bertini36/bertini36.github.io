@@ -1702,27 +1702,27 @@ var app = (function () {
   function create_fragment(ctx) {
     var section;
     var header;
-    var div2;
-    var div0;
+    var div;
+    var h1;
     var t1;
-    var div1;
+    var h2;
     var block = {
       c: function create() {
         section = element("section");
         header = element("header");
-        div2 = element("div");
-        div0 = element("div");
-        div0.textContent = "Alberto Pou";
+        div = element("div");
+        h1 = element("h1");
+        h1.textContent = "ALBERTO POU";
         t1 = space();
-        div1 = element("div");
-        div1.textContent = "Coder";
-        attr_dev(div0, "class", "intro-heading svelte-jrfab3");
-        add_location(div0, file, 3, 12, 92);
-        attr_dev(div1, "class", "intro-lead-in svelte-jrfab3");
-        add_location(div1, file, 4, 12, 149);
-        attr_dev(div2, "class", "m-auto");
-        add_location(div2, file, 2, 8, 59);
-        attr_dev(header, "class", "flex h-screen svelte-jrfab3");
+        h2 = element("h2");
+        h2.textContent = "Coder";
+        attr_dev(h1, "class", "text-white text-4xl font-hairline font-bold");
+        add_location(h1, file, 3, 12, 92);
+        attr_dev(h2, "class", "text-white text-2xl font-hairline");
+        add_location(h2, file, 4, 12, 177);
+        attr_dev(div, "class", "m-auto");
+        add_location(div, file, 2, 8, 59);
+        attr_dev(header, "class", "flex h-screen svelte-1ohs2su");
         add_location(header, file, 1, 4, 20);
         attr_dev(section, "id", "");
         add_location(section, file, 0, 0, 0);
@@ -1733,10 +1733,10 @@ var app = (function () {
       m: function mount(target, anchor) {
         insert_dev(target, section, anchor);
         append_dev(section, header);
-        append_dev(header, div2);
-        append_dev(div2, div0);
-        append_dev(div2, t1);
-        append_dev(div2, div1);
+        append_dev(header, div);
+        append_dev(div, h1);
+        append_dev(div, t1);
+        append_dev(div, h2);
       },
       p: noop,
       i: noop,
@@ -7624,26 +7624,32 @@ var app = (function () {
         t2 = space();
         p = element("p");
         t3 = text(t3_value);
-        attr_dev(img, "class", "w-full");
+        attr_dev(img, "class", "w-full h-56");
         if (img.src !== (img_src_value = "static/" +
         /*post*/
         ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
         attr_dev(img, "alt", img_alt_value =
         /*post*/
         ctx[0].name);
-        add_location(img, file$3, 9, 8, 313);
+        add_location(img, file$3, 10, 8, 396);
         attr_dev(div0, "class", "font-medium text-xl mb-2");
         set_style(div0, "color",
         /*hover*/
         ctx[1] ? "#feb72b" : "black");
-        add_location(div0, file$3, 11, 12, 515);
+        add_location(div0, file$3, 12, 12, 603);
         attr_dev(p, "class", "text-gray-700 text-base");
-        add_location(p, file$3, 14, 12, 730);
+        add_location(p, file$3, 15, 12, 818);
         attr_dev(div1, "class", "px-6 py-4 border-t-2");
-        add_location(div1, file$3, 10, 8, 468);
-        attr_dev(div2, "class", "max-w-md md:max-w-md md:mx-3 lg:max-w-lg rounded overflow-hidden shadow-lg cursor-pointer");
-        add_location(div2, file$3, 8, 4, 201);
-        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8 content-center hover:text-red-600");
+        add_location(div1, file$3, 11, 8, 556);
+        attr_dev(div2, "class", "max-w-md md:max-w-md md:mx-3 lg:max-w-lg rounded overflow-hidden shadow-lg cursor-pointer border-1");
+        set_style(div2, "border-color",
+        /*hover*/
+        ctx[1] ? "#feb72b" : "black");
+        toggle_class(div2, "border-2",
+        /*hover*/
+        ctx[1] === true);
+        add_location(div2, file$3, 8, 4, 182);
+        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8 content-center");
         add_location(div3, file$3, 7, 0, 66);
       },
       l: function claim(nodes) {
@@ -7722,6 +7728,22 @@ var app = (function () {
         1 && t3_value !== (t3_value =
         /*post*/
         ctx[0].technology + "")) set_data_dev(t3, t3_value);
+
+        if (dirty &
+        /*hover*/
+        2) {
+          set_style(div2, "border-color",
+          /*hover*/
+          ctx[1] ? "#feb72b" : "black");
+        }
+
+        if (dirty &
+        /*hover*/
+        2) {
+          toggle_class(div2, "border-2",
+          /*hover*/
+          ctx[1] === true);
+        }
       },
       i: noop,
       o: noop,
@@ -7853,7 +7875,7 @@ var app = (function () {
     var child_ctx = ctx.slice();
     child_ctx[2] = list[i];
     return child_ctx;
-  } // (34:8) {#each $posts as post}
+  } // (32:8) {#each $posts as post}
 
 
   function create_each_block$1(ctx) {
@@ -7900,7 +7922,7 @@ var app = (function () {
       block: block,
       id: create_each_block$1.name,
       type: "each",
-      source: "(34:8) {#each $posts as post}",
+      source: "(32:8) {#each $posts as post}",
       ctx: ctx
     });
     return block;
@@ -7944,14 +7966,14 @@ var app = (function () {
           each_blocks[_i].c();
         }
 
-        attr_dev(h2, "class", "text-center text-3xl");
+        attr_dev(h2, "class", "text-3xl text-center font-hairline");
         add_location(h2, file$4, 25, 12, 714);
         attr_dev(div0, "class", "w-full");
         add_location(div0, file$4, 24, 8, 681);
-        attr_dev(div1, "class", "flex mt-20 mb-12");
+        attr_dev(div1, "class", "flex mt-20 mb-10");
         add_location(div1, file$4, 23, 4, 642);
         attr_dev(div2, "class", "flex flex-wrap mb-12");
-        add_location(div2, file$4, 31, 4, 819);
+        add_location(div2, file$4, 29, 4, 803);
         attr_dev(section, "id", "posts");
         attr_dev(section, "class", "px-4 md:px-8 lg:px-8 xl:px-34");
         add_location(section, file$4, 21, 0, 578);
@@ -12039,7 +12061,7 @@ var app = (function () {
   function _createSuper$5(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$6()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$6() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$b = "src/components/ContactForm.svelte"; // (95:12) <Button color="primary" dark block on:click={send_message}>
+  var file$b = "src/components/ContactForm.svelte"; // (87:8) <Button color="primary" dark block on:click={send_message}>
 
   function create_default_slot$2(ctx) {
     var t;
@@ -12058,7 +12080,7 @@ var app = (function () {
       block: block,
       id: create_default_slot$2.name,
       type: "slot",
-      source: "(95:12) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
+      source: "(87:8) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
       ctx: ctx
     });
     return block;
@@ -12067,23 +12089,18 @@ var app = (function () {
   function create_fragment$b(ctx) {
     var section;
     var div1;
-    var div0;
     var h2;
     var t1;
-    var h5;
+    var h3;
     var t3;
-    var div5;
-    var div2;
-    var t4;
-    var div4;
     var updating_value;
-    var t5;
+    var t4;
     var updating_value_1;
+    var t5;
+    var div0;
     var t6;
-    var div3;
-    var t7;
     var updating_value_2;
-    var t8;
+    var t7;
     var current;
 
     function textfield0_value_binding(value) {
@@ -12192,45 +12209,32 @@ var app = (function () {
       c: function create() {
         section = element("section");
         div1 = element("div");
-        div0 = element("div");
         h2 = element("h2");
         h2.textContent = "Contact";
         t1 = space();
-        h5 = element("h5");
-        h5.textContent = "Send me a message for any questions";
+        h3 = element("h3");
+        h3.textContent = "Send me a message for any questions";
         t3 = space();
-        div5 = element("div");
-        div2 = element("div");
-        t4 = space();
-        div4 = element("div");
         create_component(textfield0.$$.fragment);
-        t5 = space();
+        t4 = space();
         create_component(textfield1.$$.fragment);
+        t5 = space();
+        div0 = element("div");
         t6 = space();
-        div3 = element("div");
-        t7 = space();
         create_component(textfield2.$$.fragment);
-        t8 = space();
+        t7 = space();
         create_component(button.$$.fragment);
-        attr_dev(h2, "class", "text-center text-3xl text-white");
-        add_location(h2, file$b, 78, 12, 2373);
-        attr_dev(h5, "class", "text-center text-xl text-white");
-        add_location(h5, file$b, 81, 12, 2472);
-        attr_dev(div0, "class", "w-full");
-        add_location(div0, file$b, 77, 8, 2340);
-        attr_dev(div1, "class", "flex mt-20 mb-12");
-        add_location(div1, file$b, 76, 4, 2301);
-        attr_dev(div2, "class", "lg:w-1/3");
-        add_location(div2, file$b, 88, 8, 2677);
-        attr_dev(div3, "class", "g-recaptcha pb-4");
-        attr_dev(div3, "data-sitekey", RECAPTCHA_SITE_KEY);
-        add_location(div3, file$b, 92, 12, 2958);
-        attr_dev(div4, "class", "w-full lg:w-1/3 sm:px:12 text-center");
-        add_location(div4, file$b, 89, 8, 2714);
-        attr_dev(div5, "class", "flex flex-wrap px-4 md:px-12 lg:px-64");
-        add_location(div5, file$b, 87, 4, 2617);
+        attr_dev(h2, "class", "text-3xl text-center text-white font-hairline");
+        add_location(h2, file$b, 76, 8, 2319);
+        attr_dev(h3, "class", "text-xl text-center text-white font-hairline mb-10");
+        add_location(h3, file$b, 79, 8, 2420);
+        attr_dev(div0, "class", "g-recaptcha pb-4");
+        attr_dev(div0, "data-sitekey", RECAPTCHA_SITE_KEY);
+        add_location(div0, file$b, 84, 8, 2727);
+        attr_dev(div1, "class", "m-auto");
+        add_location(div1, file$b, 75, 4, 2290);
         attr_dev(section, "id", "contact");
-        attr_dev(section, "class", "py-24 md:py-32 lg:py-64 svelte-1ylt5nz");
+        attr_dev(section, "class", "flex h-screen svelte-1ylt5nz");
         add_location(section, file$b, 74, 0, 2241);
       },
       l: function claim(nodes) {
@@ -12239,24 +12243,19 @@ var app = (function () {
       m: function mount(target, anchor) {
         insert_dev(target, section, anchor);
         append_dev(section, div1);
+        append_dev(div1, h2);
+        append_dev(div1, t1);
+        append_dev(div1, h3);
+        append_dev(div1, t3);
+        mount_component(textfield0, div1, null);
+        append_dev(div1, t4);
+        mount_component(textfield1, div1, null);
+        append_dev(div1, t5);
         append_dev(div1, div0);
-        append_dev(div0, h2);
-        append_dev(div0, t1);
-        append_dev(div0, h5);
-        append_dev(section, t3);
-        append_dev(section, div5);
-        append_dev(div5, div2);
-        append_dev(div5, t4);
-        append_dev(div5, div4);
-        mount_component(textfield0, div4, null);
-        append_dev(div4, t5);
-        mount_component(textfield1, div4, null);
-        append_dev(div4, t6);
-        append_dev(div4, div3);
-        append_dev(div4, t7);
-        mount_component(textfield2, div4, null);
-        append_dev(div4, t8);
-        mount_component(button, div4, null);
+        append_dev(div1, t6);
+        mount_component(textfield2, div1, null);
+        append_dev(div1, t7);
+        mount_component(button, div1, null);
         current = true;
       },
       p: function update(ctx, _ref) {
