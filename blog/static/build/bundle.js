@@ -4132,7 +4132,7 @@ var app = (function () {
 
   })));
 
-
+  //# sourceMappingURL=es6-promise.map
 
   /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)));
 
@@ -4950,7 +4950,7 @@ var app = (function () {
   /***/ })
   /******/ ]);
   });
-
+  //# sourceMappingURL=noty.js.map
   });
 
   var Noty = unwrapExports(noty);
@@ -6642,7 +6642,7 @@ var app = (function () {
               return axios$1.post(send_message_url, message_data_json).then(function (response) {
                 return true;
               }).catch(function (error) {
-                return show_notification("error", error.response.data.data);
+                return error.response.data;
               });
 
             case 3:
@@ -12034,7 +12034,7 @@ var app = (function () {
   function _createSuper$5(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$6()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$6() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$b = "src/components/ContactForm.svelte"; // (67:12) <Button color="primary" dark block on:click={send_message}>
+  var file$b = "src/components/ContactForm.svelte"; // (95:12) <Button color="primary" dark block on:click={send_message}>
 
   function create_default_slot$2(ctx) {
     var t;
@@ -12053,7 +12053,7 @@ var app = (function () {
       block: block,
       id: create_default_slot$2.name,
       type: "slot",
-      source: "(67:12) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
+      source: "(95:12) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
       ctx: ctx
     });
     return block;
@@ -12083,11 +12083,14 @@ var app = (function () {
 
     function textfield0_value_binding(value) {
       /*textfield0_value_binding*/
-      ctx[3].call(null, value);
+      ctx[10].call(null, value);
     }
 
     var textfield0_props = {
-      label: "Name"
+      label: "Name",
+      error:
+      /*errors*/
+      ctx[1].name
     };
 
     if (
@@ -12108,11 +12111,14 @@ var app = (function () {
 
     function textfield1_value_binding(value) {
       /*textfield1_value_binding*/
-      ctx[4].call(null, value);
+      ctx[11].call(null, value);
     }
 
     var textfield1_props = {
-      label: "Email"
+      label: "Email",
+      error:
+      /*errors*/
+      ctx[1].email
     };
 
     if (
@@ -12133,13 +12139,16 @@ var app = (function () {
 
     function textfield2_value_binding(value) {
       /*textfield2_value_binding*/
-      ctx[5].call(null, value);
+      ctx[12].call(null, value);
     }
 
     var textfield2_props = {
       label: "Message text",
       textarea: true,
-      rows: "3"
+      rows: "3",
+      error:
+      /*errors*/
+      ctx[1].text
     };
 
     if (
@@ -12173,7 +12182,7 @@ var app = (function () {
     });
     button.$on("click",
     /*send_message*/
-    ctx[1]);
+    ctx[2]);
     var block = {
       c: function create() {
         section = element("section");
@@ -12199,25 +12208,25 @@ var app = (function () {
         t8 = space();
         create_component(button.$$.fragment);
         attr_dev(h2, "class", "text-center text-3xl text-white");
-        add_location(h2, file$b, 50, 12, 1466);
+        add_location(h2, file$b, 78, 12, 2373);
         attr_dev(h5, "class", "text-center text-xl text-white");
-        add_location(h5, file$b, 53, 12, 1565);
+        add_location(h5, file$b, 81, 12, 2472);
         attr_dev(div0, "class", "w-full");
-        add_location(div0, file$b, 49, 8, 1433);
+        add_location(div0, file$b, 77, 8, 2340);
         attr_dev(div1, "class", "flex mt-20 mb-12");
-        add_location(div1, file$b, 48, 4, 1394);
+        add_location(div1, file$b, 76, 4, 2301);
         attr_dev(div2, "class", "lg:w-1/3");
-        add_location(div2, file$b, 60, 8, 1770);
-        attr_dev(div3, "class", "g-recaptcha");
+        add_location(div2, file$b, 88, 8, 2677);
+        attr_dev(div3, "class", "g-recaptcha pb-4");
         attr_dev(div3, "data-sitekey", RECAPTCHA_SITE_KEY);
-        add_location(div3, file$b, 64, 12, 2010);
+        add_location(div3, file$b, 92, 12, 2958);
         attr_dev(div4, "class", "w-full lg:w-1/3 sm:px:12 text-center");
-        add_location(div4, file$b, 61, 8, 1807);
+        add_location(div4, file$b, 89, 8, 2714);
         attr_dev(div5, "class", "flex flex-wrap px-4 md:px-12 lg:px-64");
-        add_location(div5, file$b, 59, 4, 1710);
+        add_location(div5, file$b, 87, 4, 2617);
         attr_dev(section, "id", "contact");
         attr_dev(section, "class", "py-16 md:py-32 lg:py-64 svelte-1ylt5nz");
-        add_location(section, file$b, 46, 0, 1334);
+        add_location(section, file$b, 74, 0, 2241);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -12250,6 +12259,11 @@ var app = (function () {
             dirty = _ref2[0];
 
         var textfield0_changes = {};
+        if (dirty &
+        /*errors*/
+        2) textfield0_changes.error =
+        /*errors*/
+        ctx[1].name;
 
         if (!updating_value && dirty &
         /*message_data*/
@@ -12265,6 +12279,11 @@ var app = (function () {
 
         textfield0.$set(textfield0_changes);
         var textfield1_changes = {};
+        if (dirty &
+        /*errors*/
+        2) textfield1_changes.error =
+        /*errors*/
+        ctx[1].email;
 
         if (!updating_value_1 && dirty &
         /*message_data*/
@@ -12280,6 +12299,11 @@ var app = (function () {
 
         textfield1.$set(textfield1_changes);
         var textfield2_changes = {};
+        if (dirty &
+        /*errors*/
+        2) textfield2_changes.error =
+        /*errors*/
+        ctx[1].text;
 
         if (!updating_value_2 && dirty &
         /*message_data*/
@@ -12298,7 +12322,7 @@ var app = (function () {
 
         if (dirty &
         /*$$scope*/
-        64) {
+        8192) {
           button_changes.$$scope = {
             dirty: dirty,
             ctx: ctx
@@ -12349,6 +12373,16 @@ var app = (function () {
       email: "",
       text: ""
     };
+    var errors = {
+      name: "",
+      email: "",
+      captcha: "",
+      text: ""
+    };
+    var name_error = "";
+    var email_error = "";
+    var captcha_error = "";
+    var text_error = "";
     onMount( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
       var element;
       return regenerator.wrap(function _callee$(_context) {
@@ -12393,10 +12427,13 @@ var app = (function () {
               case 3:
                 response = _context2.sent;
 
-                if (response !== undefined) {
+                if (response.error) {
+                  show_errors(response.data);
+                } else {
                   show_notification("success", "Message sent");
                   location.hash = "";
                   reset_form();
+                  reset_errors();
                 }
 
               case 5:
@@ -12413,6 +12450,21 @@ var app = (function () {
       $$invalidate(0, message_data.name = "", message_data);
       $$invalidate(0, message_data.email = "", message_data);
       $$invalidate(0, message_data.text = "", message_data);
+    }
+
+    function show_errors(response_errors) {
+      if ("name" in response_errors) $$invalidate(1, errors.name = response_errors["name"], errors);
+      if ("email" in response_errors) $$invalidate(1, errors.email = response_errors["email"], errors);
+      if ("captcha" in response_errors) $$invalidate(1, errors.captcha = response_errors["captcha"], errors);
+      if ("text" in response_errors) $$invalidate(1, errors.text = response_errors["text"], errors);
+      if ("__all__" in response_errors) show_notification("error", response_errors["__all__"]);
+    }
+
+    function reset_errors() {
+      $$invalidate(1, errors.name = "", errors);
+      $$invalidate(1, errors.email = "", errors);
+      $$invalidate(1, errors.captcha = "", errors);
+      $$invalidate(1, errors.text = "", errors);
     }
 
     var writable_props = [];
@@ -12448,14 +12500,32 @@ var app = (function () {
         TextField: TextField,
         Button: Button,
         message_data: message_data,
+        errors: errors,
         send_message_url: send_message_url$1,
         section_id: section_id$1,
+        name_error: name_error,
+        email_error: email_error,
+        captcha_error: captcha_error,
+        text_error: text_error,
         send_message: send_message,
-        reset_form: reset_form
+        reset_form: reset_form,
+        show_errors: show_errors,
+        reset_errors: reset_errors
       };
     };
 
-    return [message_data, send_message, reset_form, textfield0_value_binding, textfield1_value_binding, textfield2_value_binding];
+    $$self.$inject_state = function ($$props) {
+      if ("name_error" in $$props) name_error = $$props.name_error;
+      if ("email_error" in $$props) email_error = $$props.email_error;
+      if ("captcha_error" in $$props) captcha_error = $$props.captcha_error;
+      if ("text_error" in $$props) text_error = $$props.text_error;
+    };
+
+    if ($$props && "$$inject" in $$props) {
+      $$self.$inject_state($$props.$$inject);
+    }
+
+    return [message_data, errors, send_message, name_error, email_error, captcha_error, text_error, reset_form, show_errors, reset_errors, textfield0_value_binding, textfield1_value_binding, textfield2_value_binding];
   }
 
   var ContactForm = /*#__PURE__*/function (_SvelteComponentDev) {

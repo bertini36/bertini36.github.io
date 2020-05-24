@@ -38,5 +38,7 @@ export async function send_message_request(message_data) {
     let message_data_json = JSON.stringify(message_data);
     return await axios.post(send_message_url, message_data_json).then(function(response) {
         return true;
-    }).catch(error => utils.show_notification("error", error.response.data.data));
+    }).catch(function(error) {
+        return error.response.data;
+    });
 }

@@ -16,7 +16,7 @@ class ResponseBuilderInterface(ABC):
 class ErrorResponseBuilder(ResponseBuilderInterface):
 
     def build(self) -> dict:
-        return {'error': True, 'data': str(self.data)}
+        return {'error': True, 'data': self.data}
 
 
 class ResponseBuilder(ResponseBuilderInterface):

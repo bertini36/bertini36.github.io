@@ -5,8 +5,8 @@ class BlogApiException(Exception):
     default_message = None
 
     def __init__(self, errors: any):
-        errors = errors or self.default_message
-        super().__init__(errors)
+        self.errors = errors or self.default_message
+        super().__init__(self.errors)
 
 
 class PostNotFound(BlogApiException):

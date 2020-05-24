@@ -38,7 +38,7 @@ class BlogApi:
             return self.response_builder(post).build()
 
         except BlogApiException as e:
-            return self.error_builder(e).build()
+            return self.error_builder(e.errors).build()
 
     def filter_posts(self, request: FilterPostsRequest) -> dict:
         try:
@@ -47,7 +47,7 @@ class BlogApi:
             return self.response_builder(posts).build()
 
         except BlogApiException as e:
-            return self.error_builder(e).build()
+            return self.error_builder(e.errors).build()
 
     def get_post(self, request: GetPostRequest):
         try:
@@ -56,7 +56,7 @@ class BlogApi:
             return self.response_builder(post).build()
 
         except BlogApiException as e:
-            return self.error_builder(e).build()
+            return self.error_builder(e.errors).build()
 
     def send_message(self, request: SendMessageRequest) -> dict:
         try:
@@ -72,7 +72,7 @@ class BlogApi:
             return self.response_builder({}).build()
 
         except BlogApiException as e:
-            return self.error_builder(e).build()
+            return self.error_builder(e.errors).build()
 
     def get_comments(self, request: GetCommentsRequest):
         try:
@@ -81,7 +81,7 @@ class BlogApi:
             return self.response_builder(comments).build()
 
         except BlogApiException as e:
-            return self.error_builder(e).build()
+            return self.error_builder(e.errors).build()
 
     def publish_comment(self, request: PublishCommentRequest):
         try:
@@ -99,7 +99,7 @@ class BlogApi:
             return self.response_builder(comment).build()
 
         except BlogApiException as e:
-            return self.error_builder(e).build()
+            return self.error_builder(e.errors).build()
 
 
 blog_api = BlogApi(DjangoBlogRepository)

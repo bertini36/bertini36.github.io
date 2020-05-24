@@ -34,10 +34,10 @@ class DjangoRequestValidator(RequestValidatorInterface):
 
     @classmethod
     def format_errors(cls, errors):
-        if '__all__' in errors:
-            errors['Other'] = errors['__all__']
-            del errors['__all__']
-        return errors
+        return {
+            key: errors[key][0]
+            for key in dict(errors)
+        }
 
 
 class DjangoCreatePostForm(forms.Form):
