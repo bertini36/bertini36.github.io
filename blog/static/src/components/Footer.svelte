@@ -29,7 +29,7 @@
 <style>
 
     a:hover, a:focus, a:active {
-        color: #f77b72;
+        color: #feb72b;
     }
 
 </style>

@@ -62,9 +62,9 @@
         <div class="w-full lg:w-1/3 sm:px:12 text-center">
             <TextField label="Name" bind:value={message_data.name}/>
             <TextField label="Email" bind:value={message_data.email}/>
-            <div class="g-recaptcha lg:pb-3" data-sitekey="{RECAPTCHA_SITE_KEY}"></div>
+            <div class="g-recaptcha" data-sitekey="{RECAPTCHA_SITE_KEY}"></div>
             <TextField label="Message text" textarea rows="3" bind:value={message_data.text}/>
-            <Button light block on:click={send_message}>Send</Button>
+            <Button color="primary" dark block on:click={send_message}>Send</Button>
         </div>
     </div>
 

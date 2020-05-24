@@ -7626,16 +7626,16 @@ var app = (function () {
         attr_dev(img, "alt", img_alt_value =
         /*post*/
         ctx[0].name);
-        add_location(img, file$3, 8, 8, 271);
-        attr_dev(div0, "class", "font-medium text-xl mb-2");
-        add_location(div0, file$3, 10, 12, 401);
+        add_location(img, file$3, 8, 8, 290);
+        attr_dev(div0, "class", "font-medium text-xl mb-2 text-black hover:text-red-600");
+        add_location(div0, file$3, 10, 12, 420);
         attr_dev(p, "class", "text-gray-700 text-base");
-        add_location(p, file$3, 11, 12, 469);
+        add_location(p, file$3, 11, 12, 518);
         attr_dev(div1, "class", "px-6 py-4 border-t-2");
-        add_location(div1, file$3, 9, 8, 354);
+        add_location(div1, file$3, 9, 8, 373);
         attr_dev(div2, "class", "max-w-md md:max-w-md md:mx-3 lg:max-w-lg rounded overflow-hidden shadow-lg cursor-pointer");
-        add_location(div2, file$3, 7, 4, 159);
-        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8 content-center");
+        add_location(div2, file$3, 7, 4, 178);
+        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8 content-center hover:text-red-600");
         add_location(div3, file$3, 6, 0, 43);
       },
       l: function claim(nodes) {
@@ -11983,7 +11983,7 @@ var app = (function () {
   function _createSuper$5(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$6()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$6() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$b = "src/components/ContactForm.svelte"; // (67:12) <Button light block on:click={send_message}>
+  var file$b = "src/components/ContactForm.svelte"; // (67:12) <Button color="primary" dark block on:click={send_message}>
 
   function create_default_slot$2(ctx) {
     var t;
@@ -12002,7 +12002,7 @@ var app = (function () {
       block: block,
       id: create_default_slot$2.name,
       type: "slot",
-      source: "(67:12) <Button light block on:click={send_message}>",
+      source: "(67:12) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
       ctx: ctx
     });
     return block;
@@ -12108,7 +12108,8 @@ var app = (function () {
     });
     var button = new Button({
       props: {
-        light: true,
+        color: "primary",
+        dark: true,
         block: true,
         $$slots: {
           default: [create_default_slot$2]
@@ -12156,7 +12157,7 @@ var app = (function () {
         add_location(div1, file$b, 48, 4, 1394);
         attr_dev(div2, "class", "lg:w-1/3");
         add_location(div2, file$b, 60, 8, 1770);
-        attr_dev(div3, "class", "g-recaptcha lg:pb-3");
+        attr_dev(div3, "class", "g-recaptcha");
         attr_dev(div3, "data-sitekey", RECAPTCHA_SITE_KEY);
         add_location(div3, file$b, 64, 12, 2010);
         attr_dev(div4, "class", "w-full lg:w-1/3 sm:px:12 text-center");
@@ -12470,25 +12471,25 @@ var app = (function () {
         add_location(i0, file$c, 13, 16, 486);
         attr_dev(a0, "href", instagram_url);
         attr_dev(a0, "target", "_blank");
-        attr_dev(a0, "class", "mr-4 svelte-1i4frd4");
+        attr_dev(a0, "class", "mr-4 svelte-1h0m6en");
         add_location(a0, file$c, 12, 12, 414);
         attr_dev(i1, "class", "fa fa-twitter text-xl");
         add_location(i1, file$c, 16, 16, 623);
         attr_dev(a1, "href", twitter_url);
         attr_dev(a1, "target", "_blank");
-        attr_dev(a1, "class", "mr-4 svelte-1i4frd4");
+        attr_dev(a1, "class", "mr-4 svelte-1h0m6en");
         add_location(a1, file$c, 15, 12, 555);
         attr_dev(i2, "class", "fa fa-linkedin text-xl");
         add_location(i2, file$c, 19, 16, 759);
         attr_dev(a2, "href", linkedin_url);
         attr_dev(a2, "target", "_blank");
-        attr_dev(a2, "class", "mr-4 svelte-1i4frd4");
+        attr_dev(a2, "class", "mr-4 svelte-1h0m6en");
         add_location(a2, file$c, 18, 12, 690);
         attr_dev(i3, "class", "fa fa-github text-xl");
-        add_location(i3, file$c, 22, 16, 909);
+        add_location(i3, file$c, 22, 16, 881);
         attr_dev(a3, "href", github_url);
         attr_dev(a3, "target", "_blank");
-        attr_dev(a3, "class", "hover:bg-primary-50 svelte-1i4frd4");
+        attr_dev(a3, "class", "svelte-1h0m6en");
         add_location(a3, file$c, 21, 12, 827);
         attr_dev(div0, "class", "text-center");
         add_location(div0, file$c, 11, 8, 376);
@@ -12805,8 +12806,8 @@ var app = (function () {
   function create_fragment$f(ctx) {
     var nav;
     var a0;
-    var img0;
-    var img0_src_value;
+    var img;
+    var img_src_value;
     var t0;
     var div0;
     var t1;
@@ -12818,13 +12819,12 @@ var app = (function () {
     var div2;
     var t5;
     var a3;
-    var img1;
-    var img1_src_value;
+    var i;
     var block = {
       c: function create() {
         nav = element("nav");
         a0 = element("a");
-        img0 = element("img");
+        img = element("img");
         t0 = space();
         div0 = element("div");
         t1 = space();
@@ -12838,38 +12838,35 @@ var app = (function () {
         div2.textContent = "Contact";
         t5 = space();
         a3 = element("a");
-        img1 = element("img");
-        attr_dev(img0, "alt", "Blog logo");
-        if (img0.src !== (img0_src_value = logo_img_url)) attr_dev(img0, "src", img0_src_value);
-        attr_dev(img0, "width", "35");
-        attr_dev(img0, "height", "35");
-        add_location(img0, file$f, 51, 8, 1882);
-        attr_dev(a0, "class", "px-2 md:px-8 flex items-center");
+        i = element("i");
+        attr_dev(img, "alt", "Blog logo");
+        if (img.src !== (img_src_value = logo_img_url)) attr_dev(img, "src", img_src_value);
+        attr_dev(img, "width", "35");
+        attr_dev(img, "height", "35");
+        add_location(img, file$f, 51, 8, 1882);
+        attr_dev(a0, "class", "px-2 md:px-8 flex items-center svelte-1h0m6en");
         attr_dev(a0, "href", "#");
         add_location(a0, file$f, 50, 4, 1822);
         attr_dev(div0, "class", "flex-grow");
         add_location(div0, file$f, 53, 4, 1961);
         attr_dev(div1, "class", "flex flex-col items-center content-center text-base");
-        add_location(div1, file$f, 56, 12, 2249);
-        attr_dev(a1, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight hover:text-white");
+        add_location(div1, file$f, 56, 12, 2232);
+        attr_dev(a1, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight svelte-1h0m6en");
         attr_dev(a1, "href", "#posts");
         add_location(a1, file$f, 55, 8, 2068);
         attr_dev(div2, "class", "flex flex-col items-center content-center text-base");
-        add_location(div2, file$f, 61, 12, 2560);
-        attr_dev(a2, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight hover:text-white");
+        add_location(div2, file$f, 61, 12, 2526);
+        attr_dev(a2, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight svelte-1h0m6en");
         attr_dev(a2, "href", "#contact");
-        add_location(a2, file$f, 60, 8, 2377);
+        add_location(a2, file$f, 60, 8, 2360);
         attr_dev(div3, "class", "y-0 h-full items-center relative mx-auto z-20 flex");
         add_location(div3, file$f, 54, 4, 1995);
-        attr_dev(img1, "alt", "Blog Github");
-        if (img1.src !== (img1_src_value = github_img_url)) attr_dev(img1, "src", img1_src_value);
-        attr_dev(img1, "width", "24");
-        attr_dev(img1, "height", "24");
-        add_location(img1, file$f, 67, 8, 2790);
-        attr_dev(a3, "class", "px-4 github svelte-1d0txue mr-5");
+        attr_dev(i, "class", "fa fa-github text-xl");
+        add_location(i, file$f, 67, 8, 2783);
+        attr_dev(a3, "class", "px-4 mr-5 py-5 text-white hover:bg-white-transLight h-full svelte-1h0m6en");
         attr_dev(a3, "href", blog_github_url);
         attr_dev(a3, "target", "_blank");
-        add_location(a3, file$f, 66, 4, 2697);
+        add_location(a3, file$f, 66, 4, 2663);
         attr_dev(nav, "class", "fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-dark-500");
         add_location(nav, file$f, 49, 0, 1710);
       },
@@ -12879,7 +12876,7 @@ var app = (function () {
       m: function mount(target, anchor) {
         insert_dev(target, nav, anchor);
         append_dev(nav, a0);
-        append_dev(a0, img0);
+        append_dev(a0, img);
         append_dev(nav, t0);
         append_dev(nav, div0);
         append_dev(nav, t1);
@@ -12891,7 +12888,7 @@ var app = (function () {
         append_dev(a2, div2);
         append_dev(nav, t5);
         append_dev(nav, a3);
-        append_dev(a3, img1);
+        append_dev(a3, i);
       },
       p: noop,
       i: noop,
