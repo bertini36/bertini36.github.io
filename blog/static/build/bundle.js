@@ -7214,10 +7214,10 @@ var app = (function () {
         t4 = space();
         t5 = space();
         create_component(comments.$$.fragment);
-        attr_dev(h2, "class", "text-3xl text-center font-hairline");
+        attr_dev(h2, "class", "text-3xl text-center");
         add_location(h2, file$2, 43, 12, 1414);
         attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
-        add_location(h3, file$2, 46, 12, 1530);
+        add_location(h3, file$2, 46, 12, 1516);
         attr_dev(img, "class", "object-center w-full h-64 mb-8 md:px-32 lg:px-64");
         if (img.src !== (img_src_value = "static/" +
         /*$selected_post*/
@@ -7225,7 +7225,7 @@ var app = (function () {
         attr_dev(img, "alt", img_alt_value =
         /*$selected_post*/
         ctx[0].name);
-        add_location(img, file$2, 50, 12, 1657);
+        add_location(img, file$2, 50, 12, 1643);
         html_tag = new HtmlTag(raw_value, t5);
       },
       m: function mount(target, anchor) {
@@ -7954,14 +7954,14 @@ var app = (function () {
           each_blocks[_i].c();
         }
 
-        attr_dev(h2, "class", "text-3xl text-center font-hairline");
+        attr_dev(h2, "class", "text-3xl text-center");
         add_location(h2, file$4, 25, 12, 714);
         attr_dev(div0, "class", "w-full");
         add_location(div0, file$4, 24, 8, 681);
         attr_dev(div1, "class", "flex mt-20 mb-10");
         add_location(div1, file$4, 23, 4, 642);
         attr_dev(div2, "class", "flex flex-wrap mb-12");
-        add_location(div2, file$4, 29, 4, 803);
+        add_location(div2, file$4, 29, 4, 789);
         attr_dev(section, "id", "posts");
         attr_dev(section, "class", "px-4 md:px-8 lg:px-8 xl:px-34");
         add_location(section, file$4, 21, 0, 578);
@@ -12212,13 +12212,13 @@ var app = (function () {
         create_component(textfield2.$$.fragment);
         t7 = space();
         create_component(button.$$.fragment);
-        attr_dev(h2, "class", "text-3xl text-center text-white font-hairline");
+        attr_dev(h2, "class", "text-3xl text-center text-white");
         add_location(h2, file$b, 76, 8, 2319);
         attr_dev(h3, "class", "text-xl text-center text-white font-hairline mb-10");
-        add_location(h3, file$b, 79, 8, 2420);
+        add_location(h3, file$b, 79, 8, 2406);
         attr_dev(div0, "class", "g-recaptcha pb-4");
         attr_dev(div0, "data-sitekey", RECAPTCHA_SITE_KEY);
-        add_location(div0, file$b, 84, 8, 2727);
+        add_location(div0, file$b, 84, 8, 2713);
         attr_dev(div1, "class", "m-auto");
         add_location(div1, file$b, 75, 4, 2290);
         attr_dev(section, "id", "contact");

@@ -74,7 +74,7 @@
 
 <section id="contact" class="flex h-screen">
     <div class="m-auto">
-        <h2 class="text-3xl text-center text-white font-hairline">
+        <h2 class="text-3xl text-center text-white">
             Contact
         </h2>
         <h3 class="text-xl text-center text-white font-hairline mb-10">

@@ -41,7 +41,7 @@
 
         {#if $selected_post !== null}
 
-            <h2 class="text-3xl text-center font-hairline">
+            <h2 class="text-3xl text-center">
                 {$selected_post.name}
             </h2>
             <h3 class="text-xl text-center font-hairline mb-8">

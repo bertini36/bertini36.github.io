@@ -23,7 +23,7 @@
 
     <div class="flex mt-20 mb-10">
         <div class="w-full">
-            <h2 class="text-3xl text-center font-hairline">Posts</h2>
+            <h2 class="text-3xl text-center">Posts</h2>
         </div>
     </div>
 
