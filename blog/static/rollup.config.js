@@ -103,7 +103,7 @@ export default {
                     success: "#4caf50",
                     alert: "#ff9800",
                     blue: "#2196f3",
-                    dark: "#212121",
+                    dark: "#212121"
                 },
                 darkMode: true
             },
