@@ -12969,32 +12969,38 @@ var app = (function () {
         if (img.src !== (img_src_value = logo_img_url)) attr_dev(img, "src", img_src_value);
         attr_dev(img, "width", "35");
         attr_dev(img, "height", "35");
-        add_location(img, file$f, 67, 8, 2441);
+        add_location(img, file$f, 69, 8, 2494);
         attr_dev(a0, "class", "px-2 md:px-8 flex items-center svelte-1h0m6en");
         attr_dev(a0, "href", "#");
-        add_location(a0, file$f, 66, 4, 2381);
+        add_location(a0, file$f, 68, 4, 2434);
         attr_dev(div0, "class", "flex-grow");
-        add_location(div0, file$f, 69, 4, 2520);
+        add_location(div0, file$f, 71, 4, 2573);
         attr_dev(div1, "class", "flex flex-col items-center content-center text-base");
-        add_location(div1, file$f, 72, 12, 2791);
+        add_location(div1, file$f, 75, 12, 2897);
         attr_dev(a1, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight svelte-1h0m6en");
         attr_dev(a1, "href", "#posts");
-        add_location(a1, file$f, 71, 8, 2627);
+        toggle_class(a1, "border-b-2",
+        /*section*/
+        ctx[0] === "#posts");
+        add_location(a1, file$f, 73, 8, 2680);
         attr_dev(div2, "class", "flex flex-col items-center content-center text-base");
-        add_location(div2, file$f, 77, 12, 3085);
+        add_location(div2, file$f, 81, 12, 3246);
         attr_dev(a2, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight svelte-1h0m6en");
         attr_dev(a2, "href", "#contact");
-        add_location(a2, file$f, 76, 8, 2919);
+        toggle_class(a2, "border-b-2",
+        /*section*/
+        ctx[0] === "#contact");
+        add_location(a2, file$f, 79, 8, 3025);
         attr_dev(div3, "class", "y-0 h-full items-center relative mx-auto z-20 flex");
-        add_location(div3, file$f, 70, 4, 2554);
+        add_location(div3, file$f, 72, 4, 2607);
         attr_dev(i, "class", "fa fa-github text-xl");
-        add_location(i, file$f, 83, 8, 3342);
+        add_location(i, file$f, 87, 8, 3503);
         attr_dev(a3, "class", "px-4 mr-5 py-5 text-white hover:bg-white-transLight h-full svelte-1h0m6en");
         attr_dev(a3, "href", blog_github_url);
         attr_dev(a3, "target", "_blank");
-        add_location(a3, file$f, 82, 4, 3222);
+        add_location(a3, file$f, 86, 4, 3383);
         attr_dev(nav, "class", "fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-dark-500");
-        add_location(nav, file$f, 65, 0, 2269);
+        add_location(nav, file$f, 67, 0, 2322);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -13016,7 +13022,26 @@ var app = (function () {
         append_dev(nav, a3);
         append_dev(a3, i);
       },
-      p: noop,
+      p: function update(ctx, _ref) {
+        var _ref2 = _slicedToArray(_ref, 1),
+            dirty = _ref2[0];
+
+        if (dirty &
+        /*section*/
+        1) {
+          toggle_class(a1, "border-b-2",
+          /*section*/
+          ctx[0] === "#posts");
+        }
+
+        if (dirty &
+        /*section*/
+        1) {
+          toggle_class(a2, "border-b-2",
+          /*section*/
+          ctx[0] === "#contact");
+        }
+      },
       i: noop,
       o: noop,
       d: function destroy(detaching) {
@@ -13044,22 +13069,23 @@ var app = (function () {
     var $selected_post;
     validate_store(routes, "routes");
     component_subscribe($$self, routes, function ($$value) {
-      return $$invalidate(0, $routes = $$value);
+      return $$invalidate(1, $routes = $$value);
     });
     validate_store(active_route, "active_route");
     component_subscribe($$self, active_route, function ($$value) {
-      return $$invalidate(1, $active_route = $$value);
+      return $$invalidate(2, $active_route = $$value);
     });
     validate_store(posts, "posts");
     component_subscribe($$self, posts, function ($$value) {
-      return $$invalidate(2, $posts = $$value);
+      return $$invalidate(3, $posts = $$value);
     });
     validate_store(selected_post, "selected_post");
     component_subscribe($$self, selected_post, function ($$value) {
-      return $$invalidate(3, $selected_post = $$value);
+      return $$invalidate(4, $selected_post = $$value);
     });
     var dispatcher = createEventDispatcher();
     var page_has_background_image;
+    var section = "";
     onMount(function () {
       return select_page();
     });
@@ -13082,7 +13108,7 @@ var app = (function () {
     }]);
 
     var select_page = function select_page() {
-      var section = location.hash;
+      $$invalidate(0, section = location.hash);
       set_store_value(active_route, $active_route = $routes.find(function (route) {
         return route.route === section;
       }));
@@ -13143,11 +13169,12 @@ var app = (function () {
       jQuery("section").each(function () {
         if (jQuery(this).offset().top < window.pageYOffset + 10 && jQuery(this).offset().top + jQuery(this).height() > window.pageYOffset + 10) {
           var hash = "#" + jQuery(this).attr("id");
+          $$invalidate(0, section = hash);
 
           if (history.pushState) {
             history.pushState(null, null, hash);
           } else {
-            location.hash = hash;
+            location.hash = section;
           }
         }
       });
@@ -13179,6 +13206,7 @@ var app = (function () {
         github_img_url: github_img_url,
         dispatcher: dispatcher,
         page_has_background_image: page_has_background_image,
+        section: section,
         select_page: select_page,
         update_selected_post: update_selected_post,
         $routes: $routes,
@@ -13190,13 +13218,14 @@ var app = (function () {
 
     $$self.$inject_state = function ($$props) {
       if ("page_has_background_image" in $$props) page_has_background_image = $$props.page_has_background_image;
+      if ("section" in $$props) $$invalidate(0, section = $$props.section);
     };
 
     if ($$props && "$$inject" in $$props) {
       $$self.$inject_state($$props.$$inject);
     }
 
-    return [];
+    return [section];
   }
 
   var Navbar = /*#__PURE__*/function (_SvelteComponentDev) {

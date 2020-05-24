@@ -12,6 +12,7 @@
     const github_img_url = "/static/img/github.png";
     const dispatcher = createEventDispatcher();
     let page_has_background_image;
+    let section = "";
 
     onMount(() => select_page())
     onDestroy(() => window.removeEventListener("hashchange", select_page));
@@ -25,7 +26,7 @@
     ];
 
     const select_page = () => {
-        let section = location.hash;
+        section = location.hash;
         $active_route = $routes.find(route => route.route === section);
         if (section.endsWith("post")) {
             update_selected_post(section);
@@ -52,10 +53,11 @@
                 jQuery(this).height() > window.pageYOffset + 10
             ) {
                 let hash = "#" + jQuery(this).attr("id");
+                section = hash;
                 if(history.pushState) {
                     history.pushState(null, null, hash);
                 } else {
-                    location.hash = hash;
+                    location.hash = section;
                 }
             }
         });
@@ -69,12 +71,14 @@
     </a>
     <div class="flex-grow"></div>
     <div class="y-0 h-full items-center relative mx-auto z-20 flex">
-        <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight" href="#posts">
+        <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight"
+           class:border-b-2="{section === '#posts'}" href="#posts">
             <div class="flex flex-col items-center content-center text-base">
                 Posts
             </div>
         </a>
-        <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight" href="#contact">
+        <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight"
+           class:border-b-2="{section === '#contact'}" href="#contact">
             <div class="flex flex-col items-center content-center text-base">
                 Contact
             </div>
