@@ -7218,7 +7218,7 @@ var app = (function () {
         add_location(h2, file$2, 43, 12, 1414);
         attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
         add_location(h3, file$2, 46, 12, 1530);
-        attr_dev(img, "class", "object-center w-full h-64 mb-8 px-64");
+        attr_dev(img, "class", "object-center w-full h-64 mb-8 md:px-32 lg:px-64");
         if (img.src !== (img_src_value = "static/" +
         /*$selected_post*/
         ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
@@ -7322,7 +7322,7 @@ var app = (function () {
         attr_dev(div, "class", "px-4 md:px-8 lg:px-32");
         add_location(div, file$2, 39, 4, 1326);
         attr_dev(section, "id", "post_detail");
-        attr_dev(section, "class", "container h-screen mt-32 mx-auto");
+        attr_dev(section, "class", "container h-screen mt-24 mx-auto");
         add_location(section, file$2, 38, 0, 1254);
       },
       l: function claim(nodes) {
