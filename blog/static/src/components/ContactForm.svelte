@@ -72,7 +72,7 @@
 
 </script>
 
-<section id="contact" class="py-16 md:py-32 lg:py-64">
+<section id="contact" class="py-24 md:py-32 lg:py-64">
 
     <div class="flex mt-20 mb-12">
         <div class="w-full">

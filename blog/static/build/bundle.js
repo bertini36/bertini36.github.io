@@ -12230,7 +12230,7 @@ var app = (function () {
         attr_dev(div5, "class", "flex flex-wrap px-4 md:px-12 lg:px-64");
         add_location(div5, file$b, 87, 4, 2617);
         attr_dev(section, "id", "contact");
-        attr_dev(section, "class", "py-16 md:py-32 lg:py-64 svelte-1ylt5nz");
+        attr_dev(section, "class", "py-24 md:py-32 lg:py-64 svelte-1ylt5nz");
         add_location(section, file$b, 74, 0, 2241);
       },
       l: function claim(nodes) {
