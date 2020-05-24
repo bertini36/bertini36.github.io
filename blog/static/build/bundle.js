@@ -131,6 +131,13 @@ var app = (function () {
   }
 
   function noop() { }
+  const identity = x => x;
+  function assign(tar, src) {
+      // @ts-ignore
+      for (const k in src)
+          tar[k] = src[k];
+      return tar;
+  }
   function add_location(element, file, line, column, char) {
       element.__svelte_meta = {
           loc: { file, line, column, char }
@@ -166,9 +173,86 @@ var app = (function () {
   function component_subscribe(component, store, callback) {
       component.$$.on_destroy.push(subscribe(store, callback));
   }
+  function create_slot(definition, ctx, $$scope, fn) {
+      if (definition) {
+          const slot_ctx = get_slot_context(definition, ctx, $$scope, fn);
+          return definition[0](slot_ctx);
+      }
+  }
+  function get_slot_context(definition, ctx, $$scope, fn) {
+      return definition[1] && fn
+          ? assign($$scope.ctx.slice(), definition[1](fn(ctx)))
+          : $$scope.ctx;
+  }
+  function get_slot_changes(definition, $$scope, dirty, fn) {
+      if (definition[2] && fn) {
+          const lets = definition[2](fn(dirty));
+          if ($$scope.dirty === undefined) {
+              return lets;
+          }
+          if (typeof lets === 'object') {
+              const merged = [];
+              const len = Math.max($$scope.dirty.length, lets.length);
+              for (let i = 0; i < len; i += 1) {
+                  merged[i] = $$scope.dirty[i] | lets[i];
+              }
+              return merged;
+          }
+          return $$scope.dirty | lets;
+      }
+      return $$scope.dirty;
+  }
+  function exclude_internal_props(props) {
+      const result = {};
+      for (const k in props)
+          if (k[0] !== '$')
+              result[k] = props[k];
+      return result;
+  }
+  function null_to_empty(value) {
+      return value == null ? '' : value;
+  }
   function set_store_value(store, ret, value = ret) {
       store.set(value);
       return ret;
+  }
+  function action_destroyer(action_result) {
+      return action_result && is_function(action_result.destroy) ? action_result.destroy : noop;
+  }
+
+  const is_client = typeof window !== 'undefined';
+  let now = is_client
+      ? () => window.performance.now()
+      : () => Date.now();
+  let raf = is_client ? cb => requestAnimationFrame(cb) : noop;
+
+  const tasks = new Set();
+  function run_tasks(now) {
+      tasks.forEach(task => {
+          if (!task.c(now)) {
+              tasks.delete(task);
+              task.f();
+          }
+      });
+      if (tasks.size !== 0)
+          raf(run_tasks);
+  }
+  /**
+   * Creates a new task that runs on each raf frame
+   * until it returns a falsy value or is aborted
+   */
+  function loop(callback) {
+      let task;
+      if (tasks.size === 0)
+          raf(run_tasks);
+      return {
+          promise: new Promise(fulfill => {
+              tasks.add(task = { c: callback, f: fulfill });
+          }),
+          abort() {
+              tasks.delete(task);
+          }
+      };
   }
 
   function append(target, node) {
@@ -208,6 +292,24 @@ var app = (function () {
       else if (node.getAttribute(attribute) !== value)
           node.setAttribute(attribute, value);
   }
+  function set_attributes(node, attributes) {
+      // @ts-ignore
+      const descriptors = Object.getOwnPropertyDescriptors(node.__proto__);
+      for (const key in attributes) {
+          if (attributes[key] == null) {
+              node.removeAttribute(key);
+          }
+          else if (key === 'style') {
+              node.style.cssText = attributes[key];
+          }
+          else if (key === '__value' || descriptors[key] && descriptors[key].set) {
+              node[key] = attributes[key];
+          }
+          else {
+              attr(node, key, attributes[key]);
+          }
+      }
+  }
   function children(element) {
       return Array.from(element.childNodes);
   }
@@ -218,6 +320,9 @@ var app = (function () {
   }
   function set_style(node, key, value, important) {
       node.style.setProperty(key, value, important ? 'important' : '');
+  }
+  function toggle_class(element, name, toggle) {
+      element.classList[toggle ? 'add' : 'remove'](name);
   }
   function custom_event(type, detail) {
       const e = document.createEvent('CustomEvent');
@@ -250,6 +355,67 @@ var app = (function () {
       }
   }
 
+  const active_docs = new Set();
+  let active = 0;
+  // https://github.com/darkskyapp/string-hash/blob/master/index.js
+  function hash(str) {
+      let hash = 5381;
+      let i = str.length;
+      while (i--)
+          hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
+      return hash >>> 0;
+  }
+  function create_rule(node, a, b, duration, delay, ease, fn, uid = 0) {
+      const step = 16.666 / duration;
+      let keyframes = '{\n';
+      for (let p = 0; p <= 1; p += step) {
+          const t = a + (b - a) * ease(p);
+          keyframes += p * 100 + `%{${fn(t, 1 - t)}}\n`;
+      }
+      const rule = keyframes + `100% {${fn(b, 1 - b)}}\n}`;
+      const name = `__svelte_${hash(rule)}_${uid}`;
+      const doc = node.ownerDocument;
+      active_docs.add(doc);
+      const stylesheet = doc.__svelte_stylesheet || (doc.__svelte_stylesheet = doc.head.appendChild(element('style')).sheet);
+      const current_rules = doc.__svelte_rules || (doc.__svelte_rules = {});
+      if (!current_rules[name]) {
+          current_rules[name] = true;
+          stylesheet.insertRule(`@keyframes ${name} ${rule}`, stylesheet.cssRules.length);
+      }
+      const animation = node.style.animation || '';
+      node.style.animation = `${animation ? `${animation}, ` : ``}${name} ${duration}ms linear ${delay}ms 1 both`;
+      active += 1;
+      return name;
+  }
+  function delete_rule(node, name) {
+      const previous = (node.style.animation || '').split(', ');
+      const next = previous.filter(name
+          ? anim => anim.indexOf(name) < 0 // remove specific animation
+          : anim => anim.indexOf('__svelte') === -1 // remove all Svelte animations
+      );
+      const deleted = previous.length - next.length;
+      if (deleted) {
+          node.style.animation = next.join(', ');
+          active -= deleted;
+          if (!active)
+              clear_rules();
+      }
+  }
+  function clear_rules() {
+      raf(() => {
+          if (active)
+              return;
+          active_docs.forEach(doc => {
+              const stylesheet = doc.__svelte_stylesheet;
+              let i = stylesheet.cssRules.length;
+              while (i--)
+                  stylesheet.deleteRule(i);
+              doc.__svelte_rules = {};
+          });
+          active_docs.clear();
+      });
+  }
+
   let current_component;
   function set_current_component(component) {
       current_component = component;
@@ -279,6 +445,15 @@ var app = (function () {
           }
       };
   }
+  // TODO figure out if we still want to support
+  // shorthand events, or if we want to implement
+  // a real bubbling mechanism
+  function bubble(component, event) {
+      const callbacks = component.$$.callbacks[event.type];
+      if (callbacks) {
+          callbacks.slice().forEach(fn => fn(event));
+      }
+  }
 
   const dirty_components = [];
   const binding_callbacks = [];
@@ -294,6 +469,9 @@ var app = (function () {
   }
   function add_render_callback(fn) {
       render_callbacks.push(fn);
+  }
+  function add_flush_callback(fn) {
+      flush_callbacks.push(fn);
   }
   let flushing = false;
   const seen_callbacks = new Set();
@@ -342,6 +520,20 @@ var app = (function () {
           $$.after_update.forEach(add_render_callback);
       }
   }
+
+  let promise;
+  function wait() {
+      if (!promise) {
+          promise = Promise.resolve();
+          promise.then(() => {
+              promise = null;
+          });
+      }
+      return promise;
+  }
+  function dispatch(node, direction, kind) {
+      node.dispatchEvent(custom_event(`${direction ? 'intro' : 'outro'}${kind}`));
+  }
   const outroing = new Set();
   let outros;
   function group_outros() {
@@ -377,6 +569,154 @@ var app = (function () {
               }
           });
           block.o(local);
+      }
+  }
+  const null_transition = { duration: 0 };
+  function create_bidirectional_transition(node, fn, params, intro) {
+      let config = fn(node, params);
+      let t = intro ? 0 : 1;
+      let running_program = null;
+      let pending_program = null;
+      let animation_name = null;
+      function clear_animation() {
+          if (animation_name)
+              delete_rule(node, animation_name);
+      }
+      function init(program, duration) {
+          const d = program.b - t;
+          duration *= Math.abs(d);
+          return {
+              a: t,
+              b: program.b,
+              d,
+              duration,
+              start: program.start,
+              end: program.start + duration,
+              group: program.group
+          };
+      }
+      function go(b) {
+          const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
+          const program = {
+              start: now() + delay,
+              b
+          };
+          if (!b) {
+              // @ts-ignore todo: improve typings
+              program.group = outros;
+              outros.r += 1;
+          }
+          if (running_program) {
+              pending_program = program;
+          }
+          else {
+              // if this is an intro, and there's a delay, we need to do
+              // an initial tick and/or apply CSS animation immediately
+              if (css) {
+                  clear_animation();
+                  animation_name = create_rule(node, t, b, duration, delay, easing, css);
+              }
+              if (b)
+                  tick(0, 1);
+              running_program = init(program, duration);
+              add_render_callback(() => dispatch(node, b, 'start'));
+              loop(now => {
+                  if (pending_program && now > pending_program.start) {
+                      running_program = init(pending_program, duration);
+                      pending_program = null;
+                      dispatch(node, running_program.b, 'start');
+                      if (css) {
+                          clear_animation();
+                          animation_name = create_rule(node, t, running_program.b, running_program.duration, 0, easing, config.css);
+                      }
+                  }
+                  if (running_program) {
+                      if (now >= running_program.end) {
+                          tick(t = running_program.b, 1 - t);
+                          dispatch(node, running_program.b, 'end');
+                          if (!pending_program) {
+                              // we're done
+                              if (running_program.b) {
+                                  // intro — we can tidy up immediately
+                                  clear_animation();
+                              }
+                              else {
+                                  // outro — needs to be coordinated
+                                  if (!--running_program.group.r)
+                                      run_all(running_program.group.c);
+                              }
+                          }
+                          running_program = null;
+                      }
+                      else if (now >= running_program.start) {
+                          const p = now - running_program.start;
+                          t = running_program.a + running_program.d * easing(p / running_program.duration);
+                          tick(t, 1 - t);
+                      }
+                  }
+                  return !!(running_program || pending_program);
+              });
+          }
+      }
+      return {
+          run(b) {
+              if (is_function(config)) {
+                  wait().then(() => {
+                      // @ts-ignore
+                      config = config();
+                      go(b);
+                  });
+              }
+              else {
+                  go(b);
+              }
+          },
+          end() {
+              clear_animation();
+              running_program = pending_program = null;
+          }
+      };
+  }
+
+  function get_spread_update(levels, updates) {
+      const update = {};
+      const to_null_out = {};
+      const accounted_for = { $$scope: 1 };
+      let i = levels.length;
+      while (i--) {
+          const o = levels[i];
+          const n = updates[i];
+          if (n) {
+              for (const key in o) {
+                  if (!(key in n))
+                      to_null_out[key] = 1;
+              }
+              for (const key in n) {
+                  if (!accounted_for[key]) {
+                      update[key] = n[key];
+                      accounted_for[key] = 1;
+                  }
+              }
+              levels[i] = n;
+          }
+          else {
+              for (const key in o) {
+                  accounted_for[key] = 1;
+              }
+          }
+      }
+      for (const key in to_null_out) {
+          if (!(key in update))
+              update[key] = undefined;
+      }
+      return update;
+  }
+
+  function bind(component, name, callback) {
+      const index = component.$$.props[name];
+      if (index !== undefined) {
+          component.$$.bound[index] = callback;
+          callback(component.$$.ctx[index]);
       }
   }
   function create_component(block) {
@@ -530,6 +870,10 @@ var app = (function () {
           dispatch_dev("SvelteDOMRemoveAttribute", { node, attribute });
       else
           dispatch_dev("SvelteDOMSetAttribute", { node, attribute, value });
+  }
+  function prop_dev(node, property, value) {
+      node[property] = value;
+      dispatch_dev("SvelteDOMSetProperty", { node, property, value });
   }
   function set_data_dev(text, data) {
       data = '' + data;
@@ -4683,7 +5027,7 @@ var app = (function () {
   var posts = writable([]);
   var selected_post = writable(null);
 
-  var bind = function bind(fn, thisArg) {
+  var bind$1 = function bind(fn, thisArg) {
     return function wrap() {
       var args = new Array(arguments.length);
       for (var i = 0; i < args.length; i++) {
@@ -5002,7 +5346,7 @@ var app = (function () {
   function extend(a, b, thisArg) {
     forEach(b, function assignValue(val, key) {
       if (thisArg && typeof val === 'function') {
-        a[key] = bind(val, thisArg);
+        a[key] = bind$1(val, thisArg);
       } else {
         a[key] = val;
       }
@@ -6066,7 +6410,7 @@ var app = (function () {
    */
   function createInstance(defaultConfig) {
     var context = new Axios_1(defaultConfig);
-    var instance = bind(Axios_1.prototype.request, context);
+    var instance = bind$1(Axios_1.prototype.request, context);
 
     // Copy axios.prototype to instance
     utils$1.extend(instance, Axios_1.prototype, context);
@@ -7740,45 +8084,4046 @@ var app = (function () {
 
   var RECAPTCHA_SITE_KEY = window.RECAPTCHA_SITE_KEY;
 
+  const noDepth = ["white", "black", "transparent"];
+
+  function getClass(prop, color, depth, defaultDepth) {
+    if (noDepth.includes(color)) {
+      return `${prop}-${color}`;
+    }
+    return `${prop}-${color}-${depth || defaultDepth} `;
+  }
+
+  function utils$2(color, defaultDepth = 500) {
+    return {
+      bg: depth => getClass("bg", color, depth, defaultDepth),
+      border: depth => getClass("border", color, depth, defaultDepth),
+      txt: depth => getClass("text", color, depth, defaultDepth),
+      caret: depth => getClass("caret", color, depth, defaultDepth)
+    };
+  }
+
+  class ClassBuilder {
+    constructor(classes, defaultClasses) {
+      this.defaults =
+        typeof classes === "function" ? classes(defaultClasses) : classes;
+
+      this.classes = this.defaults;
+    }
+
+    flush() {
+      this.classes = this.defaults;
+
+      return this;
+    }
+
+    extend(...fns) {
+      return this;
+    }
+
+    get() {
+      return this.classes;
+    }
+
+    replace(classes, cond = true) {
+      if (cond && classes) {
+        this.classes = Object.keys(classes).reduce(
+          (acc, from) => acc.replace(new RegExp(from, "g"), classes[from]),
+          this.classes
+        );
+      }
+
+      return this;
+    }
+
+    remove(classes, cond = true) {
+      if (cond && classes) {
+        this.classes = classes
+          .split(" ")
+          .reduce(
+            (acc, cur) => acc.replace(new RegExp(cur, "g"), ""),
+            this.classes
+          );
+      }
+
+      return this;
+    }
+
+    add(className, cond = true, defaultValue) {
+      if (!cond || !className) return this;
+
+      switch (typeof className) {
+        case "string":
+        default:
+          this.classes += ` ${className} `;
+          return this;
+        case "function":
+          this.classes += ` ${className(defaultValue || this.classes)} `;
+          return this;
+      }
+    }
+  }
+
+  function filterProps(reserved, props) {
+
+    return Object.keys(props).reduce(
+      (acc, cur) =>
+        cur.includes("$$") || cur.includes("Class") || reserved.includes(cur)
+          ? acc
+          : { ...acc, [cur]: props[cur] },
+      {}
+    );
+  }
+
+  /* node_modules/smelte/src/components/Icon/Icon.svelte generated by Svelte v3.20.1 */
+
+  const file$5 = "node_modules/smelte/src/components/Icon/Icon.svelte";
+
+  function create_fragment$5(ctx) {
+  	let i;
+  	let i_class_value;
+  	let i_style_value;
+  	let current;
+  	let dispose;
+  	const default_slot_template = /*$$slots*/ ctx[7].default;
+  	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[6], null);
+
+  	const block = {
+  		c: function create() {
+  			i = element("i");
+  			if (default_slot) default_slot.c();
+  			attr_dev(i, "aria-hidden", "true");
+  			attr_dev(i, "class", i_class_value = "material-icons icon text-xl " + /*className*/ ctx[0] + " transition" + " svelte-zzky5a");
+  			attr_dev(i, "style", i_style_value = /*color*/ ctx[5] ? `color: ${/*color*/ ctx[5]}` : "");
+  			toggle_class(i, "reverse", /*reverse*/ ctx[3]);
+  			toggle_class(i, "tip", /*tip*/ ctx[4]);
+  			toggle_class(i, "text-base", /*small*/ ctx[1]);
+  			toggle_class(i, "text-xs", /*xs*/ ctx[2]);
+  			add_location(i, file$5, 20, 0, 324);
+  		},
+  		l: function claim(nodes) {
+  			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+  		},
+  		m: function mount(target, anchor, remount) {
+  			insert_dev(target, i, anchor);
+
+  			if (default_slot) {
+  				default_slot.m(i, null);
+  			}
+
+  			current = true;
+  			if (remount) dispose();
+  			dispose = listen_dev(i, "click", /*click_handler*/ ctx[8], false, false, false);
+  		},
+  		p: function update(ctx, [dirty]) {
+  			if (default_slot) {
+  				if (default_slot.p && dirty & /*$$scope*/ 64) {
+  					default_slot.p(get_slot_context(default_slot_template, ctx, /*$$scope*/ ctx[6], null), get_slot_changes(default_slot_template, /*$$scope*/ ctx[6], dirty, null));
+  				}
+  			}
+
+  			if (!current || dirty & /*className*/ 1 && i_class_value !== (i_class_value = "material-icons icon text-xl " + /*className*/ ctx[0] + " transition" + " svelte-zzky5a")) {
+  				attr_dev(i, "class", i_class_value);
+  			}
+
+  			if (!current || dirty & /*color*/ 32 && i_style_value !== (i_style_value = /*color*/ ctx[5] ? `color: ${/*color*/ ctx[5]}` : "")) {
+  				attr_dev(i, "style", i_style_value);
+  			}
+
+  			if (dirty & /*className, reverse*/ 9) {
+  				toggle_class(i, "reverse", /*reverse*/ ctx[3]);
+  			}
+
+  			if (dirty & /*className, tip*/ 17) {
+  				toggle_class(i, "tip", /*tip*/ ctx[4]);
+  			}
+
+  			if (dirty & /*className, small*/ 3) {
+  				toggle_class(i, "text-base", /*small*/ ctx[1]);
+  			}
+
+  			if (dirty & /*className, xs*/ 5) {
+  				toggle_class(i, "text-xs", /*xs*/ ctx[2]);
+  			}
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(default_slot, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(default_slot, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(i);
+  			if (default_slot) default_slot.d(detaching);
+  			dispose();
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_fragment$5.name,
+  		type: "component",
+  		source: "",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  function instance$5($$self, $$props, $$invalidate) {
+  	let { class: className = "" } = $$props;
+  	let { small = false } = $$props;
+  	let { xs = false } = $$props;
+  	let { reverse = false } = $$props;
+  	let { tip = false } = $$props;
+  	let { color = "default" } = $$props;
+  	const writable_props = ["class", "small", "xs", "reverse", "tip", "color"];
+
+  	Object.keys($$props).forEach(key => {
+  		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Icon> was created with unknown prop '${key}'`);
+  	});
+
+  	let { $$slots = {}, $$scope } = $$props;
+  	validate_slots("Icon", $$slots, ['default']);
+
+  	function click_handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	$$self.$set = $$props => {
+  		if ("class" in $$props) $$invalidate(0, className = $$props.class);
+  		if ("small" in $$props) $$invalidate(1, small = $$props.small);
+  		if ("xs" in $$props) $$invalidate(2, xs = $$props.xs);
+  		if ("reverse" in $$props) $$invalidate(3, reverse = $$props.reverse);
+  		if ("tip" in $$props) $$invalidate(4, tip = $$props.tip);
+  		if ("color" in $$props) $$invalidate(5, color = $$props.color);
+  		if ("$$scope" in $$props) $$invalidate(6, $$scope = $$props.$$scope);
+  	};
+
+  	$$self.$capture_state = () => ({
+  		className,
+  		small,
+  		xs,
+  		reverse,
+  		tip,
+  		color
+  	});
+
+  	$$self.$inject_state = $$props => {
+  		if ("className" in $$props) $$invalidate(0, className = $$props.className);
+  		if ("small" in $$props) $$invalidate(1, small = $$props.small);
+  		if ("xs" in $$props) $$invalidate(2, xs = $$props.xs);
+  		if ("reverse" in $$props) $$invalidate(3, reverse = $$props.reverse);
+  		if ("tip" in $$props) $$invalidate(4, tip = $$props.tip);
+  		if ("color" in $$props) $$invalidate(5, color = $$props.color);
+  	};
+
+  	if ($$props && "$$inject" in $$props) {
+  		$$self.$inject_state($$props.$$inject);
+  	}
+
+  	return [className, small, xs, reverse, tip, color, $$scope, $$slots, click_handler];
+  }
+
+  class Icon extends SvelteComponentDev {
+  	constructor(options) {
+  		super(options);
+
+  		init(this, options, instance$5, create_fragment$5, safe_not_equal, {
+  			class: 0,
+  			small: 1,
+  			xs: 2,
+  			reverse: 3,
+  			tip: 4,
+  			color: 5
+  		});
+
+  		dispatch_dev("SvelteRegisterComponent", {
+  			component: this,
+  			tagName: "Icon",
+  			options,
+  			id: create_fragment$5.name
+  		});
+  	}
+
+  	get class() {
+  		throw new Error("<Icon>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set class(value) {
+  		throw new Error("<Icon>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get small() {
+  		throw new Error("<Icon>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set small(value) {
+  		throw new Error("<Icon>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get xs() {
+  		throw new Error("<Icon>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set xs(value) {
+  		throw new Error("<Icon>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get reverse() {
+  		throw new Error("<Icon>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set reverse(value) {
+  		throw new Error("<Icon>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get tip() {
+  		throw new Error("<Icon>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set tip(value) {
+  		throw new Error("<Icon>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get color() {
+  		throw new Error("<Icon>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set color(value) {
+  		throw new Error("<Icon>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+  }
+
+  /* node_modules/smelte/src/components/TextField/Label.svelte generated by Svelte v3.20.1 */
+  const file$6 = "node_modules/smelte/src/components/TextField/Label.svelte";
+
+  function create_fragment$6(ctx) {
+  	let label;
+  	let current;
+  	const default_slot_template = /*$$slots*/ ctx[22].default;
+  	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[21], null);
+
+  	let label_levels = [
+  		{
+  			class: "" + (/*lClasses*/ ctx[1] + " " + /*className*/ ctx[0])
+  		},
+  		/*props*/ ctx[2]
+  	];
+
+  	let label_data = {};
+
+  	for (let i = 0; i < label_levels.length; i += 1) {
+  		label_data = assign(label_data, label_levels[i]);
+  	}
+
+  	const block = {
+  		c: function create() {
+  			label = element("label");
+  			if (default_slot) default_slot.c();
+  			set_attributes(label, label_data);
+  			toggle_class(label, "svelte-81hn54", true);
+  			add_location(label, file$6, 66, 0, 1501);
+  		},
+  		l: function claim(nodes) {
+  			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, label, anchor);
+
+  			if (default_slot) {
+  				default_slot.m(label, null);
+  			}
+
+  			current = true;
+  		},
+  		p: function update(ctx, [dirty]) {
+  			if (default_slot) {
+  				if (default_slot.p && dirty & /*$$scope*/ 2097152) {
+  					default_slot.p(get_slot_context(default_slot_template, ctx, /*$$scope*/ ctx[21], null), get_slot_changes(default_slot_template, /*$$scope*/ ctx[21], dirty, null));
+  				}
+  			}
+
+  			set_attributes(label, get_spread_update(label_levels, [
+  				dirty & /*lClasses, className*/ 3 && {
+  					class: "" + (/*lClasses*/ ctx[1] + " " + /*className*/ ctx[0])
+  				},
+  				dirty & /*props*/ 4 && /*props*/ ctx[2]
+  			]));
+
+  			toggle_class(label, "svelte-81hn54", true);
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(default_slot, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(default_slot, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(label);
+  			if (default_slot) default_slot.d(detaching);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_fragment$6.name,
+  		type: "component",
+  		source: "",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  function instance$6($$self, $$props, $$invalidate) {
+  	let { class: className = "" } = $$props;
+  	let { focused = false } = $$props;
+  	let { error = false } = $$props;
+  	let { outlined = false } = $$props;
+  	let { labelOnTop = false } = $$props;
+  	let { prepend = false } = $$props;
+  	let { color = "primary" } = $$props;
+  	let { bgColor = "white" } = $$props;
+  	let labelDefault = `pt-4 absolute top-0 label-transition block pb-2 px-4 pointer-events-none cursor-text`;
+  	let { add = "" } = $$props;
+  	let { remove = "" } = $$props;
+  	let { replace = "" } = $$props;
+  	let { labelClasses = labelDefault } = $$props;
+  	const { bg, border, txt, caret } = utils$2(color);
+  	const l = new ClassBuilder(labelClasses, labelDefault);
+  	let lClasses = i => i;
+  	const props = filterProps(["focused", "error", "outlined", "labelOnTop", "prepend", "color"], $$props);
+  	let { $$slots = {}, $$scope } = $$props;
+  	validate_slots("Label", $$slots, ['default']);
+
+  	$$self.$set = $$new_props => {
+  		$$invalidate(20, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
+  		if ("class" in $$new_props) $$invalidate(0, className = $$new_props.class);
+  		if ("focused" in $$new_props) $$invalidate(3, focused = $$new_props.focused);
+  		if ("error" in $$new_props) $$invalidate(4, error = $$new_props.error);
+  		if ("outlined" in $$new_props) $$invalidate(5, outlined = $$new_props.outlined);
+  		if ("labelOnTop" in $$new_props) $$invalidate(6, labelOnTop = $$new_props.labelOnTop);
+  		if ("prepend" in $$new_props) $$invalidate(7, prepend = $$new_props.prepend);
+  		if ("color" in $$new_props) $$invalidate(8, color = $$new_props.color);
+  		if ("bgColor" in $$new_props) $$invalidate(9, bgColor = $$new_props.bgColor);
+  		if ("add" in $$new_props) $$invalidate(10, add = $$new_props.add);
+  		if ("remove" in $$new_props) $$invalidate(11, remove = $$new_props.remove);
+  		if ("replace" in $$new_props) $$invalidate(12, replace = $$new_props.replace);
+  		if ("labelClasses" in $$new_props) $$invalidate(13, labelClasses = $$new_props.labelClasses);
+  		if ("$$scope" in $$new_props) $$invalidate(21, $$scope = $$new_props.$$scope);
+  	};
+
+  	$$self.$capture_state = () => ({
+  		utils: utils$2,
+  		ClassBuilder,
+  		filterProps,
+  		className,
+  		focused,
+  		error,
+  		outlined,
+  		labelOnTop,
+  		prepend,
+  		color,
+  		bgColor,
+  		labelDefault,
+  		add,
+  		remove,
+  		replace,
+  		labelClasses,
+  		bg,
+  		border,
+  		txt,
+  		caret,
+  		l,
+  		lClasses,
+  		props
+  	});
+
+  	$$self.$inject_state = $$new_props => {
+  		$$invalidate(20, $$props = assign(assign({}, $$props), $$new_props));
+  		if ("className" in $$props) $$invalidate(0, className = $$new_props.className);
+  		if ("focused" in $$props) $$invalidate(3, focused = $$new_props.focused);
+  		if ("error" in $$props) $$invalidate(4, error = $$new_props.error);
+  		if ("outlined" in $$props) $$invalidate(5, outlined = $$new_props.outlined);
+  		if ("labelOnTop" in $$props) $$invalidate(6, labelOnTop = $$new_props.labelOnTop);
+  		if ("prepend" in $$props) $$invalidate(7, prepend = $$new_props.prepend);
+  		if ("color" in $$props) $$invalidate(8, color = $$new_props.color);
+  		if ("bgColor" in $$props) $$invalidate(9, bgColor = $$new_props.bgColor);
+  		if ("labelDefault" in $$props) labelDefault = $$new_props.labelDefault;
+  		if ("add" in $$props) $$invalidate(10, add = $$new_props.add);
+  		if ("remove" in $$props) $$invalidate(11, remove = $$new_props.remove);
+  		if ("replace" in $$props) $$invalidate(12, replace = $$new_props.replace);
+  		if ("labelClasses" in $$props) $$invalidate(13, labelClasses = $$new_props.labelClasses);
+  		if ("lClasses" in $$props) $$invalidate(1, lClasses = $$new_props.lClasses);
+  	};
+
+  	if ($$props && "$$inject" in $$props) {
+  		$$self.$inject_state($$props.$$inject);
+  	}
+
+  	$$self.$$.update = () => {
+  		if ($$self.$$.dirty & /*focused, error, labelOnTop, outlined, bgColor, prepend, add, remove, replace*/ 7928) {
+  			 $$invalidate(1, lClasses = l.flush().add(txt(), focused && !error).add("text-error-500", focused && error).add("label-top text-xs", labelOnTop).remove("pt-4 pb-2 px-4 px-1 pt-0", labelOnTop && outlined).add(`ml-3 p-1 pt-0 mt-0 bg-${bgColor} dark:bg-dark-500`, labelOnTop && outlined).remove("px-4", prepend).add("pr-4 pl-10", prepend).add(add).remove(remove).replace(replace).get());
+  		}
+  	};
+
+  	$$props = exclude_internal_props($$props);
+
+  	return [
+  		className,
+  		lClasses,
+  		props,
+  		focused,
+  		error,
+  		outlined,
+  		labelOnTop,
+  		prepend,
+  		color,
+  		bgColor,
+  		add,
+  		remove,
+  		replace,
+  		labelClasses,
+  		labelDefault,
+  		bg,
+  		border,
+  		txt,
+  		caret,
+  		l,
+  		$$props,
+  		$$scope,
+  		$$slots
+  	];
+  }
+
+  class Label extends SvelteComponentDev {
+  	constructor(options) {
+  		super(options);
+
+  		init(this, options, instance$6, create_fragment$6, safe_not_equal, {
+  			class: 0,
+  			focused: 3,
+  			error: 4,
+  			outlined: 5,
+  			labelOnTop: 6,
+  			prepend: 7,
+  			color: 8,
+  			bgColor: 9,
+  			add: 10,
+  			remove: 11,
+  			replace: 12,
+  			labelClasses: 13
+  		});
+
+  		dispatch_dev("SvelteRegisterComponent", {
+  			component: this,
+  			tagName: "Label",
+  			options,
+  			id: create_fragment$6.name
+  		});
+  	}
+
+  	get class() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set class(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get focused() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set focused(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get error() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set error(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get outlined() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set outlined(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get labelOnTop() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set labelOnTop(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get prepend() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set prepend(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get color() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set color(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get bgColor() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set bgColor(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get add() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set add(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get remove() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set remove(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get replace() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set replace(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get labelClasses() {
+  		throw new Error("<Label>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set labelClasses(value) {
+  		throw new Error("<Label>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+  }
+
+  function cubicOut(t) {
+      const f = t - 1.0;
+      return f * f * f + 1.0;
+  }
+  function quadOut(t) {
+      return -t * (t - 2.0);
+  }
+
+  function fly(node, { delay = 0, duration = 400, easing = cubicOut, x = 0, y = 0, opacity = 0 }) {
+      const style = getComputedStyle(node);
+      const target_opacity = +style.opacity;
+      const transform = style.transform === 'none' ? '' : style.transform;
+      const od = target_opacity * (1 - opacity);
+      return {
+          delay,
+          duration,
+          easing,
+          css: (t, u) => `
+			transform: ${transform} translate(${(1 - t) * x}px, ${(1 - t) * y}px);
+			opacity: ${target_opacity - (od * u)}`
+      };
+  }
+
+  /* node_modules/smelte/src/components/TextField/Hint.svelte generated by Svelte v3.20.1 */
+  const file$7 = "node_modules/smelte/src/components/TextField/Hint.svelte";
+
+  function create_fragment$7(ctx) {
+  	let div;
+  	let t0;
+  	let t1;
+  	let t2;
+  	let div_transition;
+  	let current;
+
+  	const block = {
+  		c: function create() {
+  			div = element("div");
+  			t0 = text(/*hint*/ ctx[1]);
+  			t1 = space();
+  			t2 = text(/*error*/ ctx[0]);
+  			attr_dev(div, "class", /*classes*/ ctx[3]);
+  			add_location(div, file$7, 36, 0, 813);
+  		},
+  		l: function claim(nodes) {
+  			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, div, anchor);
+  			append_dev(div, t0);
+  			append_dev(div, t1);
+  			append_dev(div, t2);
+  			current = true;
+  		},
+  		p: function update(ctx, [dirty]) {
+  			if (!current || dirty & /*hint*/ 2) set_data_dev(t0, /*hint*/ ctx[1]);
+  			if (!current || dirty & /*error*/ 1) set_data_dev(t2, /*error*/ ctx[0]);
+
+  			if (!current || dirty & /*classes*/ 8) {
+  				attr_dev(div, "class", /*classes*/ ctx[3]);
+  			}
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+
+  			add_render_callback(() => {
+  				if (!div_transition) div_transition = create_bidirectional_transition(div, fly, /*transitionProps*/ ctx[2], true);
+  				div_transition.run(1);
+  			});
+
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			if (!div_transition) div_transition = create_bidirectional_transition(div, fly, /*transitionProps*/ ctx[2], false);
+  			div_transition.run(0);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(div);
+  			if (detaching && div_transition) div_transition.end();
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_fragment$7.name,
+  		type: "component",
+  		source: "",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  function instance$7($$self, $$props, $$invalidate) {
+  	let { class: className = "text-xs py-1 pl-4 absolute bottom-1 left-0" } = $$props;
+  	let { error = false } = $$props;
+  	let { hint = "" } = $$props;
+  	let { add = "" } = $$props;
+  	let { remove = "" } = $$props;
+  	let { replace = "" } = $$props;
+  	let { transitionProps = { y: -10, duration: 100, easing: quadOut } } = $$props;
+  	const l = new ClassBuilder(className, className);
+  	let Classes = i => i;
+  	const props = filterProps(["error", "hint"], $$props);
+  	let { $$slots = {}, $$scope } = $$props;
+  	validate_slots("Hint", $$slots, []);
+
+  	$$self.$set = $$new_props => {
+  		$$invalidate(11, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
+  		if ("class" in $$new_props) $$invalidate(4, className = $$new_props.class);
+  		if ("error" in $$new_props) $$invalidate(0, error = $$new_props.error);
+  		if ("hint" in $$new_props) $$invalidate(1, hint = $$new_props.hint);
+  		if ("add" in $$new_props) $$invalidate(5, add = $$new_props.add);
+  		if ("remove" in $$new_props) $$invalidate(6, remove = $$new_props.remove);
+  		if ("replace" in $$new_props) $$invalidate(7, replace = $$new_props.replace);
+  		if ("transitionProps" in $$new_props) $$invalidate(2, transitionProps = $$new_props.transitionProps);
+  	};
+
+  	$$self.$capture_state = () => ({
+  		utils: utils$2,
+  		ClassBuilder,
+  		filterProps,
+  		fly,
+  		quadOut,
+  		className,
+  		error,
+  		hint,
+  		add,
+  		remove,
+  		replace,
+  		transitionProps,
+  		l,
+  		Classes,
+  		props,
+  		classes
+  	});
+
+  	$$self.$inject_state = $$new_props => {
+  		$$invalidate(11, $$props = assign(assign({}, $$props), $$new_props));
+  		if ("className" in $$props) $$invalidate(4, className = $$new_props.className);
+  		if ("error" in $$props) $$invalidate(0, error = $$new_props.error);
+  		if ("hint" in $$props) $$invalidate(1, hint = $$new_props.hint);
+  		if ("add" in $$props) $$invalidate(5, add = $$new_props.add);
+  		if ("remove" in $$props) $$invalidate(6, remove = $$new_props.remove);
+  		if ("replace" in $$props) $$invalidate(7, replace = $$new_props.replace);
+  		if ("transitionProps" in $$props) $$invalidate(2, transitionProps = $$new_props.transitionProps);
+  		if ("Classes" in $$props) Classes = $$new_props.Classes;
+  		if ("classes" in $$props) $$invalidate(3, classes = $$new_props.classes);
+  	};
+
+  	let classes;
+
+  	if ($$props && "$$inject" in $$props) {
+  		$$self.$inject_state($$props.$$inject);
+  	}
+
+  	$$self.$$.update = () => {
+  		if ($$self.$$.dirty & /*error, hint, add, remove, replace*/ 227) {
+  			 $$invalidate(3, classes = l.flush().add("text-error-500", error).add("text-gray-600", hint).add(add).remove(remove).replace(replace).get());
+  		}
+  	};
+
+  	$$props = exclude_internal_props($$props);
+  	return [error, hint, transitionProps, classes, className, add, remove, replace];
+  }
+
+  class Hint extends SvelteComponentDev {
+  	constructor(options) {
+  		super(options);
+
+  		init(this, options, instance$7, create_fragment$7, safe_not_equal, {
+  			class: 4,
+  			error: 0,
+  			hint: 1,
+  			add: 5,
+  			remove: 6,
+  			replace: 7,
+  			transitionProps: 2
+  		});
+
+  		dispatch_dev("SvelteRegisterComponent", {
+  			component: this,
+  			tagName: "Hint",
+  			options,
+  			id: create_fragment$7.name
+  		});
+  	}
+
+  	get class() {
+  		throw new Error("<Hint>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set class(value) {
+  		throw new Error("<Hint>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get error() {
+  		throw new Error("<Hint>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set error(value) {
+  		throw new Error("<Hint>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get hint() {
+  		throw new Error("<Hint>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set hint(value) {
+  		throw new Error("<Hint>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get add() {
+  		throw new Error("<Hint>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set add(value) {
+  		throw new Error("<Hint>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get remove() {
+  		throw new Error("<Hint>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set remove(value) {
+  		throw new Error("<Hint>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get replace() {
+  		throw new Error("<Hint>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set replace(value) {
+  		throw new Error("<Hint>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get transitionProps() {
+  		throw new Error("<Hint>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set transitionProps(value) {
+  		throw new Error("<Hint>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+  }
+
+  /* node_modules/smelte/src/components/TextField/Underline.svelte generated by Svelte v3.20.1 */
+  const file$8 = "node_modules/smelte/src/components/TextField/Underline.svelte";
+
+  function create_fragment$8(ctx) {
+  	let div1;
+  	let div0;
+  	let div0_class_value;
+  	let div1_class_value;
+
+  	const block = {
+  		c: function create() {
+  			div1 = element("div");
+  			div0 = element("div");
+  			attr_dev(div0, "class", div0_class_value = "" + (null_to_empty(/*classes*/ ctx[3]) + " svelte-xd9zs6"));
+  			set_style(div0, "height", "2px");
+  			set_style(div0, "transition", "width .2s ease");
+  			add_location(div0, file$8, 61, 2, 1180);
+  			attr_dev(div1, "class", div1_class_value = "line absolute bottom-0 left-0 w-full bg-gray-600 " + /*className*/ ctx[0] + " svelte-xd9zs6");
+  			toggle_class(div1, "hidden", /*noUnderline*/ ctx[1] || /*outlined*/ ctx[2]);
+  			add_location(div1, file$8, 58, 0, 1060);
+  		},
+  		l: function claim(nodes) {
+  			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, div1, anchor);
+  			append_dev(div1, div0);
+  		},
+  		p: function update(ctx, [dirty]) {
+  			if (dirty & /*classes*/ 8 && div0_class_value !== (div0_class_value = "" + (null_to_empty(/*classes*/ ctx[3]) + " svelte-xd9zs6"))) {
+  				attr_dev(div0, "class", div0_class_value);
+  			}
+
+  			if (dirty & /*className*/ 1 && div1_class_value !== (div1_class_value = "line absolute bottom-0 left-0 w-full bg-gray-600 " + /*className*/ ctx[0] + " svelte-xd9zs6")) {
+  				attr_dev(div1, "class", div1_class_value);
+  			}
+
+  			if (dirty & /*className, noUnderline, outlined*/ 7) {
+  				toggle_class(div1, "hidden", /*noUnderline*/ ctx[1] || /*outlined*/ ctx[2]);
+  			}
+  		},
+  		i: noop,
+  		o: noop,
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(div1);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_fragment$8.name,
+  		type: "component",
+  		source: "",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  function instance$8($$self, $$props, $$invalidate) {
+  	let { class: className = "" } = $$props;
+  	let { noUnderline = false } = $$props;
+  	let { outlined = false } = $$props;
+  	let { focused = false } = $$props;
+  	let { error = false } = $$props;
+  	let { color = "primary" } = $$props;
+  	let defaultClasses = `mx-auto w-0`;
+  	let { add = "" } = $$props;
+  	let { remove = "" } = $$props;
+  	let { replace = "" } = $$props;
+  	let { lineClasses = defaultClasses } = $$props;
+  	const { bg, border, txt, caret } = utils$2(color);
+  	const l = new ClassBuilder(lineClasses, defaultClasses);
+  	let Classes = i => i;
+  	const props = filterProps(["focused", "error", "outlined", "labelOnTop", "prepend", "bgcolor", "color"], $$props);
+  	let { $$slots = {}, $$scope } = $$props;
+  	validate_slots("Underline", $$slots, []);
+
+  	$$self.$set = $$new_props => {
+  		$$invalidate(19, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
+  		if ("class" in $$new_props) $$invalidate(0, className = $$new_props.class);
+  		if ("noUnderline" in $$new_props) $$invalidate(1, noUnderline = $$new_props.noUnderline);
+  		if ("outlined" in $$new_props) $$invalidate(2, outlined = $$new_props.outlined);
+  		if ("focused" in $$new_props) $$invalidate(4, focused = $$new_props.focused);
+  		if ("error" in $$new_props) $$invalidate(5, error = $$new_props.error);
+  		if ("color" in $$new_props) $$invalidate(6, color = $$new_props.color);
+  		if ("add" in $$new_props) $$invalidate(7, add = $$new_props.add);
+  		if ("remove" in $$new_props) $$invalidate(8, remove = $$new_props.remove);
+  		if ("replace" in $$new_props) $$invalidate(9, replace = $$new_props.replace);
+  		if ("lineClasses" in $$new_props) $$invalidate(10, lineClasses = $$new_props.lineClasses);
+  	};
+
+  	$$self.$capture_state = () => ({
+  		utils: utils$2,
+  		ClassBuilder,
+  		filterProps,
+  		className,
+  		noUnderline,
+  		outlined,
+  		focused,
+  		error,
+  		color,
+  		defaultClasses,
+  		add,
+  		remove,
+  		replace,
+  		lineClasses,
+  		bg,
+  		border,
+  		txt,
+  		caret,
+  		l,
+  		Classes,
+  		props,
+  		classes
+  	});
+
+  	$$self.$inject_state = $$new_props => {
+  		$$invalidate(19, $$props = assign(assign({}, $$props), $$new_props));
+  		if ("className" in $$props) $$invalidate(0, className = $$new_props.className);
+  		if ("noUnderline" in $$props) $$invalidate(1, noUnderline = $$new_props.noUnderline);
+  		if ("outlined" in $$props) $$invalidate(2, outlined = $$new_props.outlined);
+  		if ("focused" in $$props) $$invalidate(4, focused = $$new_props.focused);
+  		if ("error" in $$props) $$invalidate(5, error = $$new_props.error);
+  		if ("color" in $$props) $$invalidate(6, color = $$new_props.color);
+  		if ("defaultClasses" in $$props) defaultClasses = $$new_props.defaultClasses;
+  		if ("add" in $$props) $$invalidate(7, add = $$new_props.add);
+  		if ("remove" in $$props) $$invalidate(8, remove = $$new_props.remove);
+  		if ("replace" in $$props) $$invalidate(9, replace = $$new_props.replace);
+  		if ("lineClasses" in $$props) $$invalidate(10, lineClasses = $$new_props.lineClasses);
+  		if ("Classes" in $$props) Classes = $$new_props.Classes;
+  		if ("classes" in $$props) $$invalidate(3, classes = $$new_props.classes);
+  	};
+
+  	let classes;
+
+  	if ($$props && "$$inject" in $$props) {
+  		$$self.$inject_state($$props.$$inject);
+  	}
+
+  	$$self.$$.update = () => {
+  		if ($$self.$$.dirty & /*focused, error, add, remove, replace*/ 944) {
+  			 $$invalidate(3, classes = l.flush().add(txt(), focused && !error).add("bg-error-500", error).add("w-full", focused || error).add(bg(), focused).add(add).remove(remove).replace(replace).get());
+  		}
+  	};
+
+  	$$props = exclude_internal_props($$props);
+
+  	return [
+  		className,
+  		noUnderline,
+  		outlined,
+  		classes,
+  		focused,
+  		error,
+  		color,
+  		add,
+  		remove,
+  		replace,
+  		lineClasses
+  	];
+  }
+
+  class Underline extends SvelteComponentDev {
+  	constructor(options) {
+  		super(options);
+
+  		init(this, options, instance$8, create_fragment$8, safe_not_equal, {
+  			class: 0,
+  			noUnderline: 1,
+  			outlined: 2,
+  			focused: 4,
+  			error: 5,
+  			color: 6,
+  			add: 7,
+  			remove: 8,
+  			replace: 9,
+  			lineClasses: 10
+  		});
+
+  		dispatch_dev("SvelteRegisterComponent", {
+  			component: this,
+  			tagName: "Underline",
+  			options,
+  			id: create_fragment$8.name
+  		});
+  	}
+
+  	get class() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set class(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get noUnderline() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set noUnderline(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get outlined() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set outlined(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get focused() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set focused(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get error() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set error(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get color() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set color(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get add() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set add(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get remove() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set remove(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get replace() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set replace(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get lineClasses() {
+  		throw new Error("<Underline>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set lineClasses(value) {
+  		throw new Error("<Underline>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+  }
+
+  /* node_modules/smelte/src/components/TextField/TextField.svelte generated by Svelte v3.20.1 */
+  const file$9 = "node_modules/smelte/src/components/TextField/TextField.svelte";
+  const get_prepend_slot_changes = dirty => ({});
+  const get_prepend_slot_context = ctx => ({});
+  const get_append_slot_changes = dirty => ({});
+  const get_append_slot_context = ctx => ({});
+  const get_label_slot_changes = dirty => ({});
+  const get_label_slot_context = ctx => ({});
+
+  // (137:4) <Label       {labelOnTop}       {focused}       {error}       {outlined}       {prepend}       {color}       {bgColor}     >
+  function create_default_slot_2(ctx) {
+  	let t;
+
+  	const block = {
+  		c: function create() {
+  			t = text(/*label*/ ctx[3]);
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, t, anchor);
+  		},
+  		p: function update(ctx, dirty) {
+  			if (dirty[0] & /*label*/ 8) set_data_dev(t, /*label*/ ctx[3]);
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(t);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_default_slot_2.name,
+  		type: "slot",
+  		source: "(137:4) <Label       {labelOnTop}       {focused}       {error}       {outlined}       {prepend}       {color}       {bgColor}     >",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (136:21)      
+  function fallback_block_2(ctx) {
+  	let current;
+
+  	const label_1 = new Label({
+  			props: {
+  				labelOnTop: /*labelOnTop*/ ctx[24],
+  				focused: /*focused*/ ctx[1],
+  				error: /*error*/ ctx[6],
+  				outlined: /*outlined*/ ctx[2],
+  				prepend: /*prepend*/ ctx[8],
+  				color: /*color*/ ctx[16],
+  				bgColor: /*bgColor*/ ctx[17],
+  				$$slots: { default: [create_default_slot_2] },
+  				$$scope: { ctx }
+  			},
+  			$$inline: true
+  		});
+
+  	const block = {
+  		c: function create() {
+  			create_component(label_1.$$.fragment);
+  		},
+  		m: function mount(target, anchor) {
+  			mount_component(label_1, target, anchor);
+  			current = true;
+  		},
+  		p: function update(ctx, dirty) {
+  			const label_1_changes = {};
+  			if (dirty[0] & /*labelOnTop*/ 16777216) label_1_changes.labelOnTop = /*labelOnTop*/ ctx[24];
+  			if (dirty[0] & /*focused*/ 2) label_1_changes.focused = /*focused*/ ctx[1];
+  			if (dirty[0] & /*error*/ 64) label_1_changes.error = /*error*/ ctx[6];
+  			if (dirty[0] & /*outlined*/ 4) label_1_changes.outlined = /*outlined*/ ctx[2];
+  			if (dirty[0] & /*prepend*/ 256) label_1_changes.prepend = /*prepend*/ ctx[8];
+  			if (dirty[0] & /*color*/ 65536) label_1_changes.color = /*color*/ ctx[16];
+  			if (dirty[0] & /*bgColor*/ 131072) label_1_changes.bgColor = /*bgColor*/ ctx[17];
+
+  			if (dirty[0] & /*label*/ 8 | dirty[2] & /*$$scope*/ 256) {
+  				label_1_changes.$$scope = { dirty, ctx };
+  			}
+
+  			label_1.$set(label_1_changes);
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(label_1.$$.fragment, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(label_1.$$.fragment, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			destroy_component(label_1, detaching);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: fallback_block_2.name,
+  		type: "fallback",
+  		source: "(136:21)      ",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (179:36) 
+  function create_if_block_5(ctx) {
+  	let input;
+  	let dispose;
+
+  	const block = {
+  		c: function create() {
+  			input = element("input");
+  			input.readOnly = true;
+  			attr_dev(input, "class", /*iClasses*/ ctx[25]);
+  			input.disabled = /*disabled*/ ctx[19];
+  			input.value = /*value*/ ctx[0];
+  			add_location(input, file$9, 179, 4, 4665);
+  		},
+  		m: function mount(target, anchor, remount) {
+  			insert_dev(target, input, anchor);
+  			if (remount) run_all(dispose);
+
+  			dispose = [
+  				listen_dev(input, "change", /*change_handler_2*/ ctx[61], false, false, false),
+  				listen_dev(input, "input", /*input_handler_2*/ ctx[62], false, false, false),
+  				listen_dev(input, "click", /*click_handler_2*/ ctx[63], false, false, false),
+  				listen_dev(input, "blur", /*blur_handler_2*/ ctx[64], false, false, false),
+  				listen_dev(input, "focus", /*focus_handler_2*/ ctx[65], false, false, false)
+  			];
+  		},
+  		p: function update(ctx, dirty) {
+  			if (dirty[0] & /*iClasses*/ 33554432) {
+  				attr_dev(input, "class", /*iClasses*/ ctx[25]);
+  			}
+
+  			if (dirty[0] & /*disabled*/ 524288) {
+  				prop_dev(input, "disabled", /*disabled*/ ctx[19]);
+  			}
+
+  			if (dirty[0] & /*value*/ 1 && input.value !== /*value*/ ctx[0]) {
+  				prop_dev(input, "value", /*value*/ ctx[0]);
+  			}
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(input);
+  			run_all(dispose);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_if_block_5.name,
+  		type: "if",
+  		source: "(179:36) ",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (163:32) 
+  function create_if_block_4(ctx) {
+  	let textarea_1;
+  	let dispose;
+
+  	let textarea_1_levels = [
+  		{ rows: /*rows*/ ctx[10] },
+  		{ "aria-label": /*label*/ ctx[3] },
+  		{ class: /*iClasses*/ ctx[25] },
+  		{ disabled: /*disabled*/ ctx[19] },
+  		/*props*/ ctx[28],
+  		{
+  			placeholder: !/*value*/ ctx[0] ? /*placeholder*/ ctx[4] : ""
+  		}
+  	];
+
+  	let textarea_1_data = {};
+
+  	for (let i = 0; i < textarea_1_levels.length; i += 1) {
+  		textarea_1_data = assign(textarea_1_data, textarea_1_levels[i]);
+  	}
+
+  	const block = {
+  		c: function create() {
+  			textarea_1 = element("textarea");
+  			set_attributes(textarea_1, textarea_1_data);
+  			add_location(textarea_1, file$9, 163, 4, 4317);
+  		},
+  		m: function mount(target, anchor, remount) {
+  			insert_dev(target, textarea_1, anchor);
+  			set_input_value(textarea_1, /*value*/ ctx[0]);
+  			if (remount) run_all(dispose);
+
+  			dispose = [
+  				listen_dev(textarea_1, "change", /*change_handler_1*/ ctx[56], false, false, false),
+  				listen_dev(textarea_1, "input", /*input_handler_1*/ ctx[57], false, false, false),
+  				listen_dev(textarea_1, "click", /*click_handler_1*/ ctx[58], false, false, false),
+  				listen_dev(textarea_1, "focus", /*focus_handler_1*/ ctx[59], false, false, false),
+  				listen_dev(textarea_1, "blur", /*blur_handler_1*/ ctx[60], false, false, false),
+  				listen_dev(textarea_1, "input", /*textarea_1_input_handler*/ ctx[67]),
+  				listen_dev(textarea_1, "focus", /*toggleFocused*/ ctx[27], false, false, false),
+  				listen_dev(textarea_1, "blur", /*toggleFocused*/ ctx[27], false, false, false)
+  			];
+  		},
+  		p: function update(ctx, dirty) {
+  			set_attributes(textarea_1, get_spread_update(textarea_1_levels, [
+  				dirty[0] & /*rows*/ 1024 && { rows: /*rows*/ ctx[10] },
+  				dirty[0] & /*label*/ 8 && { "aria-label": /*label*/ ctx[3] },
+  				dirty[0] & /*iClasses*/ 33554432 && { class: /*iClasses*/ ctx[25] },
+  				dirty[0] & /*disabled*/ 524288 && { disabled: /*disabled*/ ctx[19] },
+  				dirty[0] & /*props*/ 268435456 && /*props*/ ctx[28],
+  				dirty[0] & /*value, placeholder*/ 17 && {
+  					placeholder: !/*value*/ ctx[0] ? /*placeholder*/ ctx[4] : ""
+  				}
+  			]));
+
+  			if (dirty[0] & /*value*/ 1) {
+  				set_input_value(textarea_1, /*value*/ ctx[0]);
+  			}
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(textarea_1);
+  			run_all(dispose);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_if_block_4.name,
+  		type: "if",
+  		source: "(163:32) ",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (148:2) {#if (!textarea && !select) || autocomplete}
+  function create_if_block_3(ctx) {
+  	let input;
+  	let dispose;
+
+  	let input_levels = [
+  		{ "aria-label": /*label*/ ctx[3] },
+  		{ class: /*iClasses*/ ctx[25] },
+  		{ disabled: /*disabled*/ ctx[19] },
+  		/*props*/ ctx[28],
+  		{
+  			placeholder: !/*value*/ ctx[0] ? /*placeholder*/ ctx[4] : ""
+  		}
+  	];
+
+  	let input_data = {};
+
+  	for (let i = 0; i < input_levels.length; i += 1) {
+  		input_data = assign(input_data, input_levels[i]);
+  	}
+
+  	const block = {
+  		c: function create() {
+  			input = element("input");
+  			set_attributes(input, input_data);
+  			add_location(input, file$9, 148, 4, 3989);
+  		},
+  		m: function mount(target, anchor, remount) {
+  			insert_dev(target, input, anchor);
+  			set_input_value(input, /*value*/ ctx[0]);
+  			if (remount) run_all(dispose);
+
+  			dispose = [
+  				listen_dev(input, "focus", /*toggleFocused*/ ctx[27], false, false, false),
+  				listen_dev(input, "blur", /*toggleFocused*/ ctx[27], false, false, false),
+  				listen_dev(input, "blur", /*blur_handler*/ ctx[51], false, false, false),
+  				listen_dev(input, "input", /*input_input_handler*/ ctx[66]),
+  				listen_dev(input, "change", /*change_handler*/ ctx[52], false, false, false),
+  				listen_dev(input, "input", /*input_handler*/ ctx[53], false, false, false),
+  				listen_dev(input, "click", /*click_handler*/ ctx[54], false, false, false),
+  				listen_dev(input, "focus", /*focus_handler*/ ctx[55], false, false, false)
+  			];
+  		},
+  		p: function update(ctx, dirty) {
+  			set_attributes(input, get_spread_update(input_levels, [
+  				dirty[0] & /*label*/ 8 && { "aria-label": /*label*/ ctx[3] },
+  				dirty[0] & /*iClasses*/ 33554432 && { class: /*iClasses*/ ctx[25] },
+  				dirty[0] & /*disabled*/ 524288 && { disabled: /*disabled*/ ctx[19] },
+  				dirty[0] & /*props*/ 268435456 && /*props*/ ctx[28],
+  				dirty[0] & /*value, placeholder*/ 17 && {
+  					placeholder: !/*value*/ ctx[0] ? /*placeholder*/ ctx[4] : ""
+  				}
+  			]));
+
+  			if (dirty[0] & /*value*/ 1 && input.value !== /*value*/ ctx[0]) {
+  				set_input_value(input, /*value*/ ctx[0]);
+  			}
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(input);
+  			run_all(dispose);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_if_block_3.name,
+  		type: "if",
+  		source: "(148:2) {#if (!textarea && !select) || autocomplete}",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (192:2) {#if append}
+  function create_if_block_2(ctx) {
+  	let div;
+  	let current;
+  	let dispose;
+  	const append_slot_template = /*$$slots*/ ctx[50].append;
+  	const append_slot = create_slot(append_slot_template, ctx, /*$$scope*/ ctx[70], get_append_slot_context);
+  	const append_slot_or_fallback = append_slot || fallback_block_1(ctx);
+
+  	const block = {
+  		c: function create() {
+  			div = element("div");
+  			if (append_slot_or_fallback) append_slot_or_fallback.c();
+  			attr_dev(div, "class", /*aClasses*/ ctx[21]);
+  			add_location(div, file$9, 192, 4, 4849);
+  		},
+  		m: function mount(target, anchor, remount) {
+  			insert_dev(target, div, anchor);
+
+  			if (append_slot_or_fallback) {
+  				append_slot_or_fallback.m(div, null);
+  			}
+
+  			current = true;
+  			if (remount) dispose();
+  			dispose = listen_dev(div, "click", /*click_handler_3*/ ctx[68], false, false, false);
+  		},
+  		p: function update(ctx, dirty) {
+  			if (append_slot) {
+  				if (append_slot.p && dirty[2] & /*$$scope*/ 256) {
+  					append_slot.p(get_slot_context(append_slot_template, ctx, /*$$scope*/ ctx[70], get_append_slot_context), get_slot_changes(append_slot_template, /*$$scope*/ ctx[70], dirty, get_append_slot_changes));
+  				}
+  			} else {
+  				if (append_slot_or_fallback && append_slot_or_fallback.p && dirty[0] & /*appendReverse, focused, iconClass, append*/ 278658) {
+  					append_slot_or_fallback.p(ctx, dirty);
+  				}
+  			}
+
+  			if (!current || dirty[0] & /*aClasses*/ 2097152) {
+  				attr_dev(div, "class", /*aClasses*/ ctx[21]);
+  			}
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(append_slot_or_fallback, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(append_slot_or_fallback, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(div);
+  			if (append_slot_or_fallback) append_slot_or_fallback.d(detaching);
+  			dispose();
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_if_block_2.name,
+  		type: "if",
+  		source: "(192:2) {#if append}",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (198:8) <Icon           reverse={appendReverse}           class="{focused ? txt() : ""} {iconClass}"         >
+  function create_default_slot_1(ctx) {
+  	let t;
+
+  	const block = {
+  		c: function create() {
+  			t = text(/*append*/ ctx[7]);
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, t, anchor);
+  		},
+  		p: function update(ctx, dirty) {
+  			if (dirty[0] & /*append*/ 128) set_data_dev(t, /*append*/ ctx[7]);
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(t);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_default_slot_1.name,
+  		type: "slot",
+  		source: "(198:8) <Icon           reverse={appendReverse}           class=\\\"{focused ? txt() : \\\"\\\"} {iconClass}\\\"         >",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (197:26)          
+  function fallback_block_1(ctx) {
+  	let current;
+
+  	const icon = new Icon({
+  			props: {
+  				reverse: /*appendReverse*/ ctx[14],
+  				class: "" + ((/*focused*/ ctx[1] ? /*txt*/ ctx[26]() : "") + " " + /*iconClass*/ ctx[18]),
+  				$$slots: { default: [create_default_slot_1] },
+  				$$scope: { ctx }
+  			},
+  			$$inline: true
+  		});
+
+  	const block = {
+  		c: function create() {
+  			create_component(icon.$$.fragment);
+  		},
+  		m: function mount(target, anchor) {
+  			mount_component(icon, target, anchor);
+  			current = true;
+  		},
+  		p: function update(ctx, dirty) {
+  			const icon_changes = {};
+  			if (dirty[0] & /*appendReverse*/ 16384) icon_changes.reverse = /*appendReverse*/ ctx[14];
+  			if (dirty[0] & /*focused, iconClass*/ 262146) icon_changes.class = "" + ((/*focused*/ ctx[1] ? /*txt*/ ctx[26]() : "") + " " + /*iconClass*/ ctx[18]);
+
+  			if (dirty[0] & /*append*/ 128 | dirty[2] & /*$$scope*/ 256) {
+  				icon_changes.$$scope = { dirty, ctx };
+  			}
+
+  			icon.$set(icon_changes);
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(icon.$$.fragment, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(icon.$$.fragment, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			destroy_component(icon, detaching);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: fallback_block_1.name,
+  		type: "fallback",
+  		source: "(197:26)          ",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (208:2) {#if prepend}
+  function create_if_block_1(ctx) {
+  	let div;
+  	let current;
+  	let dispose;
+  	const prepend_slot_template = /*$$slots*/ ctx[50].prepend;
+  	const prepend_slot = create_slot(prepend_slot_template, ctx, /*$$scope*/ ctx[70], get_prepend_slot_context);
+  	const prepend_slot_or_fallback = prepend_slot || fallback_block(ctx);
+
+  	const block = {
+  		c: function create() {
+  			div = element("div");
+  			if (prepend_slot_or_fallback) prepend_slot_or_fallback.c();
+  			attr_dev(div, "class", /*pClasses*/ ctx[22]);
+  			add_location(div, file$9, 208, 4, 5158);
+  		},
+  		m: function mount(target, anchor, remount) {
+  			insert_dev(target, div, anchor);
+
+  			if (prepend_slot_or_fallback) {
+  				prepend_slot_or_fallback.m(div, null);
+  			}
+
+  			current = true;
+  			if (remount) dispose();
+  			dispose = listen_dev(div, "click", /*click_handler_4*/ ctx[69], false, false, false);
+  		},
+  		p: function update(ctx, dirty) {
+  			if (prepend_slot) {
+  				if (prepend_slot.p && dirty[2] & /*$$scope*/ 256) {
+  					prepend_slot.p(get_slot_context(prepend_slot_template, ctx, /*$$scope*/ ctx[70], get_prepend_slot_context), get_slot_changes(prepend_slot_template, /*$$scope*/ ctx[70], dirty, get_prepend_slot_changes));
+  				}
+  			} else {
+  				if (prepend_slot_or_fallback && prepend_slot_or_fallback.p && dirty[0] & /*prependReverse, focused, iconClass, prepend*/ 295170) {
+  					prepend_slot_or_fallback.p(ctx, dirty);
+  				}
+  			}
+
+  			if (!current || dirty[0] & /*pClasses*/ 4194304) {
+  				attr_dev(div, "class", /*pClasses*/ ctx[22]);
+  			}
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(prepend_slot_or_fallback, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(prepend_slot_or_fallback, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(div);
+  			if (prepend_slot_or_fallback) prepend_slot_or_fallback.d(detaching);
+  			dispose();
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_if_block_1.name,
+  		type: "if",
+  		source: "(208:2) {#if prepend}",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (214:8) <Icon           reverse={prependReverse}           class="{focused ? txt() : ""} {iconClass}"         >
+  function create_default_slot(ctx) {
+  	let t;
+
+  	const block = {
+  		c: function create() {
+  			t = text(/*prepend*/ ctx[8]);
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, t, anchor);
+  		},
+  		p: function update(ctx, dirty) {
+  			if (dirty[0] & /*prepend*/ 256) set_data_dev(t, /*prepend*/ ctx[8]);
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(t);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_default_slot.name,
+  		type: "slot",
+  		source: "(214:8) <Icon           reverse={prependReverse}           class=\\\"{focused ? txt() : \\\"\\\"} {iconClass}\\\"         >",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (213:27)          
+  function fallback_block(ctx) {
+  	let current;
+
+  	const icon = new Icon({
+  			props: {
+  				reverse: /*prependReverse*/ ctx[15],
+  				class: "" + ((/*focused*/ ctx[1] ? /*txt*/ ctx[26]() : "") + " " + /*iconClass*/ ctx[18]),
+  				$$slots: { default: [create_default_slot] },
+  				$$scope: { ctx }
+  			},
+  			$$inline: true
+  		});
+
+  	const block = {
+  		c: function create() {
+  			create_component(icon.$$.fragment);
+  		},
+  		m: function mount(target, anchor) {
+  			mount_component(icon, target, anchor);
+  			current = true;
+  		},
+  		p: function update(ctx, dirty) {
+  			const icon_changes = {};
+  			if (dirty[0] & /*prependReverse*/ 32768) icon_changes.reverse = /*prependReverse*/ ctx[15];
+  			if (dirty[0] & /*focused, iconClass*/ 262146) icon_changes.class = "" + ((/*focused*/ ctx[1] ? /*txt*/ ctx[26]() : "") + " " + /*iconClass*/ ctx[18]);
+
+  			if (dirty[0] & /*prepend*/ 256 | dirty[2] & /*$$scope*/ 256) {
+  				icon_changes.$$scope = { dirty, ctx };
+  			}
+
+  			icon.$set(icon_changes);
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(icon.$$.fragment, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(icon.$$.fragment, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			destroy_component(icon, detaching);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: fallback_block.name,
+  		type: "fallback",
+  		source: "(213:27)          ",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  // (230:2) {#if showHint}
+  function create_if_block$1(ctx) {
+  	let current;
+
+  	const hint_1 = new Hint({
+  			props: {
+  				error: /*error*/ ctx[6],
+  				hint: /*hint*/ ctx[5]
+  			},
+  			$$inline: true
+  		});
+
+  	const block = {
+  		c: function create() {
+  			create_component(hint_1.$$.fragment);
+  		},
+  		m: function mount(target, anchor) {
+  			mount_component(hint_1, target, anchor);
+  			current = true;
+  		},
+  		p: function update(ctx, dirty) {
+  			const hint_1_changes = {};
+  			if (dirty[0] & /*error*/ 64) hint_1_changes.error = /*error*/ ctx[6];
+  			if (dirty[0] & /*hint*/ 32) hint_1_changes.hint = /*hint*/ ctx[5];
+  			hint_1.$set(hint_1_changes);
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(hint_1.$$.fragment, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(hint_1.$$.fragment, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			destroy_component(hint_1, detaching);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_if_block$1.name,
+  		type: "if",
+  		source: "(230:2) {#if showHint}",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  function create_fragment$9(ctx) {
+  	let div;
+  	let t0;
+  	let t1;
+  	let t2;
+  	let t3;
+  	let t4;
+  	let current;
+  	const label_slot_template = /*$$slots*/ ctx[50].label;
+  	const label_slot = create_slot(label_slot_template, ctx, /*$$scope*/ ctx[70], get_label_slot_context);
+  	const label_slot_or_fallback = label_slot || fallback_block_2(ctx);
+
+  	function select_block_type(ctx, dirty) {
+  		if (!/*textarea*/ ctx[9] && !/*select*/ ctx[11] || /*autocomplete*/ ctx[12]) return create_if_block_3;
+  		if (/*textarea*/ ctx[9] && !/*select*/ ctx[11]) return create_if_block_4;
+  		if (/*select*/ ctx[11] && !/*autocomplete*/ ctx[12]) return create_if_block_5;
+  	}
+
+  	let current_block_type = select_block_type(ctx);
+  	let if_block0 = current_block_type && current_block_type(ctx);
+  	let if_block1 = /*append*/ ctx[7] && create_if_block_2(ctx);
+  	let if_block2 = /*prepend*/ ctx[8] && create_if_block_1(ctx);
+
+  	const underline = new Underline({
+  			props: {
+  				noUnderline: /*noUnderline*/ ctx[13],
+  				outlined: /*outlined*/ ctx[2],
+  				focused: /*focused*/ ctx[1],
+  				error: /*error*/ ctx[6]
+  			},
+  			$$inline: true
+  		});
+
+  	let if_block3 = /*showHint*/ ctx[23] && create_if_block$1(ctx);
+
+  	const block = {
+  		c: function create() {
+  			div = element("div");
+  			if (label_slot_or_fallback) label_slot_or_fallback.c();
+  			t0 = space();
+  			if (if_block0) if_block0.c();
+  			t1 = space();
+  			if (if_block1) if_block1.c();
+  			t2 = space();
+  			if (if_block2) if_block2.c();
+  			t3 = space();
+  			create_component(underline.$$.fragment);
+  			t4 = space();
+  			if (if_block3) if_block3.c();
+  			attr_dev(div, "class", /*wClasses*/ ctx[20]);
+  			add_location(div, file$9, 134, 0, 3738);
+  		},
+  		l: function claim(nodes) {
+  			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, div, anchor);
+
+  			if (label_slot_or_fallback) {
+  				label_slot_or_fallback.m(div, null);
+  			}
+
+  			append_dev(div, t0);
+  			if (if_block0) if_block0.m(div, null);
+  			append_dev(div, t1);
+  			if (if_block1) if_block1.m(div, null);
+  			append_dev(div, t2);
+  			if (if_block2) if_block2.m(div, null);
+  			append_dev(div, t3);
+  			mount_component(underline, div, null);
+  			append_dev(div, t4);
+  			if (if_block3) if_block3.m(div, null);
+  			current = true;
+  		},
+  		p: function update(ctx, dirty) {
+  			if (label_slot) {
+  				if (label_slot.p && dirty[2] & /*$$scope*/ 256) {
+  					label_slot.p(get_slot_context(label_slot_template, ctx, /*$$scope*/ ctx[70], get_label_slot_context), get_slot_changes(label_slot_template, /*$$scope*/ ctx[70], dirty, get_label_slot_changes));
+  				}
+  			} else {
+  				if (label_slot_or_fallback && label_slot_or_fallback.p && dirty[0] & /*labelOnTop, focused, error, outlined, prepend, color, bgColor, label*/ 16974158) {
+  					label_slot_or_fallback.p(ctx, dirty);
+  				}
+  			}
+
+  			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block0) {
+  				if_block0.p(ctx, dirty);
+  			} else {
+  				if (if_block0) if_block0.d(1);
+  				if_block0 = current_block_type && current_block_type(ctx);
+
+  				if (if_block0) {
+  					if_block0.c();
+  					if_block0.m(div, t1);
+  				}
+  			}
+
+  			if (/*append*/ ctx[7]) {
+  				if (if_block1) {
+  					if_block1.p(ctx, dirty);
+  					transition_in(if_block1, 1);
+  				} else {
+  					if_block1 = create_if_block_2(ctx);
+  					if_block1.c();
+  					transition_in(if_block1, 1);
+  					if_block1.m(div, t2);
+  				}
+  			} else if (if_block1) {
+  				group_outros();
+
+  				transition_out(if_block1, 1, 1, () => {
+  					if_block1 = null;
+  				});
+
+  				check_outros();
+  			}
+
+  			if (/*prepend*/ ctx[8]) {
+  				if (if_block2) {
+  					if_block2.p(ctx, dirty);
+  					transition_in(if_block2, 1);
+  				} else {
+  					if_block2 = create_if_block_1(ctx);
+  					if_block2.c();
+  					transition_in(if_block2, 1);
+  					if_block2.m(div, t3);
+  				}
+  			} else if (if_block2) {
+  				group_outros();
+
+  				transition_out(if_block2, 1, 1, () => {
+  					if_block2 = null;
+  				});
+
+  				check_outros();
+  			}
+
+  			const underline_changes = {};
+  			if (dirty[0] & /*noUnderline*/ 8192) underline_changes.noUnderline = /*noUnderline*/ ctx[13];
+  			if (dirty[0] & /*outlined*/ 4) underline_changes.outlined = /*outlined*/ ctx[2];
+  			if (dirty[0] & /*focused*/ 2) underline_changes.focused = /*focused*/ ctx[1];
+  			if (dirty[0] & /*error*/ 64) underline_changes.error = /*error*/ ctx[6];
+  			underline.$set(underline_changes);
+
+  			if (/*showHint*/ ctx[23]) {
+  				if (if_block3) {
+  					if_block3.p(ctx, dirty);
+  					transition_in(if_block3, 1);
+  				} else {
+  					if_block3 = create_if_block$1(ctx);
+  					if_block3.c();
+  					transition_in(if_block3, 1);
+  					if_block3.m(div, null);
+  				}
+  			} else if (if_block3) {
+  				group_outros();
+
+  				transition_out(if_block3, 1, 1, () => {
+  					if_block3 = null;
+  				});
+
+  				check_outros();
+  			}
+
+  			if (!current || dirty[0] & /*wClasses*/ 1048576) {
+  				attr_dev(div, "class", /*wClasses*/ ctx[20]);
+  			}
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(label_slot_or_fallback, local);
+  			transition_in(if_block1);
+  			transition_in(if_block2);
+  			transition_in(underline.$$.fragment, local);
+  			transition_in(if_block3);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(label_slot_or_fallback, local);
+  			transition_out(if_block1);
+  			transition_out(if_block2);
+  			transition_out(underline.$$.fragment, local);
+  			transition_out(if_block3);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(div);
+  			if (label_slot_or_fallback) label_slot_or_fallback.d(detaching);
+
+  			if (if_block0) {
+  				if_block0.d();
+  			}
+
+  			if (if_block1) if_block1.d();
+  			if (if_block2) if_block2.d();
+  			destroy_component(underline);
+  			if (if_block3) if_block3.d();
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block,
+  		id: create_fragment$9.name,
+  		type: "component",
+  		source: "",
+  		ctx
+  	});
+
+  	return block;
+  }
+
+  const classesDefault = "mt-2 mb-6 relative text-gray-600 dark:text-gray-100";
+  const appendDefault = "absolute right-0 top-0 pb-2 pr-4 pt-4 text-gray-700 z-10";
+  const prependDefault = "absolute left-0 top-0 pb-2 pl-2 pt-4 text-xs text-gray-700 z-10";
+
+  function instance$9($$self, $$props, $$invalidate) {
+  	let { class: className = "" } = $$props;
+  	let { outlined = false } = $$props;
+  	let { value = null } = $$props;
+  	let { label = "" } = $$props;
+  	let { placeholder = "" } = $$props;
+  	let { hint = "" } = $$props;
+  	let { error = false } = $$props;
+  	let { append = "" } = $$props;
+  	let { prepend = "" } = $$props;
+  	let { persistentHint = false } = $$props;
+  	let { textarea = false } = $$props;
+  	let { rows = 5 } = $$props;
+  	let { select = false } = $$props;
+  	let { dense = false } = $$props;
+  	let { autocomplete = false } = $$props;
+  	let { noUnderline = false } = $$props;
+  	let { appendReverse = false } = $$props;
+  	let { prependReverse = false } = $$props;
+  	let { color = "primary" } = $$props;
+  	let { bgColor = "white" } = $$props;
+  	let { iconClass = "" } = $$props;
+  	let { disabled = false } = $$props;
+  	const inputDefault = `transition pb-2 pt-6 px-4 rounded-t text-black dark:text-gray-100 w-full`;
+  	let { add = "" } = $$props;
+  	let { remove = "" } = $$props;
+  	let { replace = "" } = $$props;
+  	let { inputClasses = inputDefault } = $$props;
+  	let { classes = classesDefault } = $$props;
+  	let { appendClasses = appendDefault } = $$props;
+  	let { prependClasses = prependDefault } = $$props;
+  	const { bg, border, txt, caret } = utils$2(color);
+  	const cb = new ClassBuilder(inputClasses, inputDefault);
+  	const ccb = new ClassBuilder(classes, classesDefault);
+  	const acb = new ClassBuilder(appendClasses, appendDefault);
+  	const pcb = new ClassBuilder(prependClasses, prependDefault);
+
+  	let { extend = () => {
+  		
+  	} } = $$props;
+
+  	let { focused = false } = $$props;
+  	let wClasses = i => i;
+  	let aClasses = i => i;
+  	let pClasses = i => i;
+
+  	function toggleFocused() {
+  		$$invalidate(1, focused = !focused);
+  	}
+
+  	const props = filterProps(
+  		[
+  			"outlined",
+  			"label",
+  			"placeholder",
+  			"hint",
+  			"error",
+  			"append",
+  			"prepend",
+  			"persistentHint",
+  			"textarea",
+  			"rows",
+  			"select",
+  			"autocomplete",
+  			"noUnderline",
+  			"appendReverse",
+  			"prependReverse",
+  			"color",
+  			"bgColor",
+  			"disabled",
+  			"replace",
+  			"remove",
+  			"small"
+  		],
+  		$$props
+  	);
+
+  	const dispatch = createEventDispatcher();
+  	let { $$slots = {}, $$scope } = $$props;
+  	validate_slots("TextField", $$slots, ['label','append','prepend']);
+
+  	function blur_handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	function change_handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	function input_handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	function click_handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	function focus_handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	function change_handler_1(event) {
+  		bubble($$self, event);
+  	}
+
+  	function input_handler_1(event) {
+  		bubble($$self, event);
+  	}
+
+  	function click_handler_1(event) {
+  		bubble($$self, event);
+  	}
+
+  	function focus_handler_1(event) {
+  		bubble($$self, event);
+  	}
+
+  	function blur_handler_1(event) {
+  		bubble($$self, event);
+  	}
+
+  	function change_handler_2(event) {
+  		bubble($$self, event);
+  	}
+
+  	function input_handler_2(event) {
+  		bubble($$self, event);
+  	}
+
+  	function click_handler_2(event) {
+  		bubble($$self, event);
+  	}
+
+  	function blur_handler_2(event) {
+  		bubble($$self, event);
+  	}
+
+  	function focus_handler_2(event) {
+  		bubble($$self, event);
+  	}
+
+  	function input_input_handler() {
+  		value = this.value;
+  		$$invalidate(0, value);
+  	}
+
+  	function textarea_1_input_handler() {
+  		value = this.value;
+  		$$invalidate(0, value);
+  	}
+
+  	const click_handler_3 = () => dispatch("click-append");
+  	const click_handler_4 = () => dispatch("click-prepend");
+
+  	$$self.$set = $$new_props => {
+  		$$invalidate(49, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
+  		if ("class" in $$new_props) $$invalidate(30, className = $$new_props.class);
+  		if ("outlined" in $$new_props) $$invalidate(2, outlined = $$new_props.outlined);
+  		if ("value" in $$new_props) $$invalidate(0, value = $$new_props.value);
+  		if ("label" in $$new_props) $$invalidate(3, label = $$new_props.label);
+  		if ("placeholder" in $$new_props) $$invalidate(4, placeholder = $$new_props.placeholder);
+  		if ("hint" in $$new_props) $$invalidate(5, hint = $$new_props.hint);
+  		if ("error" in $$new_props) $$invalidate(6, error = $$new_props.error);
+  		if ("append" in $$new_props) $$invalidate(7, append = $$new_props.append);
+  		if ("prepend" in $$new_props) $$invalidate(8, prepend = $$new_props.prepend);
+  		if ("persistentHint" in $$new_props) $$invalidate(31, persistentHint = $$new_props.persistentHint);
+  		if ("textarea" in $$new_props) $$invalidate(9, textarea = $$new_props.textarea);
+  		if ("rows" in $$new_props) $$invalidate(10, rows = $$new_props.rows);
+  		if ("select" in $$new_props) $$invalidate(11, select = $$new_props.select);
+  		if ("dense" in $$new_props) $$invalidate(32, dense = $$new_props.dense);
+  		if ("autocomplete" in $$new_props) $$invalidate(12, autocomplete = $$new_props.autocomplete);
+  		if ("noUnderline" in $$new_props) $$invalidate(13, noUnderline = $$new_props.noUnderline);
+  		if ("appendReverse" in $$new_props) $$invalidate(14, appendReverse = $$new_props.appendReverse);
+  		if ("prependReverse" in $$new_props) $$invalidate(15, prependReverse = $$new_props.prependReverse);
+  		if ("color" in $$new_props) $$invalidate(16, color = $$new_props.color);
+  		if ("bgColor" in $$new_props) $$invalidate(17, bgColor = $$new_props.bgColor);
+  		if ("iconClass" in $$new_props) $$invalidate(18, iconClass = $$new_props.iconClass);
+  		if ("disabled" in $$new_props) $$invalidate(19, disabled = $$new_props.disabled);
+  		if ("add" in $$new_props) $$invalidate(33, add = $$new_props.add);
+  		if ("remove" in $$new_props) $$invalidate(34, remove = $$new_props.remove);
+  		if ("replace" in $$new_props) $$invalidate(35, replace = $$new_props.replace);
+  		if ("inputClasses" in $$new_props) $$invalidate(36, inputClasses = $$new_props.inputClasses);
+  		if ("classes" in $$new_props) $$invalidate(37, classes = $$new_props.classes);
+  		if ("appendClasses" in $$new_props) $$invalidate(38, appendClasses = $$new_props.appendClasses);
+  		if ("prependClasses" in $$new_props) $$invalidate(39, prependClasses = $$new_props.prependClasses);
+  		if ("extend" in $$new_props) $$invalidate(40, extend = $$new_props.extend);
+  		if ("focused" in $$new_props) $$invalidate(1, focused = $$new_props.focused);
+  		if ("$$scope" in $$new_props) $$invalidate(70, $$scope = $$new_props.$$scope);
+  	};
+
+  	$$self.$capture_state = () => ({
+  		createEventDispatcher,
+  		utils: utils$2,
+  		ClassBuilder,
+  		filterProps,
+  		Icon,
+  		Label,
+  		Hint,
+  		Underline,
+  		className,
+  		outlined,
+  		value,
+  		label,
+  		placeholder,
+  		hint,
+  		error,
+  		append,
+  		prepend,
+  		persistentHint,
+  		textarea,
+  		rows,
+  		select,
+  		dense,
+  		autocomplete,
+  		noUnderline,
+  		appendReverse,
+  		prependReverse,
+  		color,
+  		bgColor,
+  		iconClass,
+  		disabled,
+  		inputDefault,
+  		classesDefault,
+  		appendDefault,
+  		prependDefault,
+  		add,
+  		remove,
+  		replace,
+  		inputClasses,
+  		classes,
+  		appendClasses,
+  		prependClasses,
+  		bg,
+  		border,
+  		txt,
+  		caret,
+  		cb,
+  		ccb,
+  		acb,
+  		pcb,
+  		extend,
+  		focused,
+  		wClasses,
+  		aClasses,
+  		pClasses,
+  		toggleFocused,
+  		props,
+  		dispatch,
+  		showHint,
+  		labelOnTop,
+  		iClasses
+  	});
+
+  	$$self.$inject_state = $$new_props => {
+  		$$invalidate(49, $$props = assign(assign({}, $$props), $$new_props));
+  		if ("className" in $$props) $$invalidate(30, className = $$new_props.className);
+  		if ("outlined" in $$props) $$invalidate(2, outlined = $$new_props.outlined);
+  		if ("value" in $$props) $$invalidate(0, value = $$new_props.value);
+  		if ("label" in $$props) $$invalidate(3, label = $$new_props.label);
+  		if ("placeholder" in $$props) $$invalidate(4, placeholder = $$new_props.placeholder);
+  		if ("hint" in $$props) $$invalidate(5, hint = $$new_props.hint);
+  		if ("error" in $$props) $$invalidate(6, error = $$new_props.error);
+  		if ("append" in $$props) $$invalidate(7, append = $$new_props.append);
+  		if ("prepend" in $$props) $$invalidate(8, prepend = $$new_props.prepend);
+  		if ("persistentHint" in $$props) $$invalidate(31, persistentHint = $$new_props.persistentHint);
+  		if ("textarea" in $$props) $$invalidate(9, textarea = $$new_props.textarea);
+  		if ("rows" in $$props) $$invalidate(10, rows = $$new_props.rows);
+  		if ("select" in $$props) $$invalidate(11, select = $$new_props.select);
+  		if ("dense" in $$props) $$invalidate(32, dense = $$new_props.dense);
+  		if ("autocomplete" in $$props) $$invalidate(12, autocomplete = $$new_props.autocomplete);
+  		if ("noUnderline" in $$props) $$invalidate(13, noUnderline = $$new_props.noUnderline);
+  		if ("appendReverse" in $$props) $$invalidate(14, appendReverse = $$new_props.appendReverse);
+  		if ("prependReverse" in $$props) $$invalidate(15, prependReverse = $$new_props.prependReverse);
+  		if ("color" in $$props) $$invalidate(16, color = $$new_props.color);
+  		if ("bgColor" in $$props) $$invalidate(17, bgColor = $$new_props.bgColor);
+  		if ("iconClass" in $$props) $$invalidate(18, iconClass = $$new_props.iconClass);
+  		if ("disabled" in $$props) $$invalidate(19, disabled = $$new_props.disabled);
+  		if ("add" in $$props) $$invalidate(33, add = $$new_props.add);
+  		if ("remove" in $$props) $$invalidate(34, remove = $$new_props.remove);
+  		if ("replace" in $$props) $$invalidate(35, replace = $$new_props.replace);
+  		if ("inputClasses" in $$props) $$invalidate(36, inputClasses = $$new_props.inputClasses);
+  		if ("classes" in $$props) $$invalidate(37, classes = $$new_props.classes);
+  		if ("appendClasses" in $$props) $$invalidate(38, appendClasses = $$new_props.appendClasses);
+  		if ("prependClasses" in $$props) $$invalidate(39, prependClasses = $$new_props.prependClasses);
+  		if ("extend" in $$props) $$invalidate(40, extend = $$new_props.extend);
+  		if ("focused" in $$props) $$invalidate(1, focused = $$new_props.focused);
+  		if ("wClasses" in $$props) $$invalidate(20, wClasses = $$new_props.wClasses);
+  		if ("aClasses" in $$props) $$invalidate(21, aClasses = $$new_props.aClasses);
+  		if ("pClasses" in $$props) $$invalidate(22, pClasses = $$new_props.pClasses);
+  		if ("showHint" in $$props) $$invalidate(23, showHint = $$new_props.showHint);
+  		if ("labelOnTop" in $$props) $$invalidate(24, labelOnTop = $$new_props.labelOnTop);
+  		if ("iClasses" in $$props) $$invalidate(25, iClasses = $$new_props.iClasses);
+  	};
+
+  	let showHint;
+  	let labelOnTop;
+  	let iClasses;
+
+  	if ($$props && "$$inject" in $$props) {
+  		$$self.$inject_state($$props.$$inject);
+  	}
+
+  	$$self.$$.update = () => {
+  		if ($$self.$$.dirty[0] & /*error, hint, focused*/ 98 | $$self.$$.dirty[1] & /*persistentHint*/ 1) {
+  			 $$invalidate(23, showHint = error || (persistentHint ? hint : focused && hint));
+  		}
+
+  		if ($$self.$$.dirty[0] & /*placeholder, focused, value*/ 19) {
+  			 $$invalidate(24, labelOnTop = placeholder || focused || value);
+  		}
+
+  		if ($$self.$$.dirty[0] & /*outlined, error, focused, prepend, disabled, select, autocomplete, className*/ 1074272582 | $$self.$$.dirty[1] & /*add, remove, replace, extend*/ 540) {
+  			 $$invalidate(25, iClasses = cb.flush().remove("pt-6 pb-2", outlined).add("border rounded bg-transparent py-4 transition", outlined).add("border-error-500 caret-error-500", error).remove(caret(), error).add(caret(), !error).add(border(), focused && !error).add("border-gray-600", !error && !focused).add("bg-gray-100 dark:bg-dark-600", !outlined).add("bg-gray-300 dark:bg-dark-200", focused && !outlined).remove("px-4", prepend).add("pr-4 pl-10", prepend).add(add).remove("bg-gray-100", disabled).add("bg-gray-50", disabled).add("cursor-pointer", select && !autocomplete).add(className).remove(remove).replace(replace).extend(extend).get());
+  		}
+
+  		if ($$self.$$.dirty[0] & /*select, autocomplete, error, disabled*/ 530496 | $$self.$$.dirty[1] & /*dense*/ 2) {
+  			 $$invalidate(20, wClasses = ccb.flush().add("select", select || autocomplete).add("dense", dense).replace({ "text-gray-600": "text-error-500" }, error).add("text-gray-200", disabled).get());
+  		}
+  	};
+
+  	 $$invalidate(21, aClasses = acb.flush().get());
+  	 $$invalidate(22, pClasses = pcb.flush().get());
+  	$$props = exclude_internal_props($$props);
+
+  	return [
+  		value,
+  		focused,
+  		outlined,
+  		label,
+  		placeholder,
+  		hint,
+  		error,
+  		append,
+  		prepend,
+  		textarea,
+  		rows,
+  		select,
+  		autocomplete,
+  		noUnderline,
+  		appendReverse,
+  		prependReverse,
+  		color,
+  		bgColor,
+  		iconClass,
+  		disabled,
+  		wClasses,
+  		aClasses,
+  		pClasses,
+  		showHint,
+  		labelOnTop,
+  		iClasses,
+  		txt,
+  		toggleFocused,
+  		props,
+  		dispatch,
+  		className,
+  		persistentHint,
+  		dense,
+  		add,
+  		remove,
+  		replace,
+  		inputClasses,
+  		classes,
+  		appendClasses,
+  		prependClasses,
+  		extend,
+  		inputDefault,
+  		bg,
+  		border,
+  		caret,
+  		cb,
+  		ccb,
+  		acb,
+  		pcb,
+  		$$props,
+  		$$slots,
+  		blur_handler,
+  		change_handler,
+  		input_handler,
+  		click_handler,
+  		focus_handler,
+  		change_handler_1,
+  		input_handler_1,
+  		click_handler_1,
+  		focus_handler_1,
+  		blur_handler_1,
+  		change_handler_2,
+  		input_handler_2,
+  		click_handler_2,
+  		blur_handler_2,
+  		focus_handler_2,
+  		input_input_handler,
+  		textarea_1_input_handler,
+  		click_handler_3,
+  		click_handler_4,
+  		$$scope
+  	];
+  }
+
+  class TextField extends SvelteComponentDev {
+  	constructor(options) {
+  		super(options);
+
+  		init(
+  			this,
+  			options,
+  			instance$9,
+  			create_fragment$9,
+  			safe_not_equal,
+  			{
+  				class: 30,
+  				outlined: 2,
+  				value: 0,
+  				label: 3,
+  				placeholder: 4,
+  				hint: 5,
+  				error: 6,
+  				append: 7,
+  				prepend: 8,
+  				persistentHint: 31,
+  				textarea: 9,
+  				rows: 10,
+  				select: 11,
+  				dense: 32,
+  				autocomplete: 12,
+  				noUnderline: 13,
+  				appendReverse: 14,
+  				prependReverse: 15,
+  				color: 16,
+  				bgColor: 17,
+  				iconClass: 18,
+  				disabled: 19,
+  				add: 33,
+  				remove: 34,
+  				replace: 35,
+  				inputClasses: 36,
+  				classes: 37,
+  				appendClasses: 38,
+  				prependClasses: 39,
+  				extend: 40,
+  				focused: 1
+  			},
+  			[-1, -1, -1]
+  		);
+
+  		dispatch_dev("SvelteRegisterComponent", {
+  			component: this,
+  			tagName: "TextField",
+  			options,
+  			id: create_fragment$9.name
+  		});
+  	}
+
+  	get class() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set class(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get outlined() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set outlined(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get value() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set value(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get label() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set label(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get placeholder() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set placeholder(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get hint() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set hint(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get error() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set error(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get append() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set append(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get prepend() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set prepend(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get persistentHint() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set persistentHint(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get textarea() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set textarea(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get rows() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set rows(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get select() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set select(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get dense() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set dense(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get autocomplete() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set autocomplete(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get noUnderline() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set noUnderline(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get appendReverse() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set appendReverse(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get prependReverse() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set prependReverse(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get color() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set color(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get bgColor() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set bgColor(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get iconClass() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set iconClass(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get disabled() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set disabled(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get add() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set add(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get remove() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set remove(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get replace() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set replace(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get inputClasses() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set inputClasses(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get classes() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set classes(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get appendClasses() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set appendClasses(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get prependClasses() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set prependClasses(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get extend() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set extend(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get focused() {
+  		throw new Error("<TextField>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set focused(value) {
+  		throw new Error("<TextField>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+  }
+
+  // Thanks Lagden! https://svelte.dev/repl/61d9178d2b9944f2aa2bfe31612ab09f?version=3.6.7
+  function ripple(color, centered) {
+    return function(event) {
+      const target = event.currentTarget;
+      const circle = document.createElement("span");
+      const d = Math.max(target.clientWidth, target.clientHeight);
+
+      const removeCircle = () => {
+        circle.remove();
+        circle.removeEventListener("animationend", removeCircle);
+      };
+
+      circle.addEventListener("animationend", removeCircle);
+      circle.style.width = circle.style.height = `${d}px`;
+      const rect = target.getBoundingClientRect();
+
+      if (centered) {
+        circle.classList.add(
+          "absolute",
+          "top-0",
+          "left-0",
+          "ripple-centered",
+          `bg-${color}-transDark`
+        );
+      } else {
+        circle.style.left = `${event.clientX - rect.left - d / 2}px`;
+        circle.style.top = `${event.clientY - rect.top - d / 2}px`;
+
+        circle.classList.add("ripple-normal", `bg-${color}-trans`);
+      }
+
+      circle.classList.add("ripple");
+
+      target.appendChild(circle);
+    };
+  }
+
+  function r(color = "primary", centered = false) {
+    return function(node) {
+      node.addEventListener("click", ripple(color, centered));
+
+      return {
+        onDestroy: () => node.removeEventListener("click")
+      };
+    };
+  }
+
+  /* node_modules/smelte/src/components/Button/Button.svelte generated by Svelte v3.20.1 */
+  const file$a = "node_modules/smelte/src/components/Button/Button.svelte";
+
+  // (150:0) {:else}
+  function create_else_block(ctx) {
+  	let button;
+  	let t;
+  	let ripple_action;
+  	let current;
+  	let dispose;
+  	let if_block = /*icon*/ ctx[3] && create_if_block_2$1(ctx);
+  	const default_slot_template = /*$$slots*/ ctx[42].default;
+  	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[51], null);
+
+  	let button_levels = [
+  		{ class: /*classes*/ ctx[1] },
+  		/*props*/ ctx[8],
+  		{ disabled: /*disabled*/ ctx[2] }
+  	];
+
+  	let button_data = {};
+
+  	for (let i = 0; i < button_levels.length; i += 1) {
+  		button_data = assign(button_data, button_levels[i]);
+  	}
+
+  	const block_1 = {
+  		c: function create() {
+  			button = element("button");
+  			if (if_block) if_block.c();
+  			t = space();
+  			if (default_slot) default_slot.c();
+  			set_attributes(button, button_data);
+  			add_location(button, file$a, 150, 2, 4076);
+  		},
+  		m: function mount(target, anchor, remount) {
+  			insert_dev(target, button, anchor);
+  			if (if_block) if_block.m(button, null);
+  			append_dev(button, t);
+
+  			if (default_slot) {
+  				default_slot.m(button, null);
+  			}
+
+  			current = true;
+  			if (remount) run_all(dispose);
+
+  			dispose = [
+  				action_destroyer(ripple_action = /*ripple*/ ctx[7].call(null, button)),
+  				listen_dev(button, "click", /*click_handler_3*/ ctx[50], false, false, false),
+  				listen_dev(button, "click", /*click_handler_1*/ ctx[46], false, false, false),
+  				listen_dev(button, "mouseover", /*mouseover_handler_1*/ ctx[47], false, false, false),
+  				listen_dev(button, "*", /*_handler_1*/ ctx[48], false, false, false)
+  			];
+  		},
+  		p: function update(ctx, dirty) {
+  			if (/*icon*/ ctx[3]) {
+  				if (if_block) {
+  					if_block.p(ctx, dirty);
+  					transition_in(if_block, 1);
+  				} else {
+  					if_block = create_if_block_2$1(ctx);
+  					if_block.c();
+  					transition_in(if_block, 1);
+  					if_block.m(button, t);
+  				}
+  			} else if (if_block) {
+  				group_outros();
+
+  				transition_out(if_block, 1, 1, () => {
+  					if_block = null;
+  				});
+
+  				check_outros();
+  			}
+
+  			if (default_slot) {
+  				if (default_slot.p && dirty[1] & /*$$scope*/ 1048576) {
+  					default_slot.p(get_slot_context(default_slot_template, ctx, /*$$scope*/ ctx[51], null), get_slot_changes(default_slot_template, /*$$scope*/ ctx[51], dirty, null));
+  				}
+  			}
+
+  			set_attributes(button, get_spread_update(button_levels, [
+  				dirty[0] & /*classes*/ 2 && { class: /*classes*/ ctx[1] },
+  				dirty[0] & /*props*/ 256 && /*props*/ ctx[8],
+  				dirty[0] & /*disabled*/ 4 && { disabled: /*disabled*/ ctx[2] }
+  			]));
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(if_block);
+  			transition_in(default_slot, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(if_block);
+  			transition_out(default_slot, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(button);
+  			if (if_block) if_block.d();
+  			if (default_slot) default_slot.d(detaching);
+  			run_all(dispose);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block: block_1,
+  		id: create_else_block.name,
+  		type: "else",
+  		source: "(150:0) {:else}",
+  		ctx
+  	});
+
+  	return block_1;
+  }
+
+  // (129:0) {#if href}
+  function create_if_block$2(ctx) {
+  	let a;
+  	let button;
+  	let t;
+  	let ripple_action;
+  	let current;
+  	let dispose;
+  	let if_block = /*icon*/ ctx[3] && create_if_block_1$1(ctx);
+  	const default_slot_template = /*$$slots*/ ctx[42].default;
+  	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[51], null);
+
+  	let button_levels = [
+  		{ class: /*classes*/ ctx[1] },
+  		/*props*/ ctx[8],
+  		{ disabled: /*disabled*/ ctx[2] }
+  	];
+
+  	let button_data = {};
+
+  	for (let i = 0; i < button_levels.length; i += 1) {
+  		button_data = assign(button_data, button_levels[i]);
+  	}
+
+  	let a_levels = [{ href: /*href*/ ctx[5] }, /*props*/ ctx[8]];
+  	let a_data = {};
+
+  	for (let i = 0; i < a_levels.length; i += 1) {
+  		a_data = assign(a_data, a_levels[i]);
+  	}
+
+  	const block_1 = {
+  		c: function create() {
+  			a = element("a");
+  			button = element("button");
+  			if (if_block) if_block.c();
+  			t = space();
+  			if (default_slot) default_slot.c();
+  			set_attributes(button, button_data);
+  			add_location(button, file$a, 133, 4, 3776);
+  			set_attributes(a, a_data);
+  			add_location(a, file$a, 129, 2, 3739);
+  		},
+  		m: function mount(target, anchor, remount) {
+  			insert_dev(target, a, anchor);
+  			append_dev(a, button);
+  			if (if_block) if_block.m(button, null);
+  			append_dev(button, t);
+
+  			if (default_slot) {
+  				default_slot.m(button, null);
+  			}
+
+  			current = true;
+  			if (remount) run_all(dispose);
+
+  			dispose = [
+  				action_destroyer(ripple_action = /*ripple*/ ctx[7].call(null, button)),
+  				listen_dev(button, "click", /*click_handler_2*/ ctx[49], false, false, false),
+  				listen_dev(button, "click", /*click_handler*/ ctx[43], false, false, false),
+  				listen_dev(button, "mouseover", /*mouseover_handler*/ ctx[44], false, false, false),
+  				listen_dev(button, "*", /*_handler*/ ctx[45], false, false, false)
+  			];
+  		},
+  		p: function update(ctx, dirty) {
+  			if (/*icon*/ ctx[3]) {
+  				if (if_block) {
+  					if_block.p(ctx, dirty);
+  					transition_in(if_block, 1);
+  				} else {
+  					if_block = create_if_block_1$1(ctx);
+  					if_block.c();
+  					transition_in(if_block, 1);
+  					if_block.m(button, t);
+  				}
+  			} else if (if_block) {
+  				group_outros();
+
+  				transition_out(if_block, 1, 1, () => {
+  					if_block = null;
+  				});
+
+  				check_outros();
+  			}
+
+  			if (default_slot) {
+  				if (default_slot.p && dirty[1] & /*$$scope*/ 1048576) {
+  					default_slot.p(get_slot_context(default_slot_template, ctx, /*$$scope*/ ctx[51], null), get_slot_changes(default_slot_template, /*$$scope*/ ctx[51], dirty, null));
+  				}
+  			}
+
+  			set_attributes(button, get_spread_update(button_levels, [
+  				dirty[0] & /*classes*/ 2 && { class: /*classes*/ ctx[1] },
+  				dirty[0] & /*props*/ 256 && /*props*/ ctx[8],
+  				dirty[0] & /*disabled*/ 4 && { disabled: /*disabled*/ ctx[2] }
+  			]));
+
+  			set_attributes(a, get_spread_update(a_levels, [
+  				dirty[0] & /*href*/ 32 && { href: /*href*/ ctx[5] },
+  				dirty[0] & /*props*/ 256 && /*props*/ ctx[8]
+  			]));
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(if_block);
+  			transition_in(default_slot, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(if_block);
+  			transition_out(default_slot, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(a);
+  			if (if_block) if_block.d();
+  			if (default_slot) default_slot.d(detaching);
+  			run_all(dispose);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block: block_1,
+  		id: create_if_block$2.name,
+  		type: "if",
+  		source: "(129:0) {#if href}",
+  		ctx
+  	});
+
+  	return block_1;
+  }
+
+  // (161:4) {#if icon}
+  function create_if_block_2$1(ctx) {
+  	let current;
+
+  	const icon_1 = new Icon({
+  			props: {
+  				class: /*iClasses*/ ctx[6],
+  				small: /*small*/ ctx[4],
+  				$$slots: { default: [create_default_slot_1$1] },
+  				$$scope: { ctx }
+  			},
+  			$$inline: true
+  		});
+
+  	const block_1 = {
+  		c: function create() {
+  			create_component(icon_1.$$.fragment);
+  		},
+  		m: function mount(target, anchor) {
+  			mount_component(icon_1, target, anchor);
+  			current = true;
+  		},
+  		p: function update(ctx, dirty) {
+  			const icon_1_changes = {};
+  			if (dirty[0] & /*iClasses*/ 64) icon_1_changes.class = /*iClasses*/ ctx[6];
+  			if (dirty[0] & /*small*/ 16) icon_1_changes.small = /*small*/ ctx[4];
+
+  			if (dirty[0] & /*icon*/ 8 | dirty[1] & /*$$scope*/ 1048576) {
+  				icon_1_changes.$$scope = { dirty, ctx };
+  			}
+
+  			icon_1.$set(icon_1_changes);
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(icon_1.$$.fragment, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(icon_1.$$.fragment, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			destroy_component(icon_1, detaching);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block: block_1,
+  		id: create_if_block_2$1.name,
+  		type: "if",
+  		source: "(161:4) {#if icon}",
+  		ctx
+  	});
+
+  	return block_1;
+  }
+
+  // (162:6) <Icon class={iClasses} {small}>
+  function create_default_slot_1$1(ctx) {
+  	let t;
+
+  	const block_1 = {
+  		c: function create() {
+  			t = text(/*icon*/ ctx[3]);
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, t, anchor);
+  		},
+  		p: function update(ctx, dirty) {
+  			if (dirty[0] & /*icon*/ 8) set_data_dev(t, /*icon*/ ctx[3]);
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(t);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block: block_1,
+  		id: create_default_slot_1$1.name,
+  		type: "slot",
+  		source: "(162:6) <Icon class={iClasses} {small}>",
+  		ctx
+  	});
+
+  	return block_1;
+  }
+
+  // (144:6) {#if icon}
+  function create_if_block_1$1(ctx) {
+  	let current;
+
+  	const icon_1 = new Icon({
+  			props: {
+  				class: /*iClasses*/ ctx[6],
+  				small: /*small*/ ctx[4],
+  				$$slots: { default: [create_default_slot$1] },
+  				$$scope: { ctx }
+  			},
+  			$$inline: true
+  		});
+
+  	const block_1 = {
+  		c: function create() {
+  			create_component(icon_1.$$.fragment);
+  		},
+  		m: function mount(target, anchor) {
+  			mount_component(icon_1, target, anchor);
+  			current = true;
+  		},
+  		p: function update(ctx, dirty) {
+  			const icon_1_changes = {};
+  			if (dirty[0] & /*iClasses*/ 64) icon_1_changes.class = /*iClasses*/ ctx[6];
+  			if (dirty[0] & /*small*/ 16) icon_1_changes.small = /*small*/ ctx[4];
+
+  			if (dirty[0] & /*icon*/ 8 | dirty[1] & /*$$scope*/ 1048576) {
+  				icon_1_changes.$$scope = { dirty, ctx };
+  			}
+
+  			icon_1.$set(icon_1_changes);
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(icon_1.$$.fragment, local);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(icon_1.$$.fragment, local);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			destroy_component(icon_1, detaching);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block: block_1,
+  		id: create_if_block_1$1.name,
+  		type: "if",
+  		source: "(144:6) {#if icon}",
+  		ctx
+  	});
+
+  	return block_1;
+  }
+
+  // (145:8) <Icon class={iClasses} {small}>
+  function create_default_slot$1(ctx) {
+  	let t;
+
+  	const block_1 = {
+  		c: function create() {
+  			t = text(/*icon*/ ctx[3]);
+  		},
+  		m: function mount(target, anchor) {
+  			insert_dev(target, t, anchor);
+  		},
+  		p: function update(ctx, dirty) {
+  			if (dirty[0] & /*icon*/ 8) set_data_dev(t, /*icon*/ ctx[3]);
+  		},
+  		d: function destroy(detaching) {
+  			if (detaching) detach_dev(t);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block: block_1,
+  		id: create_default_slot$1.name,
+  		type: "slot",
+  		source: "(145:8) <Icon class={iClasses} {small}>",
+  		ctx
+  	});
+
+  	return block_1;
+  }
+
+  function create_fragment$a(ctx) {
+  	let current_block_type_index;
+  	let if_block;
+  	let if_block_anchor;
+  	let current;
+  	const if_block_creators = [create_if_block$2, create_else_block];
+  	const if_blocks = [];
+
+  	function select_block_type(ctx, dirty) {
+  		if (/*href*/ ctx[5]) return 0;
+  		return 1;
+  	}
+
+  	current_block_type_index = select_block_type(ctx);
+  	if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+  	const block_1 = {
+  		c: function create() {
+  			if_block.c();
+  			if_block_anchor = empty();
+  		},
+  		l: function claim(nodes) {
+  			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+  		},
+  		m: function mount(target, anchor) {
+  			if_blocks[current_block_type_index].m(target, anchor);
+  			insert_dev(target, if_block_anchor, anchor);
+  			current = true;
+  		},
+  		p: function update(ctx, dirty) {
+  			let previous_block_index = current_block_type_index;
+  			current_block_type_index = select_block_type(ctx);
+
+  			if (current_block_type_index === previous_block_index) {
+  				if_blocks[current_block_type_index].p(ctx, dirty);
+  			} else {
+  				group_outros();
+
+  				transition_out(if_blocks[previous_block_index], 1, 1, () => {
+  					if_blocks[previous_block_index] = null;
+  				});
+
+  				check_outros();
+  				if_block = if_blocks[current_block_type_index];
+
+  				if (!if_block) {
+  					if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+  					if_block.c();
+  				}
+
+  				transition_in(if_block, 1);
+  				if_block.m(if_block_anchor.parentNode, if_block_anchor);
+  			}
+  		},
+  		i: function intro(local) {
+  			if (current) return;
+  			transition_in(if_block);
+  			current = true;
+  		},
+  		o: function outro(local) {
+  			transition_out(if_block);
+  			current = false;
+  		},
+  		d: function destroy(detaching) {
+  			if_blocks[current_block_type_index].d(detaching);
+  			if (detaching) detach_dev(if_block_anchor);
+  		}
+  	};
+
+  	dispatch_dev("SvelteRegisterBlock", {
+  		block: block_1,
+  		id: create_fragment$a.name,
+  		type: "component",
+  		source: "",
+  		ctx
+  	});
+
+  	return block_1;
+  }
+
+  const classesDefault$1 = "py-2 px-4 uppercase text-sm font-medium relative overflow-hidden";
+  const basicDefault = "text-white transition";
+  const outlinedDefault = "bg-transparent border border-solid";
+  const textDefault = "bg-transparent border-none px-4 hover:bg-transparent";
+  const iconDefault = "p-4 flex items-center";
+  const fabDefault = "hover:bg-transparent";
+  const smallDefault = "pt-1 pb-1 pl-2 pr-2 text-xs";
+  const disabledDefault = "bg-gray-300 text-gray-500 dark:bg-dark-400 elevation-none pointer-events-none hover:bg-gray-300 cursor-default";
+  const elevationDefault = "hover:elevation-5 elevation-3";
+
+  function instance$a($$self, $$props, $$invalidate) {
+  	let { class: className = "" } = $$props;
+  	let { value = false } = $$props;
+  	let { outlined = false } = $$props;
+  	let { text = false } = $$props;
+  	let { block = false } = $$props;
+  	let { disabled = false } = $$props;
+  	let { icon = null } = $$props;
+  	let { small = false } = $$props;
+  	let { light = false } = $$props;
+  	let { dark = false } = $$props;
+  	let { flat = false } = $$props;
+  	let { iconClass = "" } = $$props;
+  	let { color = "primary" } = $$props;
+  	let { href = null } = $$props;
+  	let { fab = false } = $$props;
+  	let { remove = "" } = $$props;
+  	let { add = "" } = $$props;
+  	let { replace = {} } = $$props;
+  	let { classes = classesDefault$1 } = $$props;
+  	let { basicClasses = basicDefault } = $$props;
+  	let { outlinedClasses = outlinedDefault } = $$props;
+  	let { textClasses = textDefault } = $$props;
+  	let { iconClasses = iconDefault } = $$props;
+  	let { fabClasses = fabDefault } = $$props;
+  	let { smallClasses = smallDefault } = $$props;
+  	let { disabledClasses = disabledDefault } = $$props;
+  	let { elevationClasses = elevationDefault } = $$props;
+  	fab = fab || text && icon;
+  	const basic = !outlined && !text && !fab;
+  	const elevation = (basic || icon) && !disabled && !flat && !text;
+  	let Classes = i => i;
+  	let iClasses = i => i;
+  	let shade = 0;
+  	const { bg, border, txt } = utils$2(color);
+  	const cb = new ClassBuilder(classes, classesDefault$1);
+  	let iconCb;
+
+  	if (icon) {
+  		iconCb = new ClassBuilder(iconClass);
+  	}
+
+  	const ripple = r(text || fab || outlined ? color : "white");
+
+  	const props = filterProps(
+  		[
+  			"outlined",
+  			"text",
+  			"color",
+  			"block",
+  			"disabled",
+  			"icon",
+  			"small",
+  			"light",
+  			"dark",
+  			"flat",
+  			"add",
+  			"remove",
+  			"replace"
+  		],
+  		$$props
+  	);
+
+  	let { $$slots = {}, $$scope } = $$props;
+  	validate_slots("Button", $$slots, ['default']);
+
+  	function click_handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	function mouseover_handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	function _handler(event) {
+  		bubble($$self, event);
+  	}
+
+  	function click_handler_1(event) {
+  		bubble($$self, event);
+  	}
+
+  	function mouseover_handler_1(event) {
+  		bubble($$self, event);
+  	}
+
+  	function _handler_1(event) {
+  		bubble($$self, event);
+  	}
+
+  	const click_handler_2 = () => $$invalidate(0, value = !value);
+  	const click_handler_3 = () => $$invalidate(0, value = !value);
+
+  	$$self.$set = $$new_props => {
+  		$$invalidate(41, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
+  		if ("class" in $$new_props) $$invalidate(10, className = $$new_props.class);
+  		if ("value" in $$new_props) $$invalidate(0, value = $$new_props.value);
+  		if ("outlined" in $$new_props) $$invalidate(11, outlined = $$new_props.outlined);
+  		if ("text" in $$new_props) $$invalidate(12, text = $$new_props.text);
+  		if ("block" in $$new_props) $$invalidate(13, block = $$new_props.block);
+  		if ("disabled" in $$new_props) $$invalidate(2, disabled = $$new_props.disabled);
+  		if ("icon" in $$new_props) $$invalidate(3, icon = $$new_props.icon);
+  		if ("small" in $$new_props) $$invalidate(4, small = $$new_props.small);
+  		if ("light" in $$new_props) $$invalidate(14, light = $$new_props.light);
+  		if ("dark" in $$new_props) $$invalidate(15, dark = $$new_props.dark);
+  		if ("flat" in $$new_props) $$invalidate(16, flat = $$new_props.flat);
+  		if ("iconClass" in $$new_props) $$invalidate(17, iconClass = $$new_props.iconClass);
+  		if ("color" in $$new_props) $$invalidate(18, color = $$new_props.color);
+  		if ("href" in $$new_props) $$invalidate(5, href = $$new_props.href);
+  		if ("fab" in $$new_props) $$invalidate(9, fab = $$new_props.fab);
+  		if ("remove" in $$new_props) $$invalidate(19, remove = $$new_props.remove);
+  		if ("add" in $$new_props) $$invalidate(20, add = $$new_props.add);
+  		if ("replace" in $$new_props) $$invalidate(21, replace = $$new_props.replace);
+  		if ("classes" in $$new_props) $$invalidate(1, classes = $$new_props.classes);
+  		if ("basicClasses" in $$new_props) $$invalidate(22, basicClasses = $$new_props.basicClasses);
+  		if ("outlinedClasses" in $$new_props) $$invalidate(23, outlinedClasses = $$new_props.outlinedClasses);
+  		if ("textClasses" in $$new_props) $$invalidate(24, textClasses = $$new_props.textClasses);
+  		if ("iconClasses" in $$new_props) $$invalidate(25, iconClasses = $$new_props.iconClasses);
+  		if ("fabClasses" in $$new_props) $$invalidate(26, fabClasses = $$new_props.fabClasses);
+  		if ("smallClasses" in $$new_props) $$invalidate(27, smallClasses = $$new_props.smallClasses);
+  		if ("disabledClasses" in $$new_props) $$invalidate(28, disabledClasses = $$new_props.disabledClasses);
+  		if ("elevationClasses" in $$new_props) $$invalidate(29, elevationClasses = $$new_props.elevationClasses);
+  		if ("$$scope" in $$new_props) $$invalidate(51, $$scope = $$new_props.$$scope);
+  	};
+
+  	$$self.$capture_state = () => ({
+  		Icon,
+  		utils: utils$2,
+  		ClassBuilder,
+  		filterProps,
+  		createRipple: r,
+  		className,
+  		value,
+  		outlined,
+  		text,
+  		block,
+  		disabled,
+  		icon,
+  		small,
+  		light,
+  		dark,
+  		flat,
+  		iconClass,
+  		color,
+  		href,
+  		fab,
+  		remove,
+  		add,
+  		replace,
+  		classesDefault: classesDefault$1,
+  		basicDefault,
+  		outlinedDefault,
+  		textDefault,
+  		iconDefault,
+  		fabDefault,
+  		smallDefault,
+  		disabledDefault,
+  		elevationDefault,
+  		classes,
+  		basicClasses,
+  		outlinedClasses,
+  		textClasses,
+  		iconClasses,
+  		fabClasses,
+  		smallClasses,
+  		disabledClasses,
+  		elevationClasses,
+  		basic,
+  		elevation,
+  		Classes,
+  		iClasses,
+  		shade,
+  		bg,
+  		border,
+  		txt,
+  		cb,
+  		iconCb,
+  		ripple,
+  		props,
+  		normal,
+  		lighter
+  	});
+
+  	$$self.$inject_state = $$new_props => {
+  		$$invalidate(41, $$props = assign(assign({}, $$props), $$new_props));
+  		if ("className" in $$props) $$invalidate(10, className = $$new_props.className);
+  		if ("value" in $$props) $$invalidate(0, value = $$new_props.value);
+  		if ("outlined" in $$props) $$invalidate(11, outlined = $$new_props.outlined);
+  		if ("text" in $$props) $$invalidate(12, text = $$new_props.text);
+  		if ("block" in $$props) $$invalidate(13, block = $$new_props.block);
+  		if ("disabled" in $$props) $$invalidate(2, disabled = $$new_props.disabled);
+  		if ("icon" in $$props) $$invalidate(3, icon = $$new_props.icon);
+  		if ("small" in $$props) $$invalidate(4, small = $$new_props.small);
+  		if ("light" in $$props) $$invalidate(14, light = $$new_props.light);
+  		if ("dark" in $$props) $$invalidate(15, dark = $$new_props.dark);
+  		if ("flat" in $$props) $$invalidate(16, flat = $$new_props.flat);
+  		if ("iconClass" in $$props) $$invalidate(17, iconClass = $$new_props.iconClass);
+  		if ("color" in $$props) $$invalidate(18, color = $$new_props.color);
+  		if ("href" in $$props) $$invalidate(5, href = $$new_props.href);
+  		if ("fab" in $$props) $$invalidate(9, fab = $$new_props.fab);
+  		if ("remove" in $$props) $$invalidate(19, remove = $$new_props.remove);
+  		if ("add" in $$props) $$invalidate(20, add = $$new_props.add);
+  		if ("replace" in $$props) $$invalidate(21, replace = $$new_props.replace);
+  		if ("classes" in $$props) $$invalidate(1, classes = $$new_props.classes);
+  		if ("basicClasses" in $$props) $$invalidate(22, basicClasses = $$new_props.basicClasses);
+  		if ("outlinedClasses" in $$props) $$invalidate(23, outlinedClasses = $$new_props.outlinedClasses);
+  		if ("textClasses" in $$props) $$invalidate(24, textClasses = $$new_props.textClasses);
+  		if ("iconClasses" in $$props) $$invalidate(25, iconClasses = $$new_props.iconClasses);
+  		if ("fabClasses" in $$props) $$invalidate(26, fabClasses = $$new_props.fabClasses);
+  		if ("smallClasses" in $$props) $$invalidate(27, smallClasses = $$new_props.smallClasses);
+  		if ("disabledClasses" in $$props) $$invalidate(28, disabledClasses = $$new_props.disabledClasses);
+  		if ("elevationClasses" in $$props) $$invalidate(29, elevationClasses = $$new_props.elevationClasses);
+  		if ("Classes" in $$props) Classes = $$new_props.Classes;
+  		if ("iClasses" in $$props) $$invalidate(6, iClasses = $$new_props.iClasses);
+  		if ("shade" in $$props) $$invalidate(30, shade = $$new_props.shade);
+  		if ("iconCb" in $$props) $$invalidate(31, iconCb = $$new_props.iconCb);
+  		if ("normal" in $$props) $$invalidate(32, normal = $$new_props.normal);
+  		if ("lighter" in $$props) $$invalidate(33, lighter = $$new_props.lighter);
+  	};
+
+  	let normal;
+  	let lighter;
+
+  	if ($$props && "$$inject" in $$props) {
+  		$$self.$inject_state($$props.$$inject);
+  	}
+
+  	$$self.$$.update = () => {
+  		if ($$self.$$.dirty[0] & /*light, dark, shade*/ 1073790976) {
+  			 {
+  				$$invalidate(30, shade = light ? 200 : 0);
+  				$$invalidate(30, shade = dark ? -400 : shade);
+  			}
+  		}
+
+  		if ($$self.$$.dirty[0] & /*shade*/ 1073741824) {
+  			 $$invalidate(32, normal = 500 - shade);
+  		}
+
+  		if ($$self.$$.dirty[0] & /*shade*/ 1073741824) {
+  			 $$invalidate(33, lighter = 400 - shade);
+  		}
+
+  		if ($$self.$$.dirty[0] & /*basicClasses, elevationClasses, outlinedClasses, outlined, text, textClasses, iconClasses, icon, fab, disabledClasses, disabled, smallClasses, small, block, fabClasses, className, remove, replace, add*/ 1073233436 | $$self.$$.dirty[1] & /*normal, lighter*/ 6) {
+  			 $$invalidate(1, classes = cb.flush().add(basicClasses, basic, basicDefault).add(`${bg(normal)} hover:${bg(lighter)}`, basic).add(elevationClasses, elevation, elevationDefault).add(outlinedClasses, outlined, outlinedDefault).add(`${border(lighter)} ${txt(normal)} hover:${bg("trans")} dark-hover:${bg("transDark")}`, outlined).add(`${txt(lighter)}`, text).add(textClasses, text, textDefault).add(iconClasses, icon, iconDefault).remove("py-2", icon).remove(txt(lighter), fab).add(disabledClasses, disabled, disabledDefault).add(smallClasses, small, smallDefault).add("flex items-center justify-center h-8 w-8", small && icon).add("border-solid", outlined).add("rounded-full", icon).add("w-full", block).add("rounded", basic || outlined || text).add("button", !icon).add(fabClasses, fab, fabDefault).add(`hover:${bg("transLight")}`, fab).add(className).remove(remove).replace(replace).add(add).get());
+  		}
+
+  		if ($$self.$$.dirty[0] & /*fab, iconClass*/ 131584 | $$self.$$.dirty[1] & /*iconCb*/ 1) {
+  			 if (iconCb) {
+  				$$invalidate(6, iClasses = iconCb.flush().add(txt(), fab && !iconClass).get());
+  			}
+  		}
+  	};
+
+  	$$props = exclude_internal_props($$props);
+
+  	return [
+  		value,
+  		classes,
+  		disabled,
+  		icon,
+  		small,
+  		href,
+  		iClasses,
+  		ripple,
+  		props,
+  		fab,
+  		className,
+  		outlined,
+  		text,
+  		block,
+  		light,
+  		dark,
+  		flat,
+  		iconClass,
+  		color,
+  		remove,
+  		add,
+  		replace,
+  		basicClasses,
+  		outlinedClasses,
+  		textClasses,
+  		iconClasses,
+  		fabClasses,
+  		smallClasses,
+  		disabledClasses,
+  		elevationClasses,
+  		shade,
+  		iconCb,
+  		normal,
+  		lighter,
+  		basic,
+  		elevation,
+  		Classes,
+  		bg,
+  		border,
+  		txt,
+  		cb,
+  		$$props,
+  		$$slots,
+  		click_handler,
+  		mouseover_handler,
+  		_handler,
+  		click_handler_1,
+  		mouseover_handler_1,
+  		_handler_1,
+  		click_handler_2,
+  		click_handler_3,
+  		$$scope
+  	];
+  }
+
+  class Button extends SvelteComponentDev {
+  	constructor(options) {
+  		super(options);
+
+  		init(
+  			this,
+  			options,
+  			instance$a,
+  			create_fragment$a,
+  			safe_not_equal,
+  			{
+  				class: 10,
+  				value: 0,
+  				outlined: 11,
+  				text: 12,
+  				block: 13,
+  				disabled: 2,
+  				icon: 3,
+  				small: 4,
+  				light: 14,
+  				dark: 15,
+  				flat: 16,
+  				iconClass: 17,
+  				color: 18,
+  				href: 5,
+  				fab: 9,
+  				remove: 19,
+  				add: 20,
+  				replace: 21,
+  				classes: 1,
+  				basicClasses: 22,
+  				outlinedClasses: 23,
+  				textClasses: 24,
+  				iconClasses: 25,
+  				fabClasses: 26,
+  				smallClasses: 27,
+  				disabledClasses: 28,
+  				elevationClasses: 29
+  			},
+  			[-1, -1]
+  		);
+
+  		dispatch_dev("SvelteRegisterComponent", {
+  			component: this,
+  			tagName: "Button",
+  			options,
+  			id: create_fragment$a.name
+  		});
+  	}
+
+  	get class() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set class(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get value() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set value(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get outlined() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set outlined(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get text() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set text(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get block() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set block(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get disabled() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set disabled(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get icon() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set icon(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get small() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set small(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get light() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set light(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get dark() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set dark(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get flat() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set flat(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get iconClass() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set iconClass(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get color() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set color(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get href() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set href(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get fab() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set fab(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get remove() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set remove(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get add() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set add(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get replace() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set replace(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get classes() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set classes(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get basicClasses() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set basicClasses(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get outlinedClasses() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set outlinedClasses(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get textClasses() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set textClasses(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get iconClasses() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set iconClasses(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get fabClasses() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set fabClasses(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get smallClasses() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set smallClasses(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get disabledClasses() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set disabledClasses(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	get elevationClasses() {
+  		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+
+  	set elevationClasses(value) {
+  		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+  	}
+  }
+
   function _createSuper$5(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$6()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$6() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$5 = "src/components/ContactForm.svelte";
+  var file$b = "src/components/ContactForm.svelte"; // (67:12) <Button light block on:click={send_message}>
 
-  function create_fragment$5(ctx) {
+  function create_default_slot$2(ctx) {
+    var t;
+    var block = {
+      c: function create() {
+        t = text("Send");
+      },
+      m: function mount(target, anchor) {
+        insert_dev(target, t, anchor);
+      },
+      d: function destroy(detaching) {
+        if (detaching) detach_dev(t);
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_default_slot$2.name,
+      type: "slot",
+      source: "(67:12) <Button light block on:click={send_message}>",
+      ctx: ctx
+    });
+    return block;
+  }
+
+  function create_fragment$b(ctx) {
     var section;
-    var div12;
     var div1;
     var div0;
     var h2;
     var t1;
     var h5;
     var t3;
-    var div11;
-    var div10;
-    var div9;
     var div5;
     var div2;
-    var input0;
     var t4;
-    var div3;
-    var input1;
-    var t5;
     var div4;
+    var updating_value;
+    var t5;
+    var updating_value_1;
     var t6;
-    var div7;
-    var div6;
-    var textarea;
+    var div3;
     var t7;
-    var div8;
-    var button;
-    var span;
+    var updating_value_2;
     var t8;
-    var dispose;
+    var current;
+
+    function textfield0_value_binding(value) {
+      /*textfield0_value_binding*/
+      ctx[3].call(null, value);
+    }
+
+    var textfield0_props = {
+      label: "Name"
+    };
+
+    if (
+    /*message_data*/
+    ctx[0].name !== void 0) {
+      textfield0_props.value =
+      /*message_data*/
+      ctx[0].name;
+    }
+
+    var textfield0 = new TextField({
+      props: textfield0_props,
+      $$inline: true
+    });
+    binding_callbacks.push(function () {
+      return bind(textfield0, "value", textfield0_value_binding);
+    });
+
+    function textfield1_value_binding(value) {
+      /*textfield1_value_binding*/
+      ctx[4].call(null, value);
+    }
+
+    var textfield1_props = {
+      label: "Email"
+    };
+
+    if (
+    /*message_data*/
+    ctx[0].email !== void 0) {
+      textfield1_props.value =
+      /*message_data*/
+      ctx[0].email;
+    }
+
+    var textfield1 = new TextField({
+      props: textfield1_props,
+      $$inline: true
+    });
+    binding_callbacks.push(function () {
+      return bind(textfield1, "value", textfield1_value_binding);
+    });
+
+    function textfield2_value_binding(value) {
+      /*textfield2_value_binding*/
+      ctx[5].call(null, value);
+    }
+
+    var textfield2_props = {
+      label: "Message text",
+      textarea: true,
+      rows: "3"
+    };
+
+    if (
+    /*message_data*/
+    ctx[0].text !== void 0) {
+      textfield2_props.value =
+      /*message_data*/
+      ctx[0].text;
+    }
+
+    var textfield2 = new TextField({
+      props: textfield2_props,
+      $$inline: true
+    });
+    binding_callbacks.push(function () {
+      return bind(textfield2, "value", textfield2_value_binding);
+    });
+    var button = new Button({
+      props: {
+        light: true,
+        block: true,
+        $$slots: {
+          default: [create_default_slot$2]
+        },
+        $$scope: {
+          ctx: ctx
+        }
+      },
+      $$inline: true
+    });
+    button.$on("click",
+    /*send_message*/
+    ctx[1]);
     var block = {
       c: function create() {
         section = element("section");
-        div12 = element("div");
         div1 = element("div");
         div0 = element("div");
         h2 = element("h2");
@@ -7787,171 +12132,154 @@ var app = (function () {
         h5 = element("h5");
         h5.textContent = "Send me a message for any questions";
         t3 = space();
-        div11 = element("div");
-        div10 = element("div");
-        div9 = element("div");
         div5 = element("div");
         div2 = element("div");
-        input0 = element("input");
         t4 = space();
-        div3 = element("div");
-        input1 = element("input");
-        t5 = space();
         div4 = element("div");
+        create_component(textfield0.$$.fragment);
+        t5 = space();
+        create_component(textfield1.$$.fragment);
         t6 = space();
-        div7 = element("div");
-        div6 = element("div");
-        textarea = element("textarea");
+        div3 = element("div");
         t7 = space();
-        div8 = element("div");
-        button = element("button");
-        span = element("span");
-        t8 = text("\n                             Send message");
-        attr_dev(h2, "class", "section-heading svelte-131atxb");
-        add_location(h2, file$5, 49, 16, 1380);
-        attr_dev(h5, "class", "svelte-131atxb");
-        add_location(h5, file$5, 50, 16, 1437);
-        attr_dev(div0, "class", "col-md-12 col-sm-12 col-xs-12 text-center");
-        add_location(div0, file$5, 48, 12, 1308);
-        attr_dev(div1, "class", "row");
-        add_location(div1, file$5, 47, 8, 1278);
-        attr_dev(input0, "type", "text");
-        attr_dev(input0, "class", "form-control svelte-131atxb");
-        attr_dev(input0, "placeholder", "Name");
-        add_location(input0, file$5, 59, 28, 1772);
-        attr_dev(div2, "class", "form-group svelte-131atxb");
-        add_location(div2, file$5, 58, 24, 1719);
-        attr_dev(input1, "type", "email");
-        attr_dev(input1, "class", "form-control svelte-131atxb");
-        attr_dev(input1, "placeholder", "Email");
-        add_location(input1, file$5, 64, 28, 2041);
-        attr_dev(div3, "class", "form-group svelte-131atxb");
-        add_location(div3, file$5, 63, 24, 1988);
-        attr_dev(div4, "class", "g-recaptcha svelte-131atxb");
-        attr_dev(div4, "data-sitekey", RECAPTCHA_SITE_KEY);
-        add_location(div4, file$5, 68, 24, 2260);
-        attr_dev(div5, "class", "col-md-6 col-sm-6 col-xs-12");
-        add_location(div5, file$5, 57, 20, 1653);
-        attr_dev(textarea, "class", "form-control svelte-131atxb");
-        attr_dev(textarea, "placeholder", "Message text");
-        add_location(textarea, file$5, 73, 28, 2523);
-        attr_dev(div6, "class", "form-group svelte-131atxb");
-        add_location(div6, file$5, 72, 24, 2470);
-        attr_dev(div7, "class", "col-md-6 col-sm-6 col-xs-12");
-        add_location(div7, file$5, 71, 20, 2404);
-        attr_dev(span, "class", "glyphicon glyphicon-send");
-        add_location(span, file$5, 81, 28, 2963);
-        attr_dev(button, "type", "submit");
-        attr_dev(button, "class", "btn btn-xl pull-right");
-        add_location(button, file$5, 79, 24, 2826);
-        attr_dev(div8, "class", "col-md-12");
-        add_location(div8, file$5, 78, 20, 2778);
-        attr_dev(div9, "class", "row");
-        add_location(div9, file$5, 56, 16, 1615);
-        attr_dev(div10, "class", "col-md-12 col-sm-12 col-xs-12");
-        add_location(div10, file$5, 55, 12, 1555);
-        attr_dev(div11, "class", "row");
-        add_location(div11, file$5, 54, 8, 1525);
-        attr_dev(div12, "class", "container");
-        add_location(div12, file$5, 45, 4, 1245);
+        create_component(textfield2.$$.fragment);
+        t8 = space();
+        create_component(button.$$.fragment);
+        attr_dev(h2, "class", "text-center text-3xl text-white");
+        add_location(h2, file$b, 50, 12, 1448);
+        attr_dev(h5, "class", "text-center text-xl text-white");
+        add_location(h5, file$b, 53, 12, 1547);
+        attr_dev(div0, "class", "w-full");
+        add_location(div0, file$b, 49, 8, 1415);
+        attr_dev(div1, "class", "flex mt-20 mb-12");
+        add_location(div1, file$b, 48, 4, 1376);
+        attr_dev(div2, "class", "lg:w-1/3");
+        add_location(div2, file$b, 60, 8, 1747);
+        attr_dev(div3, "class", "g-recaptcha lg:pb-3");
+        attr_dev(div3, "data-sitekey", RECAPTCHA_SITE_KEY);
+        add_location(div3, file$b, 64, 12, 1987);
+        attr_dev(div4, "class", "w-full lg:w-1/3 sm:px:12 text-center");
+        add_location(div4, file$b, 61, 8, 1784);
+        attr_dev(div5, "class", "flex flex-wrap md:px-12 lg:px-64");
+        add_location(div5, file$b, 59, 4, 1692);
         attr_dev(section, "id", "contact");
-        attr_dev(section, "class", "svelte-131atxb");
-        add_location(section, file$5, 44, 0, 1218);
+        attr_dev(section, "class", "py-64 svelte-1ylt5nz");
+        add_location(section, file$b, 46, 0, 1334);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
       },
-      m: function mount(target, anchor, remount) {
+      m: function mount(target, anchor) {
         insert_dev(target, section, anchor);
-        append_dev(section, div12);
-        append_dev(div12, div1);
+        append_dev(section, div1);
         append_dev(div1, div0);
         append_dev(div0, h2);
         append_dev(div0, t1);
         append_dev(div0, h5);
-        append_dev(div12, t3);
-        append_dev(div12, div11);
-        append_dev(div11, div10);
-        append_dev(div10, div9);
-        append_dev(div9, div5);
+        append_dev(section, t3);
+        append_dev(section, div5);
         append_dev(div5, div2);
-        append_dev(div2, input0);
-        set_input_value(input0,
-        /*message_data*/
-        ctx[0].name);
         append_dev(div5, t4);
-        append_dev(div5, div3);
-        append_dev(div3, input1);
-        set_input_value(input1,
-        /*message_data*/
-        ctx[0].email);
-        append_dev(div5, t5);
         append_dev(div5, div4);
-        append_dev(div9, t6);
-        append_dev(div9, div7);
-        append_dev(div7, div6);
-        append_dev(div6, textarea);
-        set_input_value(textarea,
-        /*message_data*/
-        ctx[0].text);
-        append_dev(div9, t7);
-        append_dev(div9, div8);
-        append_dev(div8, button);
-        append_dev(button, span);
-        append_dev(button, t8);
-        if (remount) run_all(dispose);
-        dispose = [listen_dev(input0, "input",
-        /*input0_input_handler*/
-        ctx[3]), listen_dev(input1, "input",
-        /*input1_input_handler*/
-        ctx[4]), listen_dev(textarea, "input",
-        /*textarea_input_handler*/
-        ctx[5]), listen_dev(button, "click",
-        /*send_message*/
-        ctx[1], false, false, false)];
+        mount_component(textfield0, div4, null);
+        append_dev(div4, t5);
+        mount_component(textfield1, div4, null);
+        append_dev(div4, t6);
+        append_dev(div4, div3);
+        append_dev(div4, t7);
+        mount_component(textfield2, div4, null);
+        append_dev(div4, t8);
+        mount_component(button, div4, null);
+        current = true;
       },
       p: function update(ctx, _ref) {
         var _ref2 = _slicedToArray(_ref, 1),
             dirty = _ref2[0];
 
-        if (dirty &
-        /*message_data*/
-        1 && input0.value !==
-        /*message_data*/
-        ctx[0].name) {
-          set_input_value(input0,
-          /*message_data*/
-          ctx[0].name);
-        }
+        var textfield0_changes = {};
 
-        if (dirty &
-        /*message_data*/
-        1 && input1.value !==
-        /*message_data*/
-        ctx[0].email) {
-          set_input_value(input1,
-          /*message_data*/
-          ctx[0].email);
-        }
-
-        if (dirty &
+        if (!updating_value && dirty &
         /*message_data*/
         1) {
-          set_input_value(textarea,
+          updating_value = true;
+          textfield0_changes.value =
           /*message_data*/
-          ctx[0].text);
+          ctx[0].name;
+          add_flush_callback(function () {
+            return updating_value = false;
+          });
         }
+
+        textfield0.$set(textfield0_changes);
+        var textfield1_changes = {};
+
+        if (!updating_value_1 && dirty &
+        /*message_data*/
+        1) {
+          updating_value_1 = true;
+          textfield1_changes.value =
+          /*message_data*/
+          ctx[0].email;
+          add_flush_callback(function () {
+            return updating_value_1 = false;
+          });
+        }
+
+        textfield1.$set(textfield1_changes);
+        var textfield2_changes = {};
+
+        if (!updating_value_2 && dirty &
+        /*message_data*/
+        1) {
+          updating_value_2 = true;
+          textfield2_changes.value =
+          /*message_data*/
+          ctx[0].text;
+          add_flush_callback(function () {
+            return updating_value_2 = false;
+          });
+        }
+
+        textfield2.$set(textfield2_changes);
+        var button_changes = {};
+
+        if (dirty &
+        /*$$scope*/
+        64) {
+          button_changes.$$scope = {
+            dirty: dirty,
+            ctx: ctx
+          };
+        }
+
+        button.$set(button_changes);
       },
-      i: noop,
-      o: noop,
+      i: function intro(local) {
+        if (current) return;
+        transition_in(textfield0.$$.fragment, local);
+        transition_in(textfield1.$$.fragment, local);
+        transition_in(textfield2.$$.fragment, local);
+        transition_in(button.$$.fragment, local);
+        current = true;
+      },
+      o: function outro(local) {
+        transition_out(textfield0.$$.fragment, local);
+        transition_out(textfield1.$$.fragment, local);
+        transition_out(textfield2.$$.fragment, local);
+        transition_out(button.$$.fragment, local);
+        current = false;
+      },
       d: function destroy(detaching) {
         if (detaching) detach_dev(section);
-        run_all(dispose);
+        destroy_component(textfield0);
+        destroy_component(textfield1);
+        destroy_component(textfield2);
+        destroy_component(button);
       }
     };
     dispatch_dev("SvelteRegisterBlock", {
       block: block,
-      id: create_fragment$5.name,
+      id: create_fragment$b.name,
       type: "component",
       source: "",
       ctx: ctx
@@ -7962,7 +12290,7 @@ var app = (function () {
   var send_message_url$1 = "/send/message/";
   var section_id$1 = "#contact";
 
-  function instance$5($$self, $$props, $$invalidate) {
+  function instance$b($$self, $$props, $$invalidate) {
     var message_data = {
       name: "",
       email: "",
@@ -8043,18 +12371,18 @@ var app = (function () {
         $$scope = $$props.$$scope;
     validate_slots("ContactForm", $$slots, []);
 
-    function input0_input_handler() {
-      message_data.name = this.value;
+    function textfield0_value_binding(value) {
+      message_data.name = value;
       $$invalidate(0, message_data);
     }
 
-    function input1_input_handler() {
-      message_data.email = this.value;
+    function textfield1_value_binding(value) {
+      message_data.email = value;
       $$invalidate(0, message_data);
     }
 
-    function textarea_input_handler() {
-      message_data.text = this.value;
+    function textfield2_value_binding(value) {
+      message_data.text = value;
       $$invalidate(0, message_data);
     }
 
@@ -8064,6 +12392,8 @@ var app = (function () {
         utils: utils,
         RECAPTCHA_SITE_KEY: RECAPTCHA_SITE_KEY,
         requests: requests,
+        TextField: TextField,
+        Button: Button,
         message_data: message_data,
         send_message_url: send_message_url$1,
         section_id: section_id$1,
@@ -8072,7 +12402,7 @@ var app = (function () {
       };
     };
 
-    return [message_data, send_message, reset_form, input0_input_handler, input1_input_handler, textarea_input_handler];
+    return [message_data, send_message, reset_form, textfield0_value_binding, textfield1_value_binding, textfield2_value_binding];
   }
 
   var ContactForm = /*#__PURE__*/function (_SvelteComponentDev) {
@@ -8086,12 +12416,12 @@ var app = (function () {
       _classCallCheck(this, ContactForm);
 
       _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$5, create_fragment$5, safe_not_equal, {});
+      init(_assertThisInitialized(_this), options, instance$b, create_fragment$b, safe_not_equal, {});
       dispatch_dev("SvelteRegisterComponent", {
         component: _assertThisInitialized(_this),
         tagName: "ContactForm",
         options: options,
-        id: create_fragment$5.name
+        id: create_fragment$b.name
       });
       return _this;
     }
@@ -8102,9 +12432,9 @@ var app = (function () {
   function _createSuper$6(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$7()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$7() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$6 = "src/components/Footer.svelte";
+  var file$c = "src/components/Footer.svelte";
 
-  function create_fragment$6(ctx) {
+  function create_fragment$c(ctx) {
     var footer;
     var div2;
     var div1;
@@ -8148,47 +12478,47 @@ var app = (function () {
         a3 = element("a");
         i3 = element("i");
         attr_dev(i0, "class", "fa fa-instagram");
-        add_location(i0, file$6, 14, 91, 563);
+        add_location(i0, file$c, 14, 91, 563);
         attr_dev(a0, "href", instagram_url);
         attr_dev(a0, "target", "_blank");
         attr_dev(a0, "class", "svelte-h5odt3");
-        add_location(a0, file$6, 14, 49, 521);
+        add_location(a0, file$c, 14, 49, 521);
         attr_dev(li0, "class", "list-inline-item");
-        add_location(li0, file$6, 14, 20, 492);
+        add_location(li0, file$c, 14, 20, 492);
         attr_dev(i1, "class", "fa fa-twitter");
-        add_location(i1, file$6, 15, 87, 691);
+        add_location(i1, file$c, 15, 87, 691);
         attr_dev(a1, "href", twitter_url);
         attr_dev(a1, "target", "_blank");
         attr_dev(a1, "class", "svelte-h5odt3");
-        add_location(a1, file$6, 15, 49, 653);
+        add_location(a1, file$c, 15, 49, 653);
         attr_dev(li1, "class", "list-inline-item");
-        add_location(li1, file$6, 15, 20, 624);
+        add_location(li1, file$c, 15, 20, 624);
         attr_dev(i2, "class", "fa fa-linkedin");
-        add_location(i2, file$6, 16, 88, 818);
+        add_location(i2, file$c, 16, 88, 818);
         attr_dev(a2, "href", linkedin_url);
         attr_dev(a2, "target", "_blank");
         attr_dev(a2, "class", "svelte-h5odt3");
-        add_location(a2, file$6, 16, 49, 779);
+        add_location(a2, file$c, 16, 49, 779);
         attr_dev(li2, "class", "list-inline-item");
-        add_location(li2, file$6, 16, 20, 750);
+        add_location(li2, file$c, 16, 20, 750);
         attr_dev(i3, "class", "fa fa-github");
-        add_location(i3, file$6, 17, 86, 944);
+        add_location(i3, file$c, 17, 86, 944);
         attr_dev(a3, "href", github_url);
         attr_dev(a3, "target", "_blank");
         attr_dev(a3, "class", "svelte-h5odt3");
-        add_location(a3, file$6, 17, 49, 907);
+        add_location(a3, file$c, 17, 49, 907);
         attr_dev(li3, "class", "list-inline-item");
-        add_location(li3, file$6, 17, 20, 878);
+        add_location(li3, file$c, 17, 20, 878);
         attr_dev(ul, "class", "list-inline social-buttons svelte-h5odt3");
-        add_location(ul, file$6, 13, 16, 432);
+        add_location(ul, file$c, 13, 16, 432);
         attr_dev(div0, "class", "col-md-12");
-        add_location(div0, file$6, 12, 12, 392);
+        add_location(div0, file$c, 12, 12, 392);
         attr_dev(div1, "class", "row");
-        add_location(div1, file$6, 11, 8, 362);
+        add_location(div1, file$c, 11, 8, 362);
         attr_dev(div2, "class", "container");
-        add_location(div2, file$6, 10, 4, 330);
+        add_location(div2, file$c, 10, 4, 330);
         attr_dev(footer, "class", "svelte-h5odt3");
-        add_location(footer, file$6, 9, 0, 317);
+        add_location(footer, file$c, 9, 0, 317);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -8224,7 +12554,7 @@ var app = (function () {
     };
     dispatch_dev("SvelteRegisterBlock", {
       block: block,
-      id: create_fragment$6.name,
+      id: create_fragment$c.name,
       type: "component",
       source: "",
       ctx: ctx
@@ -8237,7 +12567,7 @@ var app = (function () {
   var linkedin_url = "https://www.linkedin.com/profile/preview?locale=es_ES&trk=prof-0-sb-preview-primary-button";
   var github_url = "https://github.com/bertini36";
 
-  function instance$6($$self, $$props, $$invalidate) {
+  function instance$c($$self, $$props, $$invalidate) {
     var writable_props = [];
     Object.keys($$props).forEach(function (key) {
       if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<Footer> was created with unknown prop '".concat(key, "'"));
@@ -8270,12 +12600,12 @@ var app = (function () {
       _classCallCheck(this, Footer);
 
       _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$6, create_fragment$6, safe_not_equal, {});
+      init(_assertThisInitialized(_this), options, instance$c, create_fragment$c, safe_not_equal, {});
       dispatch_dev("SvelteRegisterComponent", {
         component: _assertThisInitialized(_this),
         tagName: "Footer",
         options: options,
-        id: create_fragment$6.name
+        id: create_fragment$c.name
       });
       return _this;
     }
@@ -8286,9 +12616,9 @@ var app = (function () {
   function _createSuper$7(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$8()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$8() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$7 = "src/pages/Blog.svelte";
+  var file$d = "src/pages/Blog.svelte";
 
-  function create_fragment$7(ctx) {
+  function create_fragment$d(ctx) {
     var main;
     var t0;
     var t1;
@@ -8316,7 +12646,7 @@ var app = (function () {
         create_component(contactform.$$.fragment);
         t2 = space();
         create_component(footer.$$.fragment);
-        add_location(main, file$7, 9, 0, 252);
+        add_location(main, file$d, 9, 0, 252);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -8358,7 +12688,7 @@ var app = (function () {
     };
     dispatch_dev("SvelteRegisterBlock", {
       block: block,
-      id: create_fragment$7.name,
+      id: create_fragment$d.name,
       type: "component",
       source: "",
       ctx: ctx
@@ -8366,7 +12696,7 @@ var app = (function () {
     return block;
   }
 
-  function instance$7($$self, $$props, $$invalidate) {
+  function instance$d($$self, $$props, $$invalidate) {
     var writable_props = [];
     Object.keys($$props).forEach(function (key) {
       if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<Blog> was created with unknown prop '".concat(key, "'"));
@@ -8399,12 +12729,12 @@ var app = (function () {
       _classCallCheck(this, Blog);
 
       _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$7, create_fragment$7, safe_not_equal, {});
+      init(_assertThisInitialized(_this), options, instance$d, create_fragment$d, safe_not_equal, {});
       dispatch_dev("SvelteRegisterComponent", {
         component: _assertThisInitialized(_this),
         tagName: "Blog",
         options: options,
-        id: create_fragment$7.name
+        id: create_fragment$d.name
       });
       return _this;
     }
@@ -8415,9 +12745,9 @@ var app = (function () {
   function _createSuper$8(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$9()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$9() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$8 = "src/pages/PageNotFound.svelte";
+  var file$e = "src/pages/PageNotFound.svelte";
 
-  function create_fragment$8(ctx) {
+  function create_fragment$e(ctx) {
     var img;
     var img_src_value;
     var block = {
@@ -8426,7 +12756,7 @@ var app = (function () {
         if (img.src !== (img_src_value = page_not_found_img_url)) attr_dev(img, "src", img_src_value);
         attr_dev(img, "alt", "Page Not Found");
         attr_dev(img, "class", "svelte-1t00jwv");
-        add_location(img, file$8, 6, 0, 91);
+        add_location(img, file$e, 6, 0, 91);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -8443,7 +12773,7 @@ var app = (function () {
     };
     dispatch_dev("SvelteRegisterBlock", {
       block: block,
-      id: create_fragment$8.name,
+      id: create_fragment$e.name,
       type: "component",
       source: "",
       ctx: ctx
@@ -8453,7 +12783,7 @@ var app = (function () {
 
   var page_not_found_img_url = "/static/img/page_not_found.png";
 
-  function instance$8($$self, $$props, $$invalidate) {
+  function instance$e($$self, $$props, $$invalidate) {
     var writable_props = [];
     Object.keys($$props).forEach(function (key) {
       if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<PageNotFound> was created with unknown prop '".concat(key, "'"));
@@ -8483,12 +12813,12 @@ var app = (function () {
       _classCallCheck(this, PageNotFound);
 
       _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$8, create_fragment$8, safe_not_equal, {});
+      init(_assertThisInitialized(_this), options, instance$e, create_fragment$e, safe_not_equal, {});
       dispatch_dev("SvelteRegisterComponent", {
         component: _assertThisInitialized(_this),
         tagName: "PageNotFound",
         options: options,
-        id: create_fragment$8.name
+        id: create_fragment$e.name
       });
       return _this;
     }
@@ -8499,9 +12829,9 @@ var app = (function () {
   function _createSuper$9(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$a()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$a() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$9 = "src/components/Navbar.svelte";
+  var file$f = "src/components/Navbar.svelte";
 
-  function create_fragment$9(ctx) {
+  function create_fragment$f(ctx) {
     var nav;
     var a0;
     var img0;
@@ -8542,35 +12872,35 @@ var app = (function () {
         if (img0.src !== (img0_src_value = logo_img_url)) attr_dev(img0, "src", img0_src_value);
         attr_dev(img0, "width", "35");
         attr_dev(img0, "height", "35");
-        add_location(img0, file$9, 51, 8, 1882);
+        add_location(img0, file$f, 51, 8, 1882);
         attr_dev(a0, "class", "px-2 md:px-8 flex items-center");
         attr_dev(a0, "href", "#");
-        add_location(a0, file$9, 50, 4, 1822);
+        add_location(a0, file$f, 50, 4, 1822);
         attr_dev(div0, "class", "flex-grow");
-        add_location(div0, file$9, 53, 4, 1961);
+        add_location(div0, file$f, 53, 4, 1961);
         attr_dev(div1, "class", "flex flex-col items-center content-center text-base");
-        add_location(div1, file$9, 56, 12, 2249);
+        add_location(div1, file$f, 56, 12, 2249);
         attr_dev(a1, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight hover:text-white");
         attr_dev(a1, "href", "#posts");
-        add_location(a1, file$9, 55, 8, 2068);
+        add_location(a1, file$f, 55, 8, 2068);
         attr_dev(div2, "class", "flex flex-col items-center content-center text-base");
-        add_location(div2, file$9, 61, 12, 2560);
+        add_location(div2, file$f, 61, 12, 2560);
         attr_dev(a2, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight hover:text-white");
         attr_dev(a2, "href", "#contact");
-        add_location(a2, file$9, 60, 8, 2377);
+        add_location(a2, file$f, 60, 8, 2377);
         attr_dev(div3, "class", "y-0 h-full items-center relative mx-auto z-20 flex");
-        add_location(div3, file$9, 54, 4, 1995);
+        add_location(div3, file$f, 54, 4, 1995);
         attr_dev(img1, "alt", "Blog Github");
         if (img1.src !== (img1_src_value = github_img_url)) attr_dev(img1, "src", img1_src_value);
         attr_dev(img1, "width", "24");
         attr_dev(img1, "height", "24");
-        add_location(img1, file$9, 67, 8, 2790);
+        add_location(img1, file$f, 67, 8, 2790);
         attr_dev(a3, "class", "px-4 github svelte-1d0txue mr-5");
         attr_dev(a3, "href", blog_github_url);
         attr_dev(a3, "target", "_blank");
-        add_location(a3, file$9, 66, 4, 2697);
+        add_location(a3, file$f, 66, 4, 2697);
         attr_dev(nav, "class", "fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-dark-500");
-        add_location(nav, file$9, 49, 0, 1710);
+        add_location(nav, file$f, 49, 0, 1710);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -8601,7 +12931,7 @@ var app = (function () {
     };
     dispatch_dev("SvelteRegisterBlock", {
       block: block,
-      id: create_fragment$9.name,
+      id: create_fragment$f.name,
       type: "component",
       source: "",
       ctx: ctx
@@ -8613,7 +12943,7 @@ var app = (function () {
   var blog_github_url = "https://github.com/bertini36/blog";
   var github_img_url = "/static/img/github.png";
 
-  function instance$9($$self, $$props, $$invalidate) {
+  function instance$f($$self, $$props, $$invalidate) {
     var $routes;
     var $active_route;
     var $posts;
@@ -8773,12 +13103,12 @@ var app = (function () {
       _classCallCheck(this, Navbar);
 
       _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$9, create_fragment$9, safe_not_equal, {});
+      init(_assertThisInitialized(_this), options, instance$f, create_fragment$f, safe_not_equal, {});
       dispatch_dev("SvelteRegisterComponent", {
         component: _assertThisInitialized(_this),
         tagName: "Navbar",
         options: options,
-        id: create_fragment$9.name
+        id: create_fragment$f.name
       });
       return _this;
     }
@@ -8789,9 +13119,9 @@ var app = (function () {
   function _createSuper$a(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$b()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$b() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$a = "src/App.svelte"; // (14:2) {#if active_page}
+  var file$g = "src/App.svelte"; // (14:2) {#if active_page}
 
-  function create_if_block$1(ctx) {
+  function create_if_block$3(ctx) {
     var switch_instance_anchor;
     var current;
     var switch_value =
@@ -8860,7 +13190,7 @@ var app = (function () {
     };
     dispatch_dev("SvelteRegisterBlock", {
       block: block,
-      id: create_if_block$1.name,
+      id: create_if_block$3.name,
       type: "if",
       source: "(14:2) {#if active_page}",
       ctx: ctx
@@ -8868,7 +13198,7 @@ var app = (function () {
     return block;
   }
 
-  function create_fragment$a(ctx) {
+  function create_fragment$g(ctx) {
     var div;
     var t;
     var current;
@@ -8880,7 +13210,7 @@ var app = (function () {
     ctx[1]);
     var if_block =
     /*active_page*/
-    ctx[0] && create_if_block$1(ctx);
+    ctx[0] && create_if_block$3(ctx);
     var block = {
       c: function create() {
         div = element("div");
@@ -8888,7 +13218,7 @@ var app = (function () {
         t = space();
         if (if_block) if_block.c();
         attr_dev(div, "id", "app");
-        add_location(div, file$a, 9, 0, 135);
+        add_location(div, file$g, 9, 0, 135);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -8911,7 +13241,7 @@ var app = (function () {
             if_block.p(ctx, dirty);
             transition_in(if_block, 1);
           } else {
-            if_block = create_if_block$1(ctx);
+            if_block = create_if_block$3(ctx);
             if_block.c();
             transition_in(if_block, 1);
             if_block.m(div, null);
@@ -8943,7 +13273,7 @@ var app = (function () {
     };
     dispatch_dev("SvelteRegisterBlock", {
       block: block,
-      id: create_fragment$a.name,
+      id: create_fragment$g.name,
       type: "component",
       source: "",
       ctx: ctx
@@ -8951,7 +13281,7 @@ var app = (function () {
     return block;
   }
 
-  function instance$a($$self, $$props, $$invalidate) {
+  function instance$g($$self, $$props, $$invalidate) {
     var active_page;
     var writable_props = [];
     Object.keys($$props).forEach(function (key) {
@@ -8995,12 +13325,12 @@ var app = (function () {
       _classCallCheck(this, App);
 
       _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$a, create_fragment$a, safe_not_equal, {});
+      init(_assertThisInitialized(_this), options, instance$g, create_fragment$g, safe_not_equal, {});
       dispatch_dev("SvelteRegisterComponent", {
         component: _assertThisInitialized(_this),
         tagName: "App",
         options: options,
-        id: create_fragment$a.name
+        id: create_fragment$g.name
       });
       return _this;
     }
