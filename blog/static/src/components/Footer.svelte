@@ -7,55 +7,29 @@
 
 </script>
 
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="list-inline social-buttons">
-                    <li class="list-inline-item"><a href="{instagram_url}" target="_blank"><i class="fa fa-instagram"></i></a></li>
-                    <li class="list-inline-item"><a href={twitter_url} target="_blank"><i class="fa fa-twitter"></i></a></li>
-                    <li class="list-inline-item"><a href={linkedin_url} target="_blank"><i class="fa fa-linkedin"></i></a></li>
-                    <li class="list-inline-item"><a href={github_url} target="_blank"><i class="fa fa-github"></i></a></li>
-                </ul>
-            </div>
+<footer class="flex p-5">
+    <div class="w-full">
+        <div class="text-center">
+            <a href="{instagram_url}" target="_blank" class="mr-4">
+                <i class="fa fa-instagram text-xl"></i>
+            </a>
+            <a href={twitter_url} target="_blank" class="mr-4">
+                <i class="fa fa-twitter text-xl"></i>
+            </a>
+            <a href={linkedin_url} target="_blank" class="mr-4">
+                <i class="fa fa-linkedin text-xl"></i>
+            </a>
+            <a href={github_url} target="_blank">
+                <i class="fa fa-github text-xl"></i>
+            </a>
         </div>
     </div>
 </footer>
 
 <style>
 
-    footer {
-        padding-top: 1%;
-        padding-bottom: 1%;
-        text-align: center;
-    }
-
-    span {
-        font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
-        line-height: 40px;
-    }
-
-    ul {
-        margin-bottom: 0;
-    }
-
-    a {
-        display: block;
-        width: 40px;
-        height: 40px;
-        border-radius: 100%;
-        font-size: 20px;
-        line-height: 40px;
-        outline: 0;
-        color: #fff;
-        background-color: #222;
-        -webkit-transition: all .3s;
-        -moz-transition: all .3s;
-        transition: all .3s;
-    }
-
     a:hover, a:focus, a:active {
-        background-color: #fed136;
+        color: #f77b72;
     }
 
 </style>

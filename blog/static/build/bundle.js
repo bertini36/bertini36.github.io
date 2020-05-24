@@ -7626,16 +7626,16 @@ var app = (function () {
         attr_dev(img, "alt", img_alt_value =
         /*post*/
         ctx[0].name);
-        add_location(img, file$3, 8, 8, 217);
+        add_location(img, file$3, 8, 8, 271);
         attr_dev(div0, "class", "font-medium text-xl mb-2");
-        add_location(div0, file$3, 10, 12, 347);
+        add_location(div0, file$3, 10, 12, 401);
         attr_dev(p, "class", "text-gray-700 text-base");
-        add_location(p, file$3, 11, 12, 415);
+        add_location(p, file$3, 11, 12, 469);
         attr_dev(div1, "class", "px-6 py-4 border-t-2");
-        add_location(div1, file$3, 9, 8, 300);
-        attr_dev(div2, "class", "max-w-sm rounded overflow-hidden shadow-lg cursor-pointer");
-        add_location(div2, file$3, 7, 4, 137);
-        attr_dev(div3, "class", "w-full md:w-1/2 lg:w-1/3 xl:w-1/4 mb-5");
+        add_location(div1, file$3, 9, 8, 354);
+        attr_dev(div2, "class", "max-w-md md:max-w-md md:mx-3 lg:max-w-lg rounded overflow-hidden shadow-lg cursor-pointer");
+        add_location(div2, file$3, 7, 4, 159);
+        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8 content-center");
         add_location(div3, file$3, 6, 0, 43);
       },
       l: function claim(nodes) {
@@ -7889,14 +7889,15 @@ var app = (function () {
         }
 
         attr_dev(h2, "class", "text-center text-3xl");
-        add_location(h2, file$4, 25, 12, 676);
+        add_location(h2, file$4, 25, 12, 714);
         attr_dev(div0, "class", "w-full");
-        add_location(div0, file$4, 24, 8, 643);
+        add_location(div0, file$4, 24, 8, 681);
         attr_dev(div1, "class", "flex mt-20 mb-12");
-        add_location(div1, file$4, 23, 4, 604);
+        add_location(div1, file$4, 23, 4, 642);
         attr_dev(div2, "class", "flex flex-wrap mb-12");
-        add_location(div2, file$4, 31, 4, 781);
+        add_location(div2, file$4, 31, 4, 819);
         attr_dev(section, "id", "posts");
+        attr_dev(section, "class", "px-4 md:px-8 lg:px-8 xl:px-34");
         add_location(section, file$4, 21, 0, 578);
       },
       l: function claim(nodes) {
@@ -12146,24 +12147,24 @@ var app = (function () {
         t8 = space();
         create_component(button.$$.fragment);
         attr_dev(h2, "class", "text-center text-3xl text-white");
-        add_location(h2, file$b, 50, 12, 1448);
+        add_location(h2, file$b, 50, 12, 1466);
         attr_dev(h5, "class", "text-center text-xl text-white");
-        add_location(h5, file$b, 53, 12, 1547);
+        add_location(h5, file$b, 53, 12, 1565);
         attr_dev(div0, "class", "w-full");
-        add_location(div0, file$b, 49, 8, 1415);
+        add_location(div0, file$b, 49, 8, 1433);
         attr_dev(div1, "class", "flex mt-20 mb-12");
-        add_location(div1, file$b, 48, 4, 1376);
+        add_location(div1, file$b, 48, 4, 1394);
         attr_dev(div2, "class", "lg:w-1/3");
-        add_location(div2, file$b, 60, 8, 1747);
+        add_location(div2, file$b, 60, 8, 1770);
         attr_dev(div3, "class", "g-recaptcha lg:pb-3");
         attr_dev(div3, "data-sitekey", RECAPTCHA_SITE_KEY);
-        add_location(div3, file$b, 64, 12, 1987);
+        add_location(div3, file$b, 64, 12, 2010);
         attr_dev(div4, "class", "w-full lg:w-1/3 sm:px:12 text-center");
-        add_location(div4, file$b, 61, 8, 1784);
-        attr_dev(div5, "class", "flex flex-wrap md:px-12 lg:px-64");
-        add_location(div5, file$b, 59, 4, 1692);
+        add_location(div4, file$b, 61, 8, 1807);
+        attr_dev(div5, "class", "flex flex-wrap px-4 md:px-12 lg:px-64");
+        add_location(div5, file$b, 59, 4, 1710);
         attr_dev(section, "id", "contact");
-        attr_dev(section, "class", "py-64 svelte-1ylt5nz");
+        attr_dev(section, "class", "py-16 md:py-32 lg:py-64 svelte-1ylt5nz");
         add_location(section, file$b, 46, 0, 1334);
       },
       l: function claim(nodes) {
@@ -12436,88 +12437,64 @@ var app = (function () {
 
   function create_fragment$c(ctx) {
     var footer;
-    var div2;
     var div1;
     var div0;
-    var ul;
-    var li0;
     var a0;
     var i0;
     var t0;
-    var li1;
     var a1;
     var i1;
     var t1;
-    var li2;
     var a2;
     var i2;
     var t2;
-    var li3;
     var a3;
     var i3;
     var block = {
       c: function create() {
         footer = element("footer");
-        div2 = element("div");
         div1 = element("div");
         div0 = element("div");
-        ul = element("ul");
-        li0 = element("li");
         a0 = element("a");
         i0 = element("i");
         t0 = space();
-        li1 = element("li");
         a1 = element("a");
         i1 = element("i");
         t1 = space();
-        li2 = element("li");
         a2 = element("a");
         i2 = element("i");
         t2 = space();
-        li3 = element("li");
         a3 = element("a");
         i3 = element("i");
-        attr_dev(i0, "class", "fa fa-instagram");
-        add_location(i0, file$c, 14, 91, 563);
+        attr_dev(i0, "class", "fa fa-instagram text-xl");
+        add_location(i0, file$c, 13, 16, 486);
         attr_dev(a0, "href", instagram_url);
         attr_dev(a0, "target", "_blank");
-        attr_dev(a0, "class", "svelte-h5odt3");
-        add_location(a0, file$c, 14, 49, 521);
-        attr_dev(li0, "class", "list-inline-item");
-        add_location(li0, file$c, 14, 20, 492);
-        attr_dev(i1, "class", "fa fa-twitter");
-        add_location(i1, file$c, 15, 87, 691);
+        attr_dev(a0, "class", "mr-4 svelte-1i4frd4");
+        add_location(a0, file$c, 12, 12, 414);
+        attr_dev(i1, "class", "fa fa-twitter text-xl");
+        add_location(i1, file$c, 16, 16, 623);
         attr_dev(a1, "href", twitter_url);
         attr_dev(a1, "target", "_blank");
-        attr_dev(a1, "class", "svelte-h5odt3");
-        add_location(a1, file$c, 15, 49, 653);
-        attr_dev(li1, "class", "list-inline-item");
-        add_location(li1, file$c, 15, 20, 624);
-        attr_dev(i2, "class", "fa fa-linkedin");
-        add_location(i2, file$c, 16, 88, 818);
+        attr_dev(a1, "class", "mr-4 svelte-1i4frd4");
+        add_location(a1, file$c, 15, 12, 555);
+        attr_dev(i2, "class", "fa fa-linkedin text-xl");
+        add_location(i2, file$c, 19, 16, 759);
         attr_dev(a2, "href", linkedin_url);
         attr_dev(a2, "target", "_blank");
-        attr_dev(a2, "class", "svelte-h5odt3");
-        add_location(a2, file$c, 16, 49, 779);
-        attr_dev(li2, "class", "list-inline-item");
-        add_location(li2, file$c, 16, 20, 750);
-        attr_dev(i3, "class", "fa fa-github");
-        add_location(i3, file$c, 17, 86, 944);
+        attr_dev(a2, "class", "mr-4 svelte-1i4frd4");
+        add_location(a2, file$c, 18, 12, 690);
+        attr_dev(i3, "class", "fa fa-github text-xl");
+        add_location(i3, file$c, 22, 16, 909);
         attr_dev(a3, "href", github_url);
         attr_dev(a3, "target", "_blank");
-        attr_dev(a3, "class", "svelte-h5odt3");
-        add_location(a3, file$c, 17, 49, 907);
-        attr_dev(li3, "class", "list-inline-item");
-        add_location(li3, file$c, 17, 20, 878);
-        attr_dev(ul, "class", "list-inline social-buttons svelte-h5odt3");
-        add_location(ul, file$c, 13, 16, 432);
-        attr_dev(div0, "class", "col-md-12");
-        add_location(div0, file$c, 12, 12, 392);
-        attr_dev(div1, "class", "row");
-        add_location(div1, file$c, 11, 8, 362);
-        attr_dev(div2, "class", "container");
-        add_location(div2, file$c, 10, 4, 330);
-        attr_dev(footer, "class", "svelte-h5odt3");
+        attr_dev(a3, "class", "hover:bg-primary-50 svelte-1i4frd4");
+        add_location(a3, file$c, 21, 12, 827);
+        attr_dev(div0, "class", "text-center");
+        add_location(div0, file$c, 11, 8, 376);
+        attr_dev(div1, "class", "w-full");
+        add_location(div1, file$c, 10, 4, 347);
+        attr_dev(footer, "class", "flex p-5");
         add_location(footer, file$c, 9, 0, 317);
       },
       l: function claim(nodes) {
@@ -12525,24 +12502,18 @@ var app = (function () {
       },
       m: function mount(target, anchor) {
         insert_dev(target, footer, anchor);
-        append_dev(footer, div2);
-        append_dev(div2, div1);
+        append_dev(footer, div1);
         append_dev(div1, div0);
-        append_dev(div0, ul);
-        append_dev(ul, li0);
-        append_dev(li0, a0);
+        append_dev(div0, a0);
         append_dev(a0, i0);
-        append_dev(ul, t0);
-        append_dev(ul, li1);
-        append_dev(li1, a1);
+        append_dev(div0, t0);
+        append_dev(div0, a1);
         append_dev(a1, i1);
-        append_dev(ul, t1);
-        append_dev(ul, li2);
-        append_dev(li2, a2);
+        append_dev(div0, t1);
+        append_dev(div0, a2);
         append_dev(a2, i2);
-        append_dev(ul, t2);
-        append_dev(ul, li3);
-        append_dev(li3, a3);
+        append_dev(div0, t2);
+        append_dev(div0, a3);
         append_dev(a3, i3);
       },
       p: noop,

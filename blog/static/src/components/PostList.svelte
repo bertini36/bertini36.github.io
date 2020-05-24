@@ -19,7 +19,7 @@
 
 </script>
 
-<section id="posts">
+<section id="posts" class="px-4 md:px-8 lg:px-8 xl:px-34">
 
     <div class="flex mt-20 mb-12">
         <div class="w-full">

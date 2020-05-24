@@ -97,7 +97,7 @@ export default {
             whitelistPatterns: [],
             tailwind: {
                 colors: {
-                    primary: "#f44336",
+                    primary: "#f77b72",
                     secondary: "#009688",
                     error: "#f44336",
                     success: "#4caf50",
