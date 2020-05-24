@@ -45,6 +45,22 @@
 
     window.addEventListener("hashchange", select_page);
 
+    jQuery(document).on("scroll", function(e) {
+        jQuery("section").each(function() {
+            if (jQuery(this).offset().top < window.pageYOffset + 10
+            &&  jQuery(this).offset().top +
+                jQuery(this).height() > window.pageYOffset + 10
+            ) {
+                let hash = "#" + jQuery(this).attr("id");
+                if(history.pushState) {
+                    history.pushState(null, null, hash);
+                } else {
+                    location.hash = hash;
+                }
+            }
+        });
+    });
+
 </script>
 
 <nav class="fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-dark-500">

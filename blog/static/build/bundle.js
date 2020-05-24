@@ -1700,6 +1700,7 @@ var app = (function () {
   var file = "src/components/Header.svelte";
 
   function create_fragment(ctx) {
+    var section;
     var header;
     var div2;
     var div0;
@@ -1707,6 +1708,7 @@ var app = (function () {
     var div1;
     var block = {
       c: function create() {
+        section = element("section");
         header = element("header");
         div2 = element("div");
         div0 = element("div");
@@ -1715,19 +1717,22 @@ var app = (function () {
         div1 = element("div");
         div1.textContent = "Coder";
         attr_dev(div0, "class", "intro-heading svelte-jrfab3");
-        add_location(div0, file, 2, 8, 64);
+        add_location(div0, file, 3, 12, 92);
         attr_dev(div1, "class", "intro-lead-in svelte-jrfab3");
-        add_location(div1, file, 3, 8, 117);
+        add_location(div1, file, 4, 12, 149);
         attr_dev(div2, "class", "m-auto");
-        add_location(div2, file, 1, 4, 35);
+        add_location(div2, file, 2, 8, 59);
         attr_dev(header, "class", "flex h-screen svelte-jrfab3");
-        add_location(header, file, 0, 0, 0);
+        add_location(header, file, 1, 4, 20);
+        attr_dev(section, "id", "");
+        add_location(section, file, 0, 0, 0);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
       },
       m: function mount(target, anchor) {
-        insert_dev(target, header, anchor);
+        insert_dev(target, section, anchor);
+        append_dev(section, header);
         append_dev(header, div2);
         append_dev(div2, div0);
         append_dev(div2, t1);
@@ -1737,7 +1742,7 @@ var app = (function () {
       i: noop,
       o: noop,
       d: function destroy(detaching) {
-        if (detaching) detach_dev(header);
+        if (detaching) detach_dev(section);
       }
     };
     dispatch_dev("SvelteRegisterBlock", {
@@ -12964,32 +12969,32 @@ var app = (function () {
         if (img.src !== (img_src_value = logo_img_url)) attr_dev(img, "src", img_src_value);
         attr_dev(img, "width", "35");
         attr_dev(img, "height", "35");
-        add_location(img, file$f, 51, 8, 1882);
+        add_location(img, file$f, 67, 8, 2441);
         attr_dev(a0, "class", "px-2 md:px-8 flex items-center svelte-1h0m6en");
         attr_dev(a0, "href", "#");
-        add_location(a0, file$f, 50, 4, 1822);
+        add_location(a0, file$f, 66, 4, 2381);
         attr_dev(div0, "class", "flex-grow");
-        add_location(div0, file$f, 53, 4, 1961);
+        add_location(div0, file$f, 69, 4, 2520);
         attr_dev(div1, "class", "flex flex-col items-center content-center text-base");
-        add_location(div1, file$f, 56, 12, 2232);
+        add_location(div1, file$f, 72, 12, 2791);
         attr_dev(a1, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight svelte-1h0m6en");
         attr_dev(a1, "href", "#posts");
-        add_location(a1, file$f, 55, 8, 2068);
+        add_location(a1, file$f, 71, 8, 2627);
         attr_dev(div2, "class", "flex flex-col items-center content-center text-base");
-        add_location(div2, file$f, 61, 12, 2526);
+        add_location(div2, file$f, 77, 12, 3085);
         attr_dev(a2, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight svelte-1h0m6en");
         attr_dev(a2, "href", "#contact");
-        add_location(a2, file$f, 60, 8, 2360);
+        add_location(a2, file$f, 76, 8, 2919);
         attr_dev(div3, "class", "y-0 h-full items-center relative mx-auto z-20 flex");
-        add_location(div3, file$f, 54, 4, 1995);
+        add_location(div3, file$f, 70, 4, 2554);
         attr_dev(i, "class", "fa fa-github text-xl");
-        add_location(i, file$f, 67, 8, 2783);
+        add_location(i, file$f, 83, 8, 3342);
         attr_dev(a3, "class", "px-4 mr-5 py-5 text-white hover:bg-white-transLight h-full svelte-1h0m6en");
         attr_dev(a3, "href", blog_github_url);
         attr_dev(a3, "target", "_blank");
-        add_location(a3, file$f, 66, 4, 2663);
+        add_location(a3, file$f, 82, 4, 3222);
         attr_dev(nav, "class", "fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-dark-500");
-        add_location(nav, file$f, 49, 0, 1710);
+        add_location(nav, file$f, 65, 0, 2269);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -13134,6 +13139,19 @@ var app = (function () {
     }
 
     window.addEventListener("hashchange", select_page);
+    jQuery(document).on("scroll", function (e) {
+      jQuery("section").each(function () {
+        if (jQuery(this).offset().top < window.pageYOffset + 10 && jQuery(this).offset().top + jQuery(this).height() > window.pageYOffset + 10) {
+          var hash = "#" + jQuery(this).attr("id");
+
+          if (history.pushState) {
+            history.pushState(null, null, hash);
+          } else {
+            location.hash = hash;
+          }
+        }
+      });
+    });
     var writable_props = [];
     Object.keys($$props).forEach(function (key) {
       if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<Navbar> was created with unknown prop '".concat(key, "'"));

@@ -1,9 +1,11 @@
-<header class="flex h-screen">
-    <div class="m-auto">
-        <div class="intro-heading">Alberto Pou</div>
-        <div class="intro-lead-in">Coder</div>
-    </div>
-</header>
+<section id="">
+    <header class="flex h-screen">
+        <div class="m-auto">
+            <div class="intro-heading">Alberto Pou</div>
+            <div class="intro-lead-in">Coder</div>
+        </div>
+    </header>
+</section>
 
 <style>
 
