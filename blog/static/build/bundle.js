@@ -7174,10 +7174,9 @@ var app = (function () {
   function _createSuper$2(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$3()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$3() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$2 = "src/pages/PostDetail.svelte"; // (44:16) {#if $selected_post !== null}
+  var file$2 = "src/pages/PostDetail.svelte"; // (42:8) {#if $selected_post !== null}
 
   function create_if_block(ctx) {
-    var div0;
     var h2;
     var t0_value =
     /*$selected_post*/
@@ -7185,7 +7184,6 @@ var app = (function () {
     var t0;
     var t1;
     var h3;
-    var small;
     var t2_value =
     /*$selected_post*/
     ctx[0].technology + "";
@@ -7193,65 +7191,54 @@ var app = (function () {
     var t3;
     var img;
     var img_src_value;
+    var img_alt_value;
     var t4;
     var html_tag;
     var raw_value =
     /*$selected_post*/
     ctx[0].text + "";
     var t5;
-    var div1;
-    var t6;
     var current;
     var comments = new Comments({
       $$inline: true
     });
     var block = {
       c: function create() {
-        div0 = element("div");
         h2 = element("h2");
         t0 = text(t0_value);
         t1 = space();
         h3 = element("h3");
-        small = element("small");
         t2 = text(t2_value);
         t3 = space();
         img = element("img");
         t4 = space();
         t5 = space();
-        div1 = element("div");
-        t6 = space();
         create_component(comments.$$.fragment);
-        add_location(h2, file$2, 46, 24, 1508);
-        add_location(small, file$2, 47, 28, 1567);
-        add_location(h3, file$2, 47, 24, 1563);
-        attr_dev(img, "class", "img-fluid img-centered fixed-size-image center");
-        set_style(img, "width", "600px");
-        if (img.src !== (img_src_value = "static/".concat(
+        attr_dev(h2, "class", "text-3xl text-center font-hairline");
+        add_location(h2, file$2, 43, 12, 1414);
+        attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
+        add_location(h3, file$2, 46, 12, 1530);
+        attr_dev(img, "class", "object-center w-full h-64 mb-8 px-64");
+        if (img.src !== (img_src_value = "static/" +
         /*$selected_post*/
-        ctx[0].main_photo_path))) attr_dev(img, "src", img_src_value);
-        attr_dev(img, "alt", "Main post image");
-        add_location(img, file$2, 48, 24, 1639);
-        attr_dev(div0, "class", "centered");
-        add_location(div0, file$2, 45, 20, 1461);
+        ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
+        attr_dev(img, "alt", img_alt_value =
+        /*$selected_post*/
+        ctx[0].name);
+        add_location(img, file$2, 50, 12, 1657);
         html_tag = new HtmlTag(raw_value, t5);
-        attr_dev(div1, "class", "border-top my-3");
-        add_location(div1, file$2, 53, 20, 1891);
       },
       m: function mount(target, anchor) {
-        insert_dev(target, div0, anchor);
-        append_dev(div0, h2);
+        insert_dev(target, h2, anchor);
         append_dev(h2, t0);
-        append_dev(div0, t1);
-        append_dev(div0, h3);
-        append_dev(h3, small);
-        append_dev(small, t2);
-        append_dev(div0, t3);
-        append_dev(div0, img);
+        insert_dev(target, t1, anchor);
+        insert_dev(target, h3, anchor);
+        append_dev(h3, t2);
+        insert_dev(target, t3, anchor);
+        insert_dev(target, img, anchor);
         insert_dev(target, t4, anchor);
         html_tag.m(target, anchor);
         insert_dev(target, t5, anchor);
-        insert_dev(target, div1, anchor);
-        insert_dev(target, t6, anchor);
         mount_component(comments, target, anchor);
         current = true;
       },
@@ -7269,10 +7256,18 @@ var app = (function () {
 
         if (!current || dirty &
         /*$selected_post*/
-        1 && img.src !== (img_src_value = "static/".concat(
+        1 && img.src !== (img_src_value = "static/" +
         /*$selected_post*/
-        ctx[0].main_photo_path))) {
+        ctx[0].main_photo_path)) {
           attr_dev(img, "src", img_src_value);
+        }
+
+        if (!current || dirty &
+        /*$selected_post*/
+        1 && img_alt_value !== (img_alt_value =
+        /*$selected_post*/
+        ctx[0].name)) {
+          attr_dev(img, "alt", img_alt_value);
         }
 
         if ((!current || dirty &
@@ -7291,12 +7286,14 @@ var app = (function () {
         current = false;
       },
       d: function destroy(detaching) {
-        if (detaching) detach_dev(div0);
+        if (detaching) detach_dev(h2);
+        if (detaching) detach_dev(t1);
+        if (detaching) detach_dev(h3);
+        if (detaching) detach_dev(t3);
+        if (detaching) detach_dev(img);
         if (detaching) detach_dev(t4);
         if (detaching) html_tag.d();
         if (detaching) detach_dev(t5);
-        if (detaching) detach_dev(div1);
-        if (detaching) detach_dev(t6);
         destroy_component(comments, detaching);
       }
     };
@@ -7304,7 +7301,7 @@ var app = (function () {
       block: block,
       id: create_if_block.name,
       type: "if",
-      source: "(44:16) {#if $selected_post !== null}",
+      source: "(42:8) {#if $selected_post !== null}",
       ctx: ctx
     });
     return block;
@@ -7312,9 +7309,7 @@ var app = (function () {
 
   function create_fragment$2(ctx) {
     var section;
-    var div2;
-    var div1;
-    var div0;
+    var div;
     var current;
     var if_block =
     /*$selected_post*/
@@ -7322,17 +7317,12 @@ var app = (function () {
     var block = {
       c: function create() {
         section = element("section");
-        div2 = element("div");
-        div1 = element("div");
-        div0 = element("div");
+        div = element("div");
         if (if_block) if_block.c();
-        attr_dev(div0, "class", "offset-md-1 col-md-10 col-sm-12");
-        add_location(div0, file$2, 41, 12, 1347);
-        attr_dev(div1, "class", "row");
-        add_location(div1, file$2, 40, 8, 1317);
-        attr_dev(div2, "class", "container");
-        add_location(div2, file$2, 39, 4, 1285);
+        attr_dev(div, "class", "px-4 md:px-8 lg:px-32");
+        add_location(div, file$2, 39, 4, 1326);
         attr_dev(section, "id", "post_detail");
+        attr_dev(section, "class", "container h-screen mt-32 mx-auto");
         add_location(section, file$2, 38, 0, 1254);
       },
       l: function claim(nodes) {
@@ -7340,10 +7330,8 @@ var app = (function () {
       },
       m: function mount(target, anchor) {
         insert_dev(target, section, anchor);
-        append_dev(section, div2);
-        append_dev(div2, div1);
-        append_dev(div1, div0);
-        if (if_block) if_block.m(div0, null);
+        append_dev(section, div);
+        if (if_block) if_block.m(div, null);
         current = true;
       },
       p: function update(ctx, _ref) {
@@ -7360,7 +7348,7 @@ var app = (function () {
             if_block = create_if_block(ctx);
             if_block.c();
             transition_in(if_block, 1);
-            if_block.m(div0, null);
+            if_block.m(div, null);
           }
         } else if (if_block) {
           group_outros();

@@ -36,28 +36,27 @@
 
 </script>
 
-<section id="post_detail">
-    <div class="container">
-        <div class="row">
-            <div class="offset-md-1 col-md-10 col-sm-12">
+<section id="post_detail" class="container h-screen mt-32 mx-auto">
+    <div class="px-4 md:px-8 lg:px-32">
 
-                {#if $selected_post !== null}
+        {#if $selected_post !== null}
 
-                    <div class="centered">
-                        <h2>{$selected_post.name}</h2>
-                        <h3><small>{$selected_post.technology}</small></h3>
-                        <img class="img-fluid img-centered fixed-size-image center" style="width: 600px" src="{`static/${$selected_post.main_photo_path}`}" alt="Main post image">
-                    </div>
+            <h2 class="text-3xl text-center font-hairline">
+                {$selected_post.name}
+            </h2>
+            <h3 class="text-xl text-center font-hairline mb-8">
+                {$selected_post.technology}
+            </h3>
 
-                    {@html $selected_post.text}
+            <img class="object-center w-full h-64 mb-8 px-64"
+                 src="static/{$selected_post.main_photo_path}" alt="{$selected_post.name}">
 
-                    <div class="border-top my-3"></div>
+            {@html $selected_post.text}
 
-                    <Comments/>
+            <Comments/>
 
-                {/if}
-            </div>
-        </div>
+        {/if}
+
     </div>
 </section>
 
