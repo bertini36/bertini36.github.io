@@ -7215,17 +7215,17 @@ var app = (function () {
         t5 = space();
         create_component(comments.$$.fragment);
         attr_dev(h2, "class", "text-3xl text-center");
-        add_location(h2, file$2, 43, 12, 1414);
+        add_location(h2, file$2, 43, 12, 1420);
         attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
-        add_location(h3, file$2, 46, 12, 1516);
-        attr_dev(img, "class", "object-center w-full h-64 mb-8 md:px-32 lg:px-64");
+        add_location(h3, file$2, 46, 12, 1522);
+        attr_dev(img, "class", "w-full h-full mb-8 md:px-32 lg:px-64");
         if (img.src !== (img_src_value = "static/" +
         /*$selected_post*/
         ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
         attr_dev(img, "alt", img_alt_value =
         /*$selected_post*/
         ctx[0].name);
-        add_location(img, file$2, 50, 12, 1643);
+        add_location(img, file$2, 50, 12, 1649);
         html_tag = new HtmlTag(raw_value, t5);
       },
       m: function mount(target, anchor) {
@@ -7320,10 +7320,10 @@ var app = (function () {
         div = element("div");
         if (if_block) if_block.c();
         attr_dev(div, "class", "px-4 md:px-8 lg:px-32");
-        add_location(div, file$2, 39, 4, 1326);
-        attr_dev(section, "id", "post_detail");
-        attr_dev(section, "class", "container h-screen mt-24 mx-auto");
-        add_location(section, file$2, 38, 0, 1254);
+        add_location(div, file$2, 39, 4, 1332);
+        attr_dev(section, "id", "post_container");
+        attr_dev(section, "class", "container h-screen mt-32 mx-auto");
+        add_location(section, file$2, 38, 0, 1257);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -7383,7 +7383,7 @@ var app = (function () {
   }
 
   function get_gists() {
-    var modal_selector = "#post_detail";
+    var modal_selector = "#post_container";
     var gists = jQuery(modal_selector).find("div[gist^='https://gist.github.com/']");
 
     if (gists.length) {
@@ -12956,38 +12956,38 @@ var app = (function () {
         if (img.src !== (img_src_value = logo_img_url)) attr_dev(img, "src", img_src_value);
         attr_dev(img, "width", "35");
         attr_dev(img, "height", "35");
-        add_location(img, file$f, 69, 8, 2494);
+        add_location(img, file$f, 71, 8, 2612);
         attr_dev(a0, "class", "px-2 md:px-8 flex items-center svelte-1h0m6en");
         attr_dev(a0, "href", "#");
-        add_location(a0, file$f, 68, 4, 2434);
+        add_location(a0, file$f, 70, 4, 2552);
         attr_dev(div0, "class", "flex-grow");
-        add_location(div0, file$f, 71, 4, 2573);
+        add_location(div0, file$f, 73, 4, 2691);
         attr_dev(div1, "class", "flex flex-col items-center content-center text-base");
-        add_location(div1, file$f, 75, 12, 2897);
+        add_location(div1, file$f, 77, 12, 3015);
         attr_dev(a1, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight svelte-1h0m6en");
         attr_dev(a1, "href", "#posts");
         toggle_class(a1, "border-b-2",
         /*section*/
         ctx[0] === "#posts");
-        add_location(a1, file$f, 73, 8, 2680);
+        add_location(a1, file$f, 75, 8, 2798);
         attr_dev(div2, "class", "flex flex-col items-center content-center text-base");
-        add_location(div2, file$f, 81, 12, 3246);
+        add_location(div2, file$f, 83, 12, 3364);
         attr_dev(a2, "class", "transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight svelte-1h0m6en");
         attr_dev(a2, "href", "#contact");
         toggle_class(a2, "border-b-2",
         /*section*/
         ctx[0] === "#contact");
-        add_location(a2, file$f, 79, 8, 3025);
+        add_location(a2, file$f, 81, 8, 3143);
         attr_dev(div3, "class", "y-0 h-full items-center relative mx-auto z-20 flex");
-        add_location(div3, file$f, 72, 4, 2607);
+        add_location(div3, file$f, 74, 4, 2725);
         attr_dev(i, "class", "fa fa-github text-xl");
-        add_location(i, file$f, 87, 8, 3503);
+        add_location(i, file$f, 89, 8, 3621);
         attr_dev(a3, "class", "px-4 mr-5 py-5 text-white hover:bg-white-transLight h-full svelte-1h0m6en");
         attr_dev(a3, "href", blog_github_url);
         attr_dev(a3, "target", "_blank");
-        add_location(a3, file$f, 86, 4, 3383);
+        add_location(a3, file$f, 88, 4, 3501);
         attr_dev(nav, "class", "fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-dark-500");
-        add_location(nav, file$f, 67, 0, 2322);
+        add_location(nav, file$f, 69, 0, 2440);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -13156,12 +13156,15 @@ var app = (function () {
       jQuery("section").each(function () {
         if (jQuery(this).offset().top < window.pageYOffset + 10 && jQuery(this).offset().top + jQuery(this).height() > window.pageYOffset + 10) {
           var hash = "#" + jQuery(this).attr("id");
-          $$invalidate(0, section = hash);
 
-          if (history.pushState) {
-            history.pushState(null, null, hash);
-          } else {
-            location.hash = section;
+          if (hash !== "#undefined" && hash !== "#post_container") {
+            $$invalidate(0, section = hash);
+
+            if (history.pushState) {
+              history.pushState(null, null, hash);
+            } else {
+              location.hash = section;
+            }
           }
         }
       });

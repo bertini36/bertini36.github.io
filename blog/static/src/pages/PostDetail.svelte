@@ -15,7 +15,7 @@
     });
 
     function get_gists() {
-        const modal_selector = "#post_detail";
+        const modal_selector = "#post_container";
         let gists = jQuery(modal_selector).find("div[gist^='https://gist.github.com/']");
         if(gists.length) {
             gists.each(function(index, element) {
@@ -36,7 +36,7 @@
 
 </script>
 
-<section id="post_detail" class="container h-screen mt-24 mx-auto">
+<section id="post_container" class="container h-screen mt-32 mx-auto">
     <div class="px-4 md:px-8 lg:px-32">
 
         {#if $selected_post !== null}
@@ -48,7 +48,7 @@
                 {$selected_post.technology}
             </h3>
 
-            <img class="object-center w-full h-64 mb-8 md:px-32 lg:px-64"
+            <img class="w-full h-full mb-8 md:px-32 lg:px-64"
                  src="static/{$selected_post.main_photo_path}" alt="{$selected_post.name}">
 
             {@html $selected_post.text}

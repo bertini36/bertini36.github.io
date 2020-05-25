@@ -53,11 +53,13 @@
                 jQuery(this).height() > window.pageYOffset + 10
             ) {
                 let hash = "#" + jQuery(this).attr("id");
-                section = hash;
-                if(history.pushState) {
-                    history.pushState(null, null, hash);
-                } else {
-                    location.hash = section;
+                if (hash !== "#undefined" && hash !== "#post_container") {
+                    section = hash;
+                    if (history.pushState) {
+                        history.pushState(null, null, hash);
+                    } else {
+                        location.hash = section;
+                    }
                 }
             }
         });
