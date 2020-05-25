@@ -53,8 +53,6 @@
 
             {@html $selected_post.text}
 
-            <Comments/>
-
         {/if}
 
     </div>

@@ -7197,11 +7197,6 @@ var app = (function () {
     var raw_value =
     /*$selected_post*/
     ctx[0].text + "";
-    var t5;
-    var current;
-    var comments = new Comments({
-      $$inline: true
-    });
     var block = {
       c: function create() {
         h2 = element("h2");
@@ -7212,8 +7207,6 @@ var app = (function () {
         t3 = space();
         img = element("img");
         t4 = space();
-        t5 = space();
-        create_component(comments.$$.fragment);
         attr_dev(h2, "class", "text-3xl text-center");
         add_location(h2, file$2, 43, 12, 1420);
         attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
@@ -7226,7 +7219,7 @@ var app = (function () {
         /*$selected_post*/
         ctx[0].name);
         add_location(img, file$2, 50, 12, 1649);
-        html_tag = new HtmlTag(raw_value, t5);
+        html_tag = new HtmlTag(raw_value, null);
       },
       m: function mount(target, anchor) {
         insert_dev(target, h2, anchor);
@@ -7238,23 +7231,20 @@ var app = (function () {
         insert_dev(target, img, anchor);
         insert_dev(target, t4, anchor);
         html_tag.m(target, anchor);
-        insert_dev(target, t5, anchor);
-        mount_component(comments, target, anchor);
-        current = true;
       },
       p: function update(ctx, dirty) {
-        if ((!current || dirty &
+        if (dirty &
         /*$selected_post*/
-        1) && t0_value !== (t0_value =
+        1 && t0_value !== (t0_value =
         /*$selected_post*/
         ctx[0].name + "")) set_data_dev(t0, t0_value);
-        if ((!current || dirty &
+        if (dirty &
         /*$selected_post*/
-        1) && t2_value !== (t2_value =
+        1 && t2_value !== (t2_value =
         /*$selected_post*/
         ctx[0].technology + "")) set_data_dev(t2, t2_value);
 
-        if (!current || dirty &
+        if (dirty &
         /*$selected_post*/
         1 && img.src !== (img_src_value = "static/" +
         /*$selected_post*/
@@ -7262,7 +7252,7 @@ var app = (function () {
           attr_dev(img, "src", img_src_value);
         }
 
-        if (!current || dirty &
+        if (dirty &
         /*$selected_post*/
         1 && img_alt_value !== (img_alt_value =
         /*$selected_post*/
@@ -7270,20 +7260,11 @@ var app = (function () {
           attr_dev(img, "alt", img_alt_value);
         }
 
-        if ((!current || dirty &
+        if (dirty &
         /*$selected_post*/
-        1) && raw_value !== (raw_value =
+        1 && raw_value !== (raw_value =
         /*$selected_post*/
         ctx[0].text + "")) html_tag.p(raw_value);
-      },
-      i: function intro(local) {
-        if (current) return;
-        transition_in(comments.$$.fragment, local);
-        current = true;
-      },
-      o: function outro(local) {
-        transition_out(comments.$$.fragment, local);
-        current = false;
       },
       d: function destroy(detaching) {
         if (detaching) detach_dev(h2);
@@ -7293,8 +7274,6 @@ var app = (function () {
         if (detaching) detach_dev(img);
         if (detaching) detach_dev(t4);
         if (detaching) html_tag.d();
-        if (detaching) detach_dev(t5);
-        destroy_component(comments, detaching);
       }
     };
     dispatch_dev("SvelteRegisterBlock", {
@@ -7310,7 +7289,6 @@ var app = (function () {
   function create_fragment$2(ctx) {
     var section;
     var div;
-    var current;
     var if_block =
     /*$selected_post*/
     ctx[0] !== null && create_if_block(ctx);
@@ -7332,7 +7310,6 @@ var app = (function () {
         insert_dev(target, section, anchor);
         append_dev(section, div);
         if (if_block) if_block.m(div, null);
-        current = true;
       },
       p: function update(ctx, _ref) {
         var _ref2 = _slicedToArray(_ref, 1),
@@ -7343,30 +7320,18 @@ var app = (function () {
         ctx[0] !== null) {
           if (if_block) {
             if_block.p(ctx, dirty);
-            transition_in(if_block, 1);
           } else {
             if_block = create_if_block(ctx);
             if_block.c();
-            transition_in(if_block, 1);
             if_block.m(div, null);
           }
         } else if (if_block) {
-          group_outros();
-          transition_out(if_block, 1, 1, function () {
-            if_block = null;
-          });
-          check_outros();
+          if_block.d(1);
+          if_block = null;
         }
       },
-      i: function intro(local) {
-        if (current) return;
-        transition_in(if_block);
-        current = true;
-      },
-      o: function outro(local) {
-        transition_out(if_block);
-        current = false;
-      },
+      i: noop,
+      o: noop,
       d: function destroy(detaching) {
         if (detaching) detach_dev(section);
         if (if_block) if_block.d();
