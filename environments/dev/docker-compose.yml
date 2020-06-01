@@ -11,6 +11,9 @@ services:
       args:
         REQUIREMENTS: requirements/requirements-dev.txt
     env_file: ../../.env
+    environment:
+      - PYTHONIOENCODING=UTF-8
+      - PYTHONUNBUFFERED=1
     volumes:
       - "../../:/code"
     depends_on:
