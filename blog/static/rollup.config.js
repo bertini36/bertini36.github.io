@@ -91,7 +91,7 @@ export default {
 
         smelte({
             purge: production,
-            output: "build/smelte.css",
+            output: "build/tailwind.css",
             postcss: [],
             whitelist: [],
             whitelistPatterns: [],
