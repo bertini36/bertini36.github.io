@@ -31,7 +31,7 @@
     objetivo. Así, la web, registra la dirección IP del servidor proxy y no la del cliente. Es decir, nuestra dirección IP queda enmascarada con la del servidor
     proxy.
 </p>
-<div class="mx-auto px-40 mb-16">
+<div class="mx-auto px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full" src="{% static 'img/posts/anonymous_webscraping/proxy.jpg' %}" alt="Proxy flow">
         <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
@@ -44,7 +44,7 @@
     servicio por IP, el crawler utilice el siguiente servidor proxy de la lista para enmascarar nuestra dirección IP. <br>
     A continuación se muestra un prototipo mediante Python y su librería <a href="http://docs.python-requests.org/en/latest/" style="color: #feb72b" target="_blank">requests</a>.
 </p>
-<div class="mt-4 mb-4" gist="https://gist.github.com/bertini36/9f47f7cca3221603444d.js"></div>
+<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/9f47f7cca3221603444d.js"></div>
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     Este código permite la descarga de diferentes archivos GPX de la página <a href="http://es.wikiloc.com/wikiloc/home.do" style="color: #feb72b" target="_blank">Wikiloc</a>.
     Para ello el script requiere de:
@@ -83,7 +83,7 @@
     <li>pip install requests</li>
     <li>pip install pysocks</li>
 </ul>
-<div class="mt-4 mb-4" gist="https://gist.github.com/bertini36/5d2ed0b921b379fef2f6.js"></div>
+<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/5d2ed0b921b379fef2f6.js"></div>
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     Especificamos el puerto 9050 puesto que es con el que trabaja por defecto la red Tor.
     Si ejecutamos este programa veremos que la IP pública que nos detecta no es la misma que si accedemos a la web
