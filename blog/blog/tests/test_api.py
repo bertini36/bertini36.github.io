@@ -52,7 +52,7 @@ class TestCreatePost:
         response = blog_api.create_post(request)
 
         assert response['error'] is True
-        assert isinstance(response['data'], str)
+        assert isinstance(response['data'], dict)
         assert 'name' in response['data']
 
 
@@ -117,7 +117,7 @@ class TestGetPost:
         response = blog_api.get_post(request)
 
         assert response['error'] is True
-        assert isinstance(response['data'], str)
+        assert isinstance(response['data'], dict)
         assert 'slug' in response['data']
 
 
@@ -139,7 +139,7 @@ class TestSendMessage:
         response = blog_api.send_message(request)
 
         assert response['error'] is True
-        assert isinstance(response['data'], str)
+        assert isinstance(response['data'], dict)
         assert 'name' in response['data']
 
     @patch('blog.blog.validators.captcha_is_real', return_value=False)
@@ -157,8 +157,8 @@ class TestSendMessage:
         response = blog_api.send_message(request)
 
         assert response['error'] is True
-        assert isinstance(response['data'], str)
-        assert 'captcha' in response['data']
+        assert isinstance(response['data'], dict)
+        assert 'captcha' in response['data']['__all__']
 
     def test_send_message(self):
         blog_api.blog_repository.get_or_create_contact = Mock()
@@ -220,7 +220,7 @@ class TestGetComments:
         response = blog_api.get_comments(request)
 
         assert response['error'] is True
-        assert isinstance(response['data'], str)
+        assert isinstance(response['data'], dict)
         assert 'slug' in response['data']
 
 
@@ -265,5 +265,5 @@ class TestPublishComment:
         response = blog_api.publish_comment(request)
 
         assert response['error'] is True
-        assert isinstance(response['data'], str)
+        assert isinstance(response['data'], dict)
         assert 'name' in response['data']
