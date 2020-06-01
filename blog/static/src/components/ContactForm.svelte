@@ -56,11 +56,15 @@
     }
 
     function show_errors(response_errors) {
-        if ("name" in response_errors) errors.name = response_errors["name"];
-        if ("email" in response_errors) errors.email = response_errors["email"];
-        if ("captcha" in response_errors) errors.captcha = response_errors["captcha"];
-        if ("text" in response_errors) errors.text = response_errors["text"];
-        if ("__all__" in response_errors) utils.show_notification("error", response_errors["__all__"]);
+        if ("__all__" in response_errors) {
+            utils.show_notification("error", response_errors["__all__"]);
+        } else {
+            if ("name" in response_errors) errors.name = response_errors["name"];
+            if ("email" in response_errors) errors.email = response_errors["email"];
+            if ("captcha" in response_errors) errors.captcha = response_errors["captcha"];
+            if ("text" in response_errors) errors.text = response_errors["text"];
+            utils.show_notification("error", "Some errors have been found");
+        }
     }
 
     function reset_errors() {

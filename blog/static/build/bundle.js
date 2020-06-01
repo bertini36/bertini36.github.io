@@ -4137,7 +4137,7 @@ var app = (function () {
 
   })));
 
-  //# sourceMappingURL=es6-promise.map
+
 
   /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)));
 
@@ -4955,7 +4955,7 @@ var app = (function () {
   /***/ })
   /******/ ]);
   });
-  //# sourceMappingURL=noty.js.map
+
   });
 
   var Noty = unwrapExports(noty);
@@ -12023,7 +12023,7 @@ var app = (function () {
   function _createSuper$5(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$6()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$6() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$b = "src/components/ContactForm.svelte"; // (87:8) <Button color="primary" dark block on:click={send_message}>
+  var file$b = "src/components/ContactForm.svelte"; // (91:8) <Button color="primary" dark block on:click={send_message}>
 
   function create_default_slot$2(ctx) {
     var t;
@@ -12042,7 +12042,7 @@ var app = (function () {
       block: block,
       id: create_default_slot$2.name,
       type: "slot",
-      source: "(87:8) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
+      source: "(91:8) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
       ctx: ctx
     });
     return block;
@@ -12187,17 +12187,17 @@ var app = (function () {
         t7 = space();
         create_component(button.$$.fragment);
         attr_dev(h2, "class", "text-3xl text-center text-white");
-        add_location(h2, file$b, 76, 8, 2319);
+        add_location(h2, file$b, 80, 8, 2453);
         attr_dev(h3, "class", "text-xl text-center text-white font-hairline mb-10");
-        add_location(h3, file$b, 79, 8, 2406);
+        add_location(h3, file$b, 83, 8, 2540);
         attr_dev(div0, "class", "g-recaptcha pb-4");
         attr_dev(div0, "data-sitekey", RECAPTCHA_SITE_KEY);
-        add_location(div0, file$b, 84, 8, 2713);
+        add_location(div0, file$b, 88, 8, 2847);
         attr_dev(div1, "class", "m-auto");
-        add_location(div1, file$b, 75, 4, 2290);
+        add_location(div1, file$b, 79, 4, 2424);
         attr_dev(section, "id", "contact");
         attr_dev(section, "class", "flex h-screen svelte-1ylt5nz");
-        add_location(section, file$b, 74, 0, 2241);
+        add_location(section, file$b, 78, 0, 2375);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -12419,11 +12419,15 @@ var app = (function () {
     }
 
     function show_errors(response_errors) {
-      if ("name" in response_errors) $$invalidate(1, errors.name = response_errors["name"], errors);
-      if ("email" in response_errors) $$invalidate(1, errors.email = response_errors["email"], errors);
-      if ("captcha" in response_errors) $$invalidate(1, errors.captcha = response_errors["captcha"], errors);
-      if ("text" in response_errors) $$invalidate(1, errors.text = response_errors["text"], errors);
-      if ("__all__" in response_errors) show_notification("error", response_errors["__all__"]);
+      if ("__all__" in response_errors) {
+        show_notification("error", response_errors["__all__"]);
+      } else {
+        if ("name" in response_errors) $$invalidate(1, errors.name = response_errors["name"], errors);
+        if ("email" in response_errors) $$invalidate(1, errors.email = response_errors["email"], errors);
+        if ("captcha" in response_errors) $$invalidate(1, errors.captcha = response_errors["captcha"], errors);
+        if ("text" in response_errors) $$invalidate(1, errors.text = response_errors["text"], errors);
+        show_notification("error", "Some errors have been found");
+      }
     }
 
     function reset_errors() {
