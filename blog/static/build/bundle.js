@@ -7577,23 +7577,23 @@ var app = (function () {
         t2 = space();
         p = element("p");
         t3 = text(t3_value);
-        attr_dev(img, "class", "w-full h-56");
+        attr_dev(img, "class", "w-full h-64");
         if (img.src !== (img_src_value = "static/" +
         /*post*/
         ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
         attr_dev(img, "alt", img_alt_value =
         /*post*/
         ctx[0].name);
-        add_location(img, file$3, 10, 8, 396);
+        add_location(img, file$3, 10, 8, 381);
         attr_dev(div0, "class", "font-medium text-xl mb-2");
         set_style(div0, "color",
         /*hover*/
         ctx[1] ? "#feb72b" : "black");
-        add_location(div0, file$3, 12, 12, 603);
+        add_location(div0, file$3, 12, 12, 588);
         attr_dev(p, "class", "text-gray-700 text-base");
-        add_location(p, file$3, 15, 12, 818);
+        add_location(p, file$3, 15, 12, 803);
         attr_dev(div1, "class", "px-6 py-4 border-t-2");
-        add_location(div1, file$3, 11, 8, 556);
+        add_location(div1, file$3, 11, 8, 541);
         attr_dev(div2, "class", "max-w-md md:max-w-md md:mx-3 lg:max-w-lg rounded overflow-hidden shadow-lg cursor-pointer border-1");
         set_style(div2, "border-color",
         /*hover*/
@@ -7601,8 +7601,8 @@ var app = (function () {
         toggle_class(div2, "border-2",
         /*hover*/
         ctx[1] === true);
-        add_location(div2, file$3, 8, 4, 182);
-        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8 content-center");
+        add_location(div2, file$3, 8, 4, 167);
+        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8");
         add_location(div3, file$3, 7, 0, 66);
       },
       l: function claim(nodes) {
@@ -7828,7 +7828,7 @@ var app = (function () {
     var child_ctx = ctx.slice();
     child_ctx[2] = list[i];
     return child_ctx;
-  } // (32:8) {#each $posts as post}
+  } // (33:12) {#each $posts as post}
 
 
   function create_each_block$1(ctx) {
@@ -7875,7 +7875,7 @@ var app = (function () {
       block: block,
       id: create_each_block$1.name,
       type: "each",
-      source: "(32:8) {#each $posts as post}",
+      source: "(33:12) {#each $posts as post}",
       ctx: ctx
     });
     return block;
@@ -7887,6 +7887,7 @@ var app = (function () {
     var div0;
     var h2;
     var t1;
+    var div3;
     var div2;
     var current;
     var each_value =
@@ -7913,6 +7914,7 @@ var app = (function () {
         h2 = element("h2");
         h2.textContent = "Posts";
         t1 = space();
+        div3 = element("div");
         div2 = element("div");
 
         for (var _i = 0; _i < each_blocks.length; _i += 1) {
@@ -7920,15 +7922,16 @@ var app = (function () {
         }
 
         attr_dev(h2, "class", "text-3xl text-center");
-        add_location(h2, file$4, 25, 12, 714);
+        add_location(h2, file$4, 25, 12, 700);
         attr_dev(div0, "class", "w-full");
-        add_location(div0, file$4, 24, 8, 681);
-        attr_dev(div1, "class", "flex mt-20 mb-10");
-        add_location(div1, file$4, 23, 4, 642);
-        attr_dev(div2, "class", "flex flex-wrap mb-12");
-        add_location(div2, file$4, 29, 4, 789);
+        add_location(div0, file$4, 24, 8, 667);
+        attr_dev(div1, "class", "justify-start justify-center mt-20 mb-10");
+        add_location(div1, file$4, 23, 4, 604);
+        attr_dev(div2, "class", "flex flex-wrap -mx-1 lg:-mx-4");
+        add_location(div2, file$4, 30, 8, 835);
+        attr_dev(div3, "class", "container my-12 mx-auto px-4 md:px-12");
+        add_location(div3, file$4, 29, 4, 775);
         attr_dev(section, "id", "posts");
-        attr_dev(section, "class", "px-4 md:px-8 lg:px-8 xl:px-34");
         add_location(section, file$4, 21, 0, 578);
       },
       l: function claim(nodes) {
@@ -7940,7 +7943,8 @@ var app = (function () {
         append_dev(div1, div0);
         append_dev(div0, h2);
         append_dev(section, t1);
-        append_dev(section, div2);
+        append_dev(section, div3);
+        append_dev(div3, div2);
 
         for (var _i2 = 0; _i2 < each_blocks.length; _i2 += 1) {
           each_blocks[_i2].m(div2, null);

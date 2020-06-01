@@ -19,22 +19,24 @@
 
 </script>
 
-<section id="posts" class="px-4 md:px-8 lg:px-8 xl:px-34">
+<section id="posts">
 
-    <div class="flex mt-20 mb-10">
+    <div class="justify-start justify-center mt-20 mb-10">
         <div class="w-full">
             <h2 class="text-3xl text-center">Posts</h2>
         </div>
     </div>
 
-    <div class="flex flex-wrap mb-12">
+    <div class="container my-12 mx-auto px-4 md:px-12">
+        <div class="flex flex-wrap -mx-1 lg:-mx-4">
 
-        {#each $posts as post}
+            {#each $posts as post}
 
-            <PostCard post={post}/>
+                <PostCard post={post}/>
 
-        {/each}
+            {/each}
 
+        </div>
     </div>
 
 </section>
