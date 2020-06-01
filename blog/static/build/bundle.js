@@ -4137,7 +4137,7 @@ var app = (function () {
 
   })));
 
-
+  //# sourceMappingURL=es6-promise.map
 
   /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)));
 
@@ -4955,7 +4955,7 @@ var app = (function () {
   /***/ })
   /******/ ]);
   });
-
+  //# sourceMappingURL=noty.js.map
   });
 
   var Noty = unwrapExports(noty);
@@ -7934,7 +7934,7 @@ var app = (function () {
         add_location(div1, file$4, 23, 4, 604);
         attr_dev(div2, "class", "flex flex-wrap -mx-1 lg:-mx-4");
         add_location(div2, file$4, 30, 8, 835);
-        attr_dev(div3, "class", "container my-12 mx-auto px-4 md:px-12");
+        attr_dev(div3, "class", "container my-12 mx-auto px-4 md:px-12 svelte-lsoara");
         add_location(div3, file$4, 29, 4, 775);
         attr_dev(section, "id", "posts");
         add_location(section, file$4, 21, 0, 578);

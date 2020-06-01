@@ -40,3 +40,11 @@
     </div>
 
 </section>
+
+<style>
+
+    .container {
+        max-width: 90%;
+    }
+
+</style>
