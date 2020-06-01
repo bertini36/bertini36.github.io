@@ -6,7 +6,7 @@
 
 <img src={page_not_found_img_url} alt="Page Not Found" />
 
-<style type="text/scss">
+<style type="text/css">
 
   img {
     width: 100%;
