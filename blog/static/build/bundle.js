@@ -7213,6 +7213,7 @@ var app = (function () {
         add_location(h2, file$2, 43, 12, 1420);
         attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
         add_location(h3, file$2, 46, 12, 1522);
+        attr_dev(img, "class", "w-full");
         if (img.src !== (img_src_value = "static/" +
         /*$selected_post*/
         ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
@@ -7220,7 +7221,7 @@ var app = (function () {
         /*$selected_post*/
         ctx[0].name);
         add_location(img, file$2, 51, 16, 1698);
-        attr_dev(div, "class", "mx-auto px-40 mb-8");
+        attr_dev(div, "class", "mx-auto px-56 mb-8");
         add_location(div, file$2, 50, 12, 1649);
         html_tag = new HtmlTag(raw_value, null);
       },
