@@ -48,7 +48,7 @@
                 {$selected_post.technology}
             </h3>
 
-            <div class="mx-auto px-56 mb-8">
+            <div class="mx-auto px-56 mb-12">
                 <img class="w-full" src="static/{$selected_post.main_photo_path}" alt="{$selected_post.name}">
             </div>
 

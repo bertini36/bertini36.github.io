@@ -7220,8 +7220,8 @@ var app = (function () {
         attr_dev(img, "alt", img_alt_value =
         /*$selected_post*/
         ctx[0].name);
-        add_location(img, file$2, 51, 16, 1698);
-        attr_dev(div, "class", "mx-auto px-56 mb-8");
+        add_location(img, file$2, 51, 16, 1699);
+        attr_dev(div, "class", "mx-auto px-56 mb-12");
         add_location(div, file$2, 50, 12, 1649);
         html_tag = new HtmlTag(raw_value, null);
       },
