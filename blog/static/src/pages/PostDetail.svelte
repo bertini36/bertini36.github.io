@@ -48,8 +48,9 @@
                 {$selected_post.technology}
             </h3>
 
-            <img class="w-full h-full mb-8 md:px-32 lg:px-64"
-                 src="static/{$selected_post.main_photo_path}" alt="{$selected_post.name}">
+            <div class="mx-auto px-40 mb-8">
+                <img src="static/{$selected_post.main_photo_path}" alt="{$selected_post.name}">
+            </div>
 
             {@html $selected_post.text}
 

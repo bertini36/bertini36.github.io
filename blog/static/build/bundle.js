@@ -7189,6 +7189,7 @@ var app = (function () {
     ctx[0].technology + "";
     var t2;
     var t3;
+    var div;
     var img;
     var img_src_value;
     var img_alt_value;
@@ -7205,20 +7206,22 @@ var app = (function () {
         h3 = element("h3");
         t2 = text(t2_value);
         t3 = space();
+        div = element("div");
         img = element("img");
         t4 = space();
         attr_dev(h2, "class", "text-3xl text-center");
         add_location(h2, file$2, 43, 12, 1420);
         attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
         add_location(h3, file$2, 46, 12, 1522);
-        attr_dev(img, "class", "w-full h-full mb-8 md:px-32 lg:px-64");
         if (img.src !== (img_src_value = "static/" +
         /*$selected_post*/
         ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
         attr_dev(img, "alt", img_alt_value =
         /*$selected_post*/
         ctx[0].name);
-        add_location(img, file$2, 50, 12, 1649);
+        add_location(img, file$2, 51, 16, 1698);
+        attr_dev(div, "class", "mx-auto px-40 mb-8");
+        add_location(div, file$2, 50, 12, 1649);
         html_tag = new HtmlTag(raw_value, null);
       },
       m: function mount(target, anchor) {
@@ -7228,7 +7231,8 @@ var app = (function () {
         insert_dev(target, h3, anchor);
         append_dev(h3, t2);
         insert_dev(target, t3, anchor);
-        insert_dev(target, img, anchor);
+        insert_dev(target, div, anchor);
+        append_dev(div, img);
         insert_dev(target, t4, anchor);
         html_tag.m(target, anchor);
       },
@@ -7271,7 +7275,7 @@ var app = (function () {
         if (detaching) detach_dev(t1);
         if (detaching) detach_dev(h3);
         if (detaching) detach_dev(t3);
-        if (detaching) detach_dev(img);
+        if (detaching) detach_dev(div);
         if (detaching) detach_dev(t4);
         if (detaching) html_tag.d();
       }
