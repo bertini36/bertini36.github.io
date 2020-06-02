@@ -11,7 +11,7 @@ Terraform.
 ## Project structure
 
 - Backend: [Django](https://www.djangoproject.com/)
-- Frontend: [Svelte](https://svelte.dev/)
+- Frontend: [Svelte](https://svelte.dev/) & [Tailwind](https://tailwindcss.com/)
 - Architecture deploy: [Terraform](https://www.terraform.io/)
 
 ## Download code

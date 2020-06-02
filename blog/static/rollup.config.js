@@ -31,6 +31,26 @@ export default {
 			}
 		}),
 
+        smelte({
+            purge: production,
+            output: "build/tailwind.css",
+            postcss: [],
+            whitelist: [],
+            whitelistPatterns: [],
+            tailwind: {
+                colors: {
+                    primary: "#feb72b",
+                    secondary: "#009688",
+                    error: "#f44336",
+                    success: "#4caf50",
+                    alert: "#ff9800",
+                    blue: "#2196f3",
+                    dark: "#212121"
+                },
+                darkMode: true
+            },
+        }),
+
         babel({
 			extensions: ['.js', '.mjs', '.html', '.svelte'],
 			runtimeHelpers: true,
@@ -89,26 +109,6 @@ export default {
                     dest: 'lib/noty'
                 }
             ]
-        }),
-
-        smelte({
-            purge: production,
-            output: "build/tailwind.css",
-            postcss: [],
-            whitelist: [],
-            whitelistPatterns: [],
-            tailwind: {
-                colors: {
-                    primary: "#feb72b",
-                    secondary: "#009688",
-                    error: "#f44336",
-                    success: "#4caf50",
-                    alert: "#ff9800",
-                    blue: "#2196f3",
-                    dark: "#212121"
-                },
-                darkMode: true
-            },
         }),
 
 	],
