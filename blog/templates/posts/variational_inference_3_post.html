@@ -20,8 +20,8 @@
     estimations. Estimations expectation  E(∇λC(λ,x)), being x a batch of data, is equivalent to the
     real gradient ∇λC(λ,X), being X the full dataset.
 </p>
-<div class="mx-auto px-56 mb-6 mt-6">
-    <figure class="px-40">
+<div class="mx-auto md:px-56 mb-6 mt-6">
+    <figure class="md:px-40">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/svi.png' %}"
              alt="Sthocastic Optimization">
@@ -31,8 +31,8 @@
     Under ideal conditions these stochastic algorithms converge to a local optimum of the function
     if ρ meets the Robins-Monro conditions:
 </p>
-<div class="mx-auto px-56 mb-6 mt-6">
-    <figure class="px-48">
+<div class="mx-auto md:px-56 mb-6 mt-6">
+    <figure class="md:px-48">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/robins.png' %}"
              alt="Robins-Monro">
@@ -43,7 +43,7 @@
     and Stochastic Natural Gradient Ascent Variational Inference (SNGAVI) if natural gradients are used to estimate.
     These algorthims, thanks to the real gradient estimations, can avoid saddle points.
 </p>
-<div class="mx-auto px-56 mb-6 mt-6">
+<div class="mx-auto md:px-56 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/saddle-point.png' %}"
@@ -58,7 +58,7 @@
     sthocastic optimization the algorithm is known as SGAVI. This version uses a corrector term using calculations
     from previous iterations. The generic algorithm would be as follows:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/svi-algorithm.png' %}"
@@ -70,7 +70,7 @@
     Starting from the ELBO formula that was reached in the
     <a href="https://albertopou.herokuapp.com/#variational_inference_2" style="color: #feb72b" target="_blank">previous post</a>:
 </p>
-<div class="mx-auto px-48 mb-6 mt-6">
+<div class="mx-auto md:px-48 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/elbo2.png' %}"
@@ -87,7 +87,7 @@
     Now we apply gradients and some algebraic transformations into the analytic ELBO formula (complete derivation
     is not shown):
 </p>
-<div class="mx-auto px-48 mb-6 mt-6">
+<div class="mx-auto md:px-48 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/elbo3.png' %}"
@@ -107,7 +107,7 @@
     Then a set of samples (θs) obtained from the q(θ|λ) distribution will allow us to get an approximation of
     the integral. The formula would be as follows:
 </p>
-<div class="mx-auto px-48 mb-6 mt-6">
+<div class="mx-auto md:px-48 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/montecarlo.png' %}"
@@ -118,7 +118,7 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     Below is the BBVI algorithm:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/bbvi.png' %}"

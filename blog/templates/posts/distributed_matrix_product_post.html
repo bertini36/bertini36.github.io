@@ -15,7 +15,7 @@
     expensive algorithms or algorithms that require a huge amount of data in a distributed way. Specifically,
     Marenostrum III has 3108 nodes each with 2 processors of 8 cores (over 49.728 cores).
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/distributed_matrix_product/marenostrum.jpg' %}"
@@ -28,7 +28,7 @@
     how to parallelize at each node. Matrix product is a mathematical operation that, when it is taken to the extreme
     using very large matrices it is become in a very computationally expensive operation.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/distributed_matrix_product/matrix_product.png' %}"
@@ -45,7 +45,7 @@
     (lines 123 and 124) and to specify, using process id, which part of the result matrix each node has to calculate
     (lines 116, 117 and 118).
 </p>
-<div class="mx-auto px-20 mb-6 mt-6">
+<div class="mx-auto md:px-20 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/distributed_matrix_product/distributed_matrix_product.png' %}"

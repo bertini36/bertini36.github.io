@@ -7,7 +7,7 @@
     to minimize the Kullback-Leibler divergence (KL) between the variational model q(θ|λ) and the probabilistic
     model p(θ|x). Starting from Bayes' rule we have:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/ELBO_derivation.png' %}"
@@ -17,7 +17,7 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     This expression gives us a more affordable way to calculate the evidence of the model where each factor is:
 </p>
-<div class="mx-auto px-10 mb-6 mt-6">
+<div class="mx-auto md:px-10 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/ELBO_explanation.png' %}"
@@ -28,7 +28,7 @@
     With this demonstration we get that minimize KL[q(θ|λ)||p(θ|x)] is equivalent to maximize ELBO(q(θ|λ),p(x,θ))
     which is easier to evaluate. An intractable integral has been transformed to an expectation of a known distribution.
 </p>
-<div class="mx-auto px-64 mb-6 mt-6">
+<div class="mx-auto md:px-64 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/kullback_leibler.png' %}"
@@ -43,7 +43,7 @@
     increase, are executed it means that good values for variational model λ params have been found. These are values of
     λ which get closer probabilistic model (the posterior). We can rewrite ELBO as:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/ELBO_reescritura.png' %}"
@@ -53,7 +53,7 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     Where each factor is:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/ELBO_terminos.png' %}"
@@ -65,7 +65,7 @@
     <a href="https://albertopou.herokuapp.com/#variational_inference_1" style="color: #feb72b" target="_blank">previous post</a>,
     ELBO ends as follows:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full" style="width: 90%"
              src="{% static 'img/posts/variational_inference/ELBO_MeanField.png' %}"
@@ -73,7 +73,7 @@
     </figure>
 </div>
 <h4 class="mt-6 mb-2">Variational Inference algorithm</h4>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/VI.png' %}"
@@ -106,8 +106,8 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     Generic derivarion is based on the following formula (assuming the Mean-Field assumption):
 </p>
-<div class="mx-auto px-64 mb-6 mt-6">
-    <figure class="px-10">
+<div class="mx-auto md:px-64 mb-6 mt-6">
+    <figure class="md:px-10">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/generic_derivation.png' %}"
              alt="Generic derivation">
@@ -121,8 +121,8 @@
     Another way to obtain the variational parameters updates is to derive them using the properties of the Exponential
     Family. To this family belong all the distributions that can be written in the form:
 </p>
-<div class="mx-auto px-64 mb-6 mt-6">
-    <figure class="px-10">
+<div class="mx-auto md:px-64 mb-6 mt-6">
+    <figure class="md:px-10">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/exponential_family.png' %}"
              alt="Exponential family">
@@ -143,7 +143,7 @@
     allow to calculate the posterior analytically.
 </p>
 <h5 class="mt-6 mb-2">Coordinate Ascent Variational Inference algorithm</h5>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/CAVI.png' %}"
@@ -170,8 +170,8 @@
     model and moves in the direction of maximum slope (which is indicated by the gradient of the function) until find
     a local maximum. Variational model parameters are updated as follows:
 </p>
-<div class="mx-auto px-56 mb-6 mt-6">
-    <figure class="px-40">
+<div class="mx-auto md:px-56 mb-6 mt-6">
+    <figure class="md:px-40">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/gradient.png' %}"
              alt="Gradient application">
@@ -184,7 +184,7 @@
     the following.
 </p>
 <h5 class="mt-6 mb-2">Gradient Ascent Variational Inference algorithm</h5>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/GAVI.png' %}"
@@ -198,8 +198,8 @@
     Euclidean distance of their parameters. The solution to this problem, to find the real distance between two
     distributions, is to use the natural gradient.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
-    <figure class="px-40">
+<div class="mx-auto md:px-40 mb-6 mt-6">
+    <figure class="md:px-40">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/natural_gradient.png' %}"
              alt="Natural gradient definition">
@@ -210,8 +210,8 @@
     distance between distributions is taken into account. This distance can be calculated premultiplying the normal
     gradient by the inverse of the matrix Fisher's, G(λ).
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
-    <figure class="px-24">
+<div class="mx-auto md:px-40 mb-6 mt-6">
+    <figure class="md:px-24">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/natural_gradient2.png' %}"
              alt="Natural gradient definition">

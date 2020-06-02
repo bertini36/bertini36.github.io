@@ -19,7 +19,7 @@
         <strong>Numerical differentiation.</strong>
         This method uses derivative definition to approximate using samples of the original function. In this way
         we can approximate the gradient ∇f as:
-        <div class="mx-auto px-64 mb-6 mt-6">
+        <div class="mx-auto md:px-64 mb-6 mt-6">
             <figure>
                 <img class="w-full h-full"
                      src="{% static 'img/posts/automatic_differentiation/derivative_deffinition.png' %}"
@@ -45,7 +45,7 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     Next image shows the differences between the three methods.
 </p>
-<div class="mx-auto px-10 mb-6 mt-6">
+<div class="mx-auto md:px-10 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/automatic_differentiation/derivative_strategies.png' %}"
@@ -64,7 +64,7 @@
     derivatives to update the weights of each of the neural network layers. This method avoids to reuse calculus
     already computed and to calculate derivatives in a very efficient way.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/automatic_differentiation/forward_AD.png' %}"
@@ -74,7 +74,7 @@
         </figcaption>
     </figure>
 </div>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/automatic_differentiation/backward_AD.png' %}"
@@ -124,8 +124,8 @@
     Below is the code to optimize the parameters of a lineal regression model with Tensorflow and with Autograd (both
     use AD reverse model to get gradients). A lineal regression model is defined by the equation:
 </p>
-<div class="mx-auto px-64 mb-6 mt-6">
-    <figure class="px-40">
+<div class="mx-auto md:px-64 mb-6 mt-6">
+    <figure class="md:px-40">
         <img class="w-full h-full"
              src="{% static 'img/posts/automatic_differentiation/regresion_lineal.png' %}"
              alt="Lineal regression equation">
@@ -153,7 +153,7 @@
         Learning weight and bias parameters of a linear regression model with Tensorflow.
     </small>
 </div>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/automatic_differentiation/linear_regression_tf_results.png' %}"
@@ -173,7 +173,7 @@
         Learning weight and bias parameters of a linear regression model with Autograd.
     </small>
 </div>
-<div class="mx-auto px-40  mb-6 mt-6">
+<div class="mx-auto md:px-40  mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/automatic_differentiation/linear_regression_ag_results.png' %}"

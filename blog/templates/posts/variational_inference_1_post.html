@@ -20,7 +20,7 @@
     be very valuable in areas such as medicine or economy where risk about to take a bad decision can be detrimental to
     a person's health or lead to financial loss.
 </p>
-<div class="mx-auto px-56 mb-6 mt-6">
+<div class="mx-auto md:px-56 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/esquema_situacion.png' %}"
@@ -50,7 +50,7 @@
     <a href="https://en.wikipedia.org/wiki/George_E._P._Box" style="color: #feb72b" target="_blank">George E. P. Box</a>. This loop is
     iterated several times during the construction of a probabilistic model.
 </p>
-<div class="mx-auto px-10 mb-6 mt-6">
+<div class="mx-auto md:px-10 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/box_loop.png' %}"
@@ -83,8 +83,8 @@
     of view there are no differences between parameters and observed variables, both are random variables. I'm going to
     use x to reference observed variables and θ to reference latent variables.
 </p>
-<div class="mx-auto px-64 mb-6 mt-6">
-    <figure class="px-32">
+<div class="mx-auto md:px-64 mb-6 mt-6">
+    <figure class="md:px-32">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/bayes_rule.png' %}"
              alt="Bayes rule">
@@ -136,7 +136,7 @@
     change is reflected by the posterior distribution (p(θ|x)). In this example we can appreciate the support to
     online learning that offers this kind of models.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/online_learning.png' %}"
@@ -201,8 +201,8 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     In the bayesian field, a model represents a joint probability over all random variables of the problem.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
-    <figure class="px-56">
+<div class="mx-auto md:px-40 mb-6 mt-6">
+    <figure class="md:px-56">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/joint_dist.png' %}"
              alt="Joint distribution">
@@ -214,14 +214,14 @@
     probabilistic graphical model is a directed graph where nodes are random variables and edges are dependency
     relations between those variables. For example, joint distribution probabilistic graphical model is:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
-    <figure class="px-40">
+<div class="mx-auto md:px-40 mb-6 mt-6">
+    <figure class="md:px-40">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/joint_dist2.png' %}"
              alt="Joint distribution">
     </figure>
 </div>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure class="px-40">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/graphical_model.png' %}"
@@ -232,7 +232,7 @@
     At this context, p(x|y) represents the conditional probability in which <i>x</i> variable depends on the
     value of y. At this kind of diagrams also exists another components called plates.
 </p>
-<div class="mx-auto px-56 mb-6 mt-6">
+<div class="mx-auto md:px-56 mb-6 mt-6">
     <figure class="px-56">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/plate.png' %}"
@@ -249,7 +249,7 @@
     example, the following probabilistic graphical model, <i>y</i> variable is local while <i>z</i> variable is a
     global one. When a node appears obscured it means that it is an observed variable.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure class="px-56">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/global_local_variables.png' %}"
@@ -268,7 +268,7 @@
     &lambda; parameters in order to reduce the distance with probabilistic model p(&theta;|x). &lambda; parameters are known also as
     variational parameters.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full" style="width: 90%"
              src="{% static 'img/posts/variational_inference/variational_inference.jpg' %}"
@@ -293,7 +293,7 @@
     KL quantifies loss information when you approximate one distribution with another. It is based on the concept of
     entropy. Entropy measures the quantity of information that own data and is defined as follows:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure class="px-56">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/entropia.png' %}"
@@ -303,8 +303,8 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     KL definition consists in modify entropy formula to take q distribution into account.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
-    <figure class="px-32">
+<div class="mx-auto md:px-40 mb-6 mt-6">
+    <figure class="md:px-32">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/kl1.png' %}"
              alt="Kullback-Leibler divergence">
@@ -313,8 +313,8 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     If we adapt this form to the VI problem and we apply logarithms properties we have:
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
-    <figure class="px-40">
+<div class="mx-auto md:px-40 mb-6 mt-6">
+    <figure class="md:px-40">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/kl_rule.png' %}"
              alt="Kullback-Leibler definition">
@@ -324,7 +324,7 @@
     This divergence avoids us to find the real similarity between two probability distributions and it is the measure
     that is minimized at VI algorithm.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/kullback-leibler1.png' %}"
@@ -336,7 +336,7 @@
         </figcaption>
     </figure>
 </div>
-<div class="mx-auto px-40 mb-6 mt-6">
+<div class="mx-auto md:px-40 mb-6 mt-6">
     <figure>
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/kullback-leibler2.png' %}"
@@ -356,8 +356,8 @@
     <a href="https://en.wikipedia.org/wiki/Exponential_family" style="color: #feb72b" target="_blank">Exponential Family</a>). Each one of
     these distributions has its own parameters &lambda;<sub>i</sub> which could be optimized individually.
 </p>
-<div class="mx-auto px-40 mb-6 mt-6">
-    <figure class="px-56">
+<div class="mx-auto md:px-40 mb-6 mt-6">
+    <figure class="md:px-56">
         <img class="w-full h-full"
              src="{% static 'img/posts/variational_inference/mean_field.png' %}"
              alt="Mean-Field assumption">
