@@ -4137,7 +4137,7 @@ var app = (function () {
 
   })));
 
-  //# sourceMappingURL=es6-promise.map
+
 
   /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)));
 
@@ -4955,7 +4955,7 @@ var app = (function () {
   /***/ })
   /******/ ]);
   });
-  //# sourceMappingURL=noty.js.map
+
   });
 
   var Noty = unwrapExports(noty);
