@@ -25,7 +25,6 @@
     "axios": "^0.19.2",
     "babel": "^6.23.0",
     "jquery": "^3.5.0",
-    "livereload-js": "^3.2.2",
     "noty": "^3.2.0-beta",
     "sirv-cli": "^0.4.4",
     "smelte": "^1.0.12"
