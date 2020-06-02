@@ -7,7 +7,9 @@ import copy from 'rollup-plugin-copy';
 import babel from "rollup-plugin-babel";
 
 const production = !process.env.ROLLUP_WATCH;
-const smelte = require("smelte/rollup-plugin-smelte");
+const smelte = require("smelte/rollup-plugin-smelte")
+
+console.log(`Production: ${production}`)
 
 export default {
 	input: 'src/index.js',
@@ -72,7 +74,7 @@ export default {
 		// the bundle has been generated
 		!production && serve(),
 
-		// Watch the `public` directory and refresh the
+		// Watch the `src` directory and refresh the
 		// browser on changes when not in production
 		!production && livereload('src'),
 
