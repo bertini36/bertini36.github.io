@@ -1,80 +1,94 @@
 {% load static %}
 
-<p>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     In this post I'm going to continue explaining concepts that I introduced in my
-    <a href="https://albertopou.herokuapp.com/#variational_inference_1" target="_blank">previous post</a> about
+    <a href="https://albertopou.herokuapp.com/#variational_inference_1" style="color: #feb72b" target="_blank">previous post</a> about
     Variational Inference (VI). At first I'm going to show that to find the best posterior approach it's necessary
     to minimize the Kullback-Leibler divergence (KL) between the variational model q(θ|λ) and the probabilistic
     model p(θ|x). Starting from Bayes' rule we have:
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered" style="width: 90%"
-         src="{% static 'img/posts/variational_inference/ELBO_derivation.png' %}"
-         alt="ELBO derivation">
-</figure>
-<p>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/ELBO_derivation.png' %}"
+             alt="ELBO derivation">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     This expression gives us a more affordable way to calculate the evidence of the model where each factor is:
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered" style="width: 100%"
-         src="{% static 'img/posts/variational_inference/ELBO_explanation.png' %}"
-         alt="ELBO explanation">
-</figure>
-<p>
+<div class="mx-auto px-10 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/ELBO_explanation.png' %}"
+             alt="ELBO explanation">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     With this demonstration we get that minimize KL[q(θ|λ)||p(θ|x)] is equivalent to maximize ELBO(q(θ|λ),p(x,θ))
     which is easier to evaluate. An intractable integral has been transformed to an expectation of a known distribution.
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/kullback_leibler.png' %}"
-         alt="ELBO">
-    <figcaption>
-        <small>Maximize ELBO is equivalent to minimize the distance between variational model and probabilistic model.</small>
-    </figcaption>
-</figure>
-<p>
+<div class="mx-auto px-64 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/kullback_leibler.png' %}"
+             alt="ELBO">
+        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+            Maximize ELBO is equivalent to minimize the distance between variational model and probabilistic model.
+        </figcaption>
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     Variational inference uses ELBO as algorithm stop condition. When some iterations, where ELBO value does not
     increase, are executed it means that good values for variational model λ params have been found. These are values of
     λ which get closer probabilistic model (the posterior). We can rewrite ELBO as:
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/ELBO_reescritura.png' %}"
-         alt="Rewrited ELBO">
-</figure>
-<p>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/ELBO_reescritura.png' %}"
+             alt="Rewrited ELBO">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     Where each factor is:
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/ELBO_terminos.png' %}"
-         alt="ELBO factors">
-</figure>
-<p>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/ELBO_terminos.png' %}"
+             alt="ELBO factors">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     And now, if we take into account the Mean-Field assumption commented in the
-    <a href="https://albertopou.herokuapp.com/#variational_inference_1" target="_blank">previous post</a>,
+    <a href="https://albertopou.herokuapp.com/#variational_inference_1" style="color: #feb72b" target="_blank">previous post</a>,
     ELBO ends as follows:
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered" style="width: 90%"
-         src="{% static 'img/posts/variational_inference/ELBO_MeanField.png' %}"
-         alt="ELBO taking into account Mean Field assumption">
-</figure>
-<h4>Variational Inference algorithm</h4>
-<figure class="centered">
-    <img class="img-fluid img-centered" style="width: 90%"
-         src="{% static 'img/posts/variational_inference/VI.png' %}"
-         alt="Variational Inference algorithm">
-</figure>
-<p>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full" style="width: 90%"
+             src="{% static 'img/posts/variational_inference/ELBO_MeanField.png' %}"
+             alt="ELBO taking into account Mean Field assumption">
+    </figure>
+</div>
+<h4 class="mt-6 mb-2">Variational Inference algorithm</h4>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/VI.png' %}"
+             alt="Variational Inference algorithm">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     This algorithm represents the basic idea of VI. In practice more things must be taken into account for its correct
     operation. First, variational model could be formed by local and global variables and the updates of these have to be
     done in a concrete way. You also have to choose an inference method: Coordinate Ascent, Gradient Ascent, Sthocastic
     Gradient Descent, ... Chosen inference method doesn't change the basic structure of the VI algorithm just change
     the method of obtaining the λ new values of variational model in each iteration.
 </p>
-<h5>Coordinate Ascent Variational Inference</h5>
-<p>
+<h5 class="mt-6 mb-2">Coordinate Ascent Variational Inference</h5>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     The most traditional method for the inference of probabilistic models is: Coordinate Ascent Variational Inference
     (CAVI). For the implementation of this kind of inference you require knowledge of Bayesian statistics because
     for the update of each variational model λ parameter and ELBO some analytical closed formulas have to be derived.
@@ -84,64 +98,70 @@
     very large matrices in memory. For this reason, in this case and the case of no conjugated models it is a good
     option to approximate the posterior using VI.
 </p>
-<p>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     The derivation of the analytical updates for the variational model parameters can be done in two ways: generic
     derivation or using the properties of the
-    <a href="https://en.wikipedia.org/wiki/Exponential_family" target="_blank">Exponential Family</a>.
+    <a href="https://en.wikipedia.org/wiki/Exponential_family" style="color: #feb72b" target="_blank">Exponential Family</a>.
 </p>
-<p>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     Generic derivarion is based on the following formula (assuming the Mean-Field assumption):
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/generic_derivation.png' %}"
-         alt="Generic derivation">
-</figure>
-<p>
+<div class="mx-auto px-64 mb-6 mt-6">
+    <figure class="px-10">
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/generic_derivation.png' %}"
+             alt="Generic derivation">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     This derivation has to be done for each variable of the variational model θ<small>i</small> and after that,
     a statistician could deduce the distribution type of the variational parameter and how to update it.
 </p>
-<p>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     Another way to obtain the variational parameters updates is to derive them using the properties of the Exponential
     Family. To this family belong all the distributions that can be written in the form:
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/exponential_family.png' %}"
-         alt="Exponential family">
-</figure>
-<ul>
+<div class="mx-auto px-64 mb-6 mt-6">
+    <figure class="px-10">
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/exponential_family.png' %}"
+             alt="Exponential family">
+    </figure>
+</div>
+<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
     <li>h(x): Base measure.</li>
     <li>η(θ): Natural parameters(it just depends on the parameters).</li>
     <li>t(x): Sufficient statistics(it just depends on the data). Lets know the shape of the distribution.
         Describe the possible space for the distribution parameters.</li>
     <li>a(η(θ)): Cumulant. It is a normalizer.</li>
 </ul>
-<p>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     This family allows to establish conjugation relations between distributions. When creating the joint
     distribution based on two distributions the natural parameters of one allow some simplification in the
     formulation together with the sufficient statistics of the other one we say that the first distribution is
     conjugated of the second. The conjugated models, as already mentioned, thanks to these simplifications,
     allow to calculate the posterior analytically.
 </p>
-<h5>Coordinate Ascent Variational Inference algorithm</h5>
-<figure class="centered">
-    <img class="img-fluid img-centered" style="width: 90%"
-         src="{% static 'img/posts/variational_inference/CAVI.png' %}"
-         alt="Coordinate Ascent Variational Inference Algorithm">
-</figure>
-<p>
+<h5 class="mt-6 mb-2">Coordinate Ascent Variational Inference algorithm</h5>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/CAVI.png' %}"
+             alt="Coordinate Ascent Variational Inference Algorithm">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     In this version of CAVI algorithm the distinction between updating local and global variables of the model has
     already been taken into accoun.
 </p>
-<h5>Gradient Ascent Variational Inference</h5>
-<p>
+<h5 class="mt-6 mb-2">Gradient Ascent Variational Inference</h5>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     A more naive inference alternative is Gradient Ascent Variational Inference (GAVI). The difference is how is
     the variational parameters update. It is not done analytically with derived formulas by a statistician,
     it is an exploratory process. GAVI is based on the Gradient Descent/Ascent algorithm.
 </p>
-<h5>Gradient Ascent</h5>
-<p>
+<h5 class="mt-6 mb-2">Gradient Ascent</h5>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     Gradient Ascent aims to maximize a cost function C(λ) parameterized by the model parameters, λ. The algorithm
     optimizes these parameters λ in the gradient direction (in the case of Gradient Descent, in the opposite
     direction of the gradient) of the objective function ∇<small>λ</small>C(λ).
@@ -150,58 +170,66 @@
     model and moves in the direction of maximum slope (which is indicated by the gradient of the function) until find
     a local maximum. Variational model parameters are updated as follows:
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/gradient.png' %}"
-         alt="Gradient application">
-</figure>
-<p>
+<div class="mx-auto px-56 mb-6 mt-6">
+    <figure class="px-40">
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/gradient.png' %}"
+             alt="Gradient application">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     Over the last years optimizations of this algorithm have been appearing: Momentum, Adagrad, Adadelta, RMSprop,
     Adam, ... the improvements they offer are based on aspects such as each parameter λ<small>i</small> has its
     own learning rate η<small>i</small> or taking into account the value of previous iterations gradients to calculate
     the following.
 </p>
-<h5>Gradient Ascent Variational Inference algorithm</h5>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/GAVI.png' %}"
-         alt="Gradient Ascent Variational Inference algorithm">
-</figure>
-<p>
+<h5 class="mt-6 mb-2">Gradient Ascent Variational Inference algorithm</h5>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure>
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/GAVI.png' %}"
+             alt="Gradient Ascent Variational Inference algorithm">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     A problem of this algorithm to approximate the posterior (which causes more inaccurate convergences) is the use of
     the gradient to optimize variational parameters. The gradient supposes that latent variables space is an
     Euclidean space. This fact implies the assumption that distance between the distributions is mesured by the
     Euclidean distance of their parameters. The solution to this problem, to find the real distance between two
     distributions, is to use the natural gradient.
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/natural_gradient.png' %}"
-         alt="Natural gradient definition">
-</figure>
-<p>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure class="px-40">
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/natural_gradient.png' %}"
+             alt="Natural gradient definition">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     Natural gradient indicates the direction of maximum slope in other space, the Riemman space, where the real
     distance between distributions is taken into account. This distance can be calculated premultiplying the normal
     gradient by the inverse of the matrix Fisher's, G(λ).
 </p>
-<figure class="centered">
-    <img class="img-fluid img-centered"
-         src="{% static 'img/posts/variational_inference/natural_gradient2.png' %}"
-         alt="Natural gradient definition">
-</figure>
-<p>
+<div class="mx-auto px-40 mb-6 mt-6">
+    <figure class="px-24">
+        <img class="w-full h-full"
+             src="{% static 'img/posts/variational_inference/natural_gradient2.png' %}"
+             alt="Natural gradient definition">
+    </figure>
+</div>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     In the case of CAVI, when the analytical updates of each variational parameter are derived, the shape of the
     distributions to measure the distance between them is already taking into account.
 </p>
-<h5>Efficiency problems</h5>
-<p>
+<h5 class="mt-6 mb-2">Efficiency problems</h5>
+<p class="text-md text-gray-900 leading-relaxed mt-4">
     Nowadays, in the already known as the information age, algorithms used in machine learning use huge volumes of
     data. This causes programmers to scale algorithms or design alternatives less computationally expensive. CAVI and
     GAVI have to pass through all the data for each iteration. This procedure for massive datasets is intractable. In
     the next post I'm going to explain the measures you can take in this cases and how to solve the scalability problem.
 </p>
-<h4>References</h4>
-<ul>
+<h4 class="mt-6 mb-2">References</h4>
+<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
     <li>
         Journal of the American Statistical AssociationGeorge
         (E. P. Box)
@@ -236,4 +264,4 @@
     </li>
 </ul>
 
-<h5 style="text-align: center;">Date: 25/02/2017</h5>
+<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">25/02/2017</h5>

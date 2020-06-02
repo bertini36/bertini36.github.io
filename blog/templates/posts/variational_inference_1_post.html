@@ -4,7 +4,7 @@
     In next posts I'm going to speak about probabilistic machine learning. Last months I was learning about this
     field, specifically about a type of inference on these models known as Variational Inference, and I reckon can be
     interesting to write a set of posts summarizing my experience about it thanks to my teacher
-    <a href="https://twitter.com/CapdevilaPujol" target="_blank">Joan Capdevila</a>.
+    <a href="https://twitter.com/CapdevilaPujol" style="color: #feb72b" target="_blank">Joan Capdevila</a>.
 </p>
 <h4 class="mt-6 mb-2">Probabilistic Machine Learning</h4>
 <p class="text-md text-gray-900 leading-relaxed mt-4">
@@ -47,7 +47,7 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     The construction of this type of models with latent variables is done following Box Loop philosophy. This loop
     was created by the statistician
-    <a href="https://en.wikipedia.org/wiki/George_E._P._Box" target="_blank">George E. P. Box</a>. This loop is
+    <a href="https://en.wikipedia.org/wiki/George_E._P._Box" style="color: #feb72b" target="_blank">George E. P. Box</a>. This loop is
     iterated several times during the construction of a probabilistic model.
 </p>
 <div class="mx-auto px-10 mb-6 mt-6">
@@ -150,7 +150,7 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     Posterior inference algorithms avoid to analyze information under certain assumptions (priors) discovering a
     hidden structure which best fits with our data. When all relations between model random variable are
-    <a href="https://en.wikipedia.org/wiki/Conjugate_prior" target="_blank">conjugated</a>, this is, when joint
+    <a href="https://en.wikipedia.org/wiki/Conjugate_prior" style="color: #feb72b" target="_blank">conjugated</a>, this is, when joint
     distribution has the same form as the prior, posterior can be calculated analytically. This is the
     case of models like Dirichlet-Categorical o Normal Inverse Wishart-Normal. In the opposite case, the problem of
     this formula resides in the calculation of the evidence (p(x)). For many models of interest (no conjugated) to
@@ -171,13 +171,13 @@
 </p>
 <ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
     <li>
-        <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo" target="_blank">
+        <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo" style="color: #feb72b" target="_blank">
             Markov Chain Monte Carlo (MCMC)
         </a>:
         Sampling approximate inference.
     </li>
     <li>
-        <a href="https://en.wikipedia.org/wiki/Variational_Bayesian_methods" target="_blank">
+        <a href="https://en.wikipedia.org/wiki/Variational_Bayesian_methods" style="color: #feb72b" target="_blank">
             Variational Inference (VI)
         </a>:
         Structural approximate inference.
@@ -188,8 +188,8 @@
     its stationary distribution. After the chain is executed till it arrives to its equilibrium point.
     Finally, results obtained sampling the Markov chain in its stationary section, are the posterior samples. The
     best known algorithms of this family are
-    <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" target="_blank">Metropolis–Hastings</a>
-    , <a href="https://en.wikipedia.org/wiki/Gibbs_sampling" target="_blank">Gibbs sampling</a> and
+    <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" style="color: #feb72b" target="_blank">Metropolis–Hastings</a>
+    , <a href="https://en.wikipedia.org/wiki/Gibbs_sampling" style="color: #feb72b" target="_blank">Gibbs sampling</a> and
     <a href="{https://en.wikipedia.org/wiki/Hybrid_Monte_Carlo">Hamiltonian Monte Carlo</a>.
 </p>
 <p class="text-md text-gray-900 leading-relaxed mt-4">
@@ -210,7 +210,7 @@
 </div>
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     A very practical way of representing these models is using
-    <a href="https://en.wikipedia.org/wiki/Graphical_model" target="_blank">probabilistic graphical models</a>. A
+    <a href="https://en.wikipedia.org/wiki/Graphical_model" style="color: #feb72b" target="_blank">probabilistic graphical models</a>. A
     probabilistic graphical model is a directed graph where nodes are random variables and edges are dependency
     relations between those variables. For example, joint distribution probabilistic graphical model is:
 </p>
@@ -288,7 +288,7 @@
 <p class="text-md text-gray-900 leading-relaxed mt-4">
     KL is a divergence, in other words, a non-simmetric distance, it isn't the same to calculate KL[p(θ|x)||q(θ|λ)]
     (forwards KL) than KL[q(θ|λ)||p(θ|x)] (reverse KL). The fact of use one or another rises to different algorithms:
-     <a href="https://tminka.github.io/papers/ep/minka-ep-uai.pdf" target="_blank">Expectation Propagation</a> uses
+     <a href="https://tminka.github.io/papers/ep/minka-ep-uai.pdf" style="color: #feb72b" target="_blank">Expectation Propagation</a> uses
     forwards KL while VI uses reverse KL. In general terms, Expectation Propagation is more computationally expensive.
     KL quantifies loss information when you approximate one distribution with another. It is based on the concept of
     entropy. Entropy measures the quantity of information that own data and is defined as follows:
@@ -353,7 +353,7 @@
     In order to define a treatable distribution over all latent variables to approximate the posterior we can
     simplify variational model optimization assuming that it is a factorized model. It is to suppose that q(&theta;|&lambda;) is
     composed by a set of distributions q<sub>i</sub>(&theta;<sub>i</sub>|&lambda;<sub>i</sub>) (of the
-    <a href="https://en.wikipedia.org/wiki/Exponential_family" target="_blank">Exponential Family</a>). Each one of
+    <a href="https://en.wikipedia.org/wiki/Exponential_family" style="color: #feb72b" target="_blank">Exponential Family</a>). Each one of
     these distributions has its own parameters &lambda;<sub>i</sub> which could be optimized individually.
 </p>
 <div class="mx-auto px-40 mb-6 mt-6">
