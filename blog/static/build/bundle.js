@@ -4137,7 +4137,7 @@ var app = (function () {
 
   })));
 
-
+  //# sourceMappingURL=es6-promise.map
 
   /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)));
 
@@ -4955,7 +4955,7 @@ var app = (function () {
   /***/ })
   /******/ ]);
   });
-
+  //# sourceMappingURL=noty.js.map
   });
 
   var Noty = unwrapExports(noty);
@@ -6615,7 +6615,7 @@ var app = (function () {
               return axios$1.post(publish_comment_url, json_comment_data).then(function (response) {
                 return _construct(Comment, _toConsumableArray(Object.values(response.data.data)));
               }).catch(function (error) {
-                return show_notification("error", error.response.data.data);
+                return error.response.data;
               });
 
             case 4:
@@ -6671,1459 +6671,6 @@ var app = (function () {
     publish_comment_request: publish_comment_request,
     send_message_request: send_message_request
   });
-
-  function _createSuper$1(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$2()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-  function _isNativeReflectConstruct$2() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$1 = "src/components/Comments.svelte";
-
-  function get_each_context(ctx, list, i) {
-    var child_ctx = ctx.slice();
-    child_ctx[8] = list[i];
-    return child_ctx;
-  } // (40:0) {#each comments as comment}
-
-
-  function create_each_block(ctx) {
-    var article;
-    var a;
-    var img;
-    var img_src_value;
-    var t0;
-    var div1;
-    var div0;
-    var strong;
-    var t1_value =
-    /*comment*/
-    ctx[8].contact_name + "";
-    var t1;
-    var t2;
-    var br;
-    var t3;
-    var t4_value =
-    /*comment*/
-    ctx[8].text + "";
-    var t4;
-    var t5;
-    var p;
-    var t6_value =
-    /*comment*/
-    ctx[8].created + "";
-    var t6;
-    var block = {
-      c: function create() {
-        article = element("article");
-        a = element("a");
-        img = element("img");
-        t0 = space();
-        div1 = element("div");
-        div0 = element("div");
-        strong = element("strong");
-        t1 = text(t1_value);
-        t2 = space();
-        br = element("br");
-        t3 = space();
-        t4 = text(t4_value);
-        t5 = space();
-        p = element("p");
-        t6 = text(t6_value);
-        if (img.src !== (img_src_value = user_avatar_url)) attr_dev(img, "src", img_src_value);
-        attr_dev(img, "alt", "User logo");
-        attr_dev(img, "width", "50");
-        attr_dev(img, "height", "50");
-        attr_dev(img, "class", "svelte-10b0d3t");
-        add_location(img, file$1, 43, 12, 1139);
-        attr_dev(a, "class", "comment-img svelte-10b0d3t");
-        attr_dev(a, "href", "javascript: void(0)");
-        add_location(a, file$1, 42, 8, 1076);
-        add_location(strong, file$1, 47, 16, 1326);
-        add_location(br, file$1, 48, 16, 1382);
-        attr_dev(div0, "class", "text svelte-10b0d3t");
-        set_style(div0, "text-align", "left");
-        add_location(div0, file$1, 46, 12, 1266);
-        attr_dev(div1, "class", "comment-body svelte-10b0d3t");
-        add_location(div1, file$1, 45, 8, 1227);
-        attr_dev(p, "class", "attribution svelte-10b0d3t");
-        add_location(p, file$1, 52, 8, 1460);
-        attr_dev(article, "class", "comment svelte-10b0d3t");
-        add_location(article, file$1, 41, 4, 1042);
-      },
-      m: function mount(target, anchor) {
-        insert_dev(target, article, anchor);
-        append_dev(article, a);
-        append_dev(a, img);
-        append_dev(article, t0);
-        append_dev(article, div1);
-        append_dev(div1, div0);
-        append_dev(div0, strong);
-        append_dev(strong, t1);
-        append_dev(div0, t2);
-        append_dev(div0, br);
-        append_dev(div0, t3);
-        append_dev(div0, t4);
-        append_dev(article, t5);
-        append_dev(article, p);
-        append_dev(p, t6);
-      },
-      p: function update(ctx, dirty) {
-        if (dirty &
-        /*comments*/
-        1 && t1_value !== (t1_value =
-        /*comment*/
-        ctx[8].contact_name + "")) set_data_dev(t1, t1_value);
-        if (dirty &
-        /*comments*/
-        1 && t4_value !== (t4_value =
-        /*comment*/
-        ctx[8].text + "")) set_data_dev(t4, t4_value);
-        if (dirty &
-        /*comments*/
-        1 && t6_value !== (t6_value =
-        /*comment*/
-        ctx[8].created + "")) set_data_dev(t6, t6_value);
-      },
-      d: function destroy(detaching) {
-        if (detaching) detach_dev(article);
-      }
-    };
-    dispatch_dev("SvelteRegisterBlock", {
-      block: block,
-      id: create_each_block.name,
-      type: "each",
-      source: "(40:0) {#each comments as comment}",
-      ctx: ctx
-    });
-    return block;
-  }
-
-  function create_fragment$1(ctx) {
-    var h4;
-    var t1;
-    var t2;
-    var div6;
-    var div2;
-    var div0;
-    var input0;
-    var t3;
-    var div1;
-    var input1;
-    var t4;
-    var div4;
-    var div3;
-    var textarea;
-    var t5;
-    var div5;
-    var button;
-    var i;
-    var t6;
-    var dispose;
-    var each_value =
-    /*comments*/
-    ctx[0];
-    validate_each_argument(each_value);
-    var each_blocks = [];
-
-    for (var _i = 0; _i < each_value.length; _i += 1) {
-      each_blocks[_i] = create_each_block(get_each_context(ctx, each_value, _i));
-    }
-
-    var block = {
-      c: function create() {
-        h4 = element("h4");
-        h4.textContent = "Comments";
-        t1 = space();
-
-        for (var _i2 = 0; _i2 < each_blocks.length; _i2 += 1) {
-          each_blocks[_i2].c();
-        }
-
-        t2 = space();
-        div6 = element("div");
-        div2 = element("div");
-        div0 = element("div");
-        input0 = element("input");
-        t3 = space();
-        div1 = element("div");
-        input1 = element("input");
-        t4 = space();
-        div4 = element("div");
-        div3 = element("div");
-        textarea = element("textarea");
-        t5 = space();
-        div5 = element("div");
-        button = element("button");
-        i = element("i");
-        t6 = text("\n             Send comment");
-        attr_dev(h4, "class", "svelte-10b0d3t");
-        add_location(h4, file$1, 37, 0, 990);
-        attr_dev(input0, "type", "text");
-        attr_dev(input0, "class", "form-control");
-        attr_dev(input0, "placeholder", "Name");
-        add_location(input0, file$1, 64, 12, 1663);
-        attr_dev(div0, "class", "form-group");
-        add_location(div0, file$1, 63, 8, 1626);
-        attr_dev(input1, "type", "email");
-        attr_dev(input1, "class", "form-control");
-        attr_dev(input1, "placeholder", "Email");
-        add_location(input1, file$1, 68, 12, 1815);
-        attr_dev(div1, "class", "form-group");
-        add_location(div1, file$1, 67, 8, 1778);
-        attr_dev(div2, "class", "col-md-6 col-sm-6 col-xs-12");
-        add_location(div2, file$1, 61, 4, 1575);
-        attr_dev(textarea, "class", "form-control svelte-10b0d3t");
-        attr_dev(textarea, "placeholder", "Comment");
-        add_location(textarea, file$1, 75, 12, 2028);
-        attr_dev(div3, "class", "form-group");
-        add_location(div3, file$1, 74, 8, 1991);
-        attr_dev(div4, "class", "col-md-6 col-sm-6 col-xs-12");
-        add_location(div4, file$1, 73, 4, 1941);
-        attr_dev(i, "class", "fa fa-paper-plane");
-        attr_dev(i, "aria-hidden", "true");
-        add_location(i, file$1, 81, 12, 2300);
-        attr_dev(button, "type", "submit");
-        attr_dev(button, "class", "btn btn-xl svelte-10b0d3t");
-        add_location(button, file$1, 80, 8, 2219);
-        attr_dev(div5, "class", "col-md-12 col-sm-12 col-xs-12 text-center");
-        add_location(div5, file$1, 79, 4, 2155);
-        attr_dev(div6, "class", "row svelte-10b0d3t");
-        add_location(div6, file$1, 59, 0, 1552);
-      },
-      l: function claim(nodes) {
-        throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-      },
-      m: function mount(target, anchor, remount) {
-        insert_dev(target, h4, anchor);
-        insert_dev(target, t1, anchor);
-
-        for (var _i3 = 0; _i3 < each_blocks.length; _i3 += 1) {
-          each_blocks[_i3].m(target, anchor);
-        }
-
-        insert_dev(target, t2, anchor);
-        insert_dev(target, div6, anchor);
-        append_dev(div6, div2);
-        append_dev(div2, div0);
-        append_dev(div0, input0);
-        set_input_value(input0,
-        /*comment_data*/
-        ctx[1].name);
-        append_dev(div2, t3);
-        append_dev(div2, div1);
-        append_dev(div1, input1);
-        set_input_value(input1,
-        /*comment_data*/
-        ctx[1].email);
-        append_dev(div6, t4);
-        append_dev(div6, div4);
-        append_dev(div4, div3);
-        append_dev(div3, textarea);
-        set_input_value(textarea,
-        /*comment_data*/
-        ctx[1].text);
-        append_dev(div6, t5);
-        append_dev(div6, div5);
-        append_dev(div5, button);
-        append_dev(button, i);
-        append_dev(button, t6);
-        if (remount) run_all(dispose);
-        dispose = [listen_dev(input0, "input",
-        /*input0_input_handler*/
-        ctx[5]), listen_dev(input1, "input",
-        /*input1_input_handler*/
-        ctx[6]), listen_dev(textarea, "input",
-        /*textarea_input_handler*/
-        ctx[7]), listen_dev(button, "click",
-        /*publish_comment*/
-        ctx[2], false, false, false)];
-      },
-      p: function update(ctx, _ref) {
-        var _ref2 = _slicedToArray(_ref, 1),
-            dirty = _ref2[0];
-
-        if (dirty &
-        /*comments, user_avatar_url*/
-        1) {
-          each_value =
-          /*comments*/
-          ctx[0];
-          validate_each_argument(each_value);
-
-          var _i4;
-
-          for (_i4 = 0; _i4 < each_value.length; _i4 += 1) {
-            var child_ctx = get_each_context(ctx, each_value, _i4);
-
-            if (each_blocks[_i4]) {
-              each_blocks[_i4].p(child_ctx, dirty);
-            } else {
-              each_blocks[_i4] = create_each_block(child_ctx);
-
-              each_blocks[_i4].c();
-
-              each_blocks[_i4].m(t2.parentNode, t2);
-            }
-          }
-
-          for (; _i4 < each_blocks.length; _i4 += 1) {
-            each_blocks[_i4].d(1);
-          }
-
-          each_blocks.length = each_value.length;
-        }
-
-        if (dirty &
-        /*comment_data*/
-        2 && input0.value !==
-        /*comment_data*/
-        ctx[1].name) {
-          set_input_value(input0,
-          /*comment_data*/
-          ctx[1].name);
-        }
-
-        if (dirty &
-        /*comment_data*/
-        2 && input1.value !==
-        /*comment_data*/
-        ctx[1].email) {
-          set_input_value(input1,
-          /*comment_data*/
-          ctx[1].email);
-        }
-
-        if (dirty &
-        /*comment_data*/
-        2) {
-          set_input_value(textarea,
-          /*comment_data*/
-          ctx[1].text);
-        }
-      },
-      i: noop,
-      o: noop,
-      d: function destroy(detaching) {
-        if (detaching) detach_dev(h4);
-        if (detaching) detach_dev(t1);
-        destroy_each(each_blocks, detaching);
-        if (detaching) detach_dev(t2);
-        if (detaching) detach_dev(div6);
-        run_all(dispose);
-      }
-    };
-    dispatch_dev("SvelteRegisterBlock", {
-      block: block,
-      id: create_fragment$1.name,
-      type: "component",
-      source: "",
-      ctx: ctx
-    });
-    return block;
-  }
-
-  var user_avatar_url = "static/img/user.png";
-  var publish_comment_url = "/send/message/";
-
-  function instance$1($$self, $$props, $$invalidate) {
-    var $selected_post;
-    validate_store(selected_post, "selected_post");
-    component_subscribe($$self, selected_post, function ($$value) {
-      return $$invalidate(3, $selected_post = $$value);
-    });
-    var comments = [];
-    var comment_data = {
-      name: "",
-      email: "",
-      text: ""
-    };
-    onMount( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
-      return regenerator.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.t0 = $$invalidate;
-              _context.next = 3;
-              return get_comments($selected_post.slug);
-
-            case 3:
-              _context.t1 = comments = _context.sent;
-              (0, _context.t0)(0, _context.t1);
-
-            case 5:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    })));
-
-    function publish_comment() {
-      return _publish_comment.apply(this, arguments);
-    }
-
-    function _publish_comment() {
-      _publish_comment = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2() {
-        var comment;
-        return regenerator.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.next = 2;
-                return publish_comment_request($selected_post.slug, comment_data);
-
-              case 2:
-                comment = _context2.sent;
-
-                if (comment !== undefined) {
-                  show_notification("success", "Comment published");
-                  $$invalidate(0, comments = [comment].concat(_toConsumableArray(comments)));
-                  reset_comment_form();
-                }
-
-              case 4:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }));
-      return _publish_comment.apply(this, arguments);
-    }
-
-    function reset_comment_form() {
-      $$invalidate(1, comment_data.name = "", comment_data);
-      $$invalidate(1, comment_data.email = "", comment_data);
-      $$invalidate(1, comment_data.text = "", comment_data);
-    }
-
-    var writable_props = [];
-    Object.keys($$props).forEach(function (key) {
-      if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<Comments> was created with unknown prop '".concat(key, "'"));
-    });
-    var _$$props$$$slots = $$props.$$slots,
-        $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
-        $$scope = $$props.$$scope;
-    validate_slots("Comments", $$slots, []);
-
-    function input0_input_handler() {
-      comment_data.name = this.value;
-      $$invalidate(1, comment_data);
-    }
-
-    function input1_input_handler() {
-      comment_data.email = this.value;
-      $$invalidate(1, comment_data);
-    }
-
-    function textarea_input_handler() {
-      comment_data.text = this.value;
-      $$invalidate(1, comment_data);
-    }
-
-    $$self.$capture_state = function () {
-      return {
-        onMount: onMount,
-        utils: utils,
-        selected_post: selected_post,
-        requests: requests,
-        user_avatar_url: user_avatar_url,
-        publish_comment_url: publish_comment_url,
-        comments: comments,
-        comment_data: comment_data,
-        publish_comment: publish_comment,
-        reset_comment_form: reset_comment_form,
-        $selected_post: $selected_post
-      };
-    };
-
-    $$self.$inject_state = function ($$props) {
-      if ("comments" in $$props) $$invalidate(0, comments = $$props.comments);
-      if ("comment_data" in $$props) $$invalidate(1, comment_data = $$props.comment_data);
-    };
-
-    if ($$props && "$$inject" in $$props) {
-      $$self.$inject_state($$props.$$inject);
-    }
-
-    return [comments, comment_data, publish_comment, $selected_post, reset_comment_form, input0_input_handler, input1_input_handler, textarea_input_handler];
-  }
-
-  var Comments = /*#__PURE__*/function (_SvelteComponentDev) {
-    _inherits(Comments, _SvelteComponentDev);
-
-    var _super = _createSuper$1(Comments);
-
-    function Comments(options) {
-      var _this;
-
-      _classCallCheck(this, Comments);
-
-      _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$1, create_fragment$1, safe_not_equal, {});
-      dispatch_dev("SvelteRegisterComponent", {
-        component: _assertThisInitialized(_this),
-        tagName: "Comments",
-        options: options,
-        id: create_fragment$1.name
-      });
-      return _this;
-    }
-
-    return Comments;
-  }(SvelteComponentDev);
-
-  function _createSuper$2(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$3()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-  function _isNativeReflectConstruct$3() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$2 = "src/pages/PostDetail.svelte"; // (42:8) {#if $selected_post !== null}
-
-  function create_if_block(ctx) {
-    var h2;
-    var t0_value =
-    /*$selected_post*/
-    ctx[0].name + "";
-    var t0;
-    var t1;
-    var h3;
-    var t2_value =
-    /*$selected_post*/
-    ctx[0].technology + "";
-    var t2;
-    var t3;
-    var div;
-    var img;
-    var img_src_value;
-    var img_alt_value;
-    var t4;
-    var html_tag;
-    var raw_value =
-    /*$selected_post*/
-    ctx[0].text + "";
-    var block = {
-      c: function create() {
-        h2 = element("h2");
-        t0 = text(t0_value);
-        t1 = space();
-        h3 = element("h3");
-        t2 = text(t2_value);
-        t3 = space();
-        div = element("div");
-        img = element("img");
-        t4 = space();
-        attr_dev(h2, "class", "text-3xl text-center");
-        add_location(h2, file$2, 43, 12, 1420);
-        attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
-        add_location(h3, file$2, 46, 12, 1522);
-        attr_dev(img, "class", "w-full");
-        if (img.src !== (img_src_value = "static/" +
-        /*$selected_post*/
-        ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
-        attr_dev(img, "alt", img_alt_value =
-        /*$selected_post*/
-        ctx[0].name);
-        add_location(img, file$2, 51, 16, 1699);
-        attr_dev(div, "class", "mx-auto px-56 mb-12");
-        add_location(div, file$2, 50, 12, 1649);
-        html_tag = new HtmlTag(raw_value, null);
-      },
-      m: function mount(target, anchor) {
-        insert_dev(target, h2, anchor);
-        append_dev(h2, t0);
-        insert_dev(target, t1, anchor);
-        insert_dev(target, h3, anchor);
-        append_dev(h3, t2);
-        insert_dev(target, t3, anchor);
-        insert_dev(target, div, anchor);
-        append_dev(div, img);
-        insert_dev(target, t4, anchor);
-        html_tag.m(target, anchor);
-      },
-      p: function update(ctx, dirty) {
-        if (dirty &
-        /*$selected_post*/
-        1 && t0_value !== (t0_value =
-        /*$selected_post*/
-        ctx[0].name + "")) set_data_dev(t0, t0_value);
-        if (dirty &
-        /*$selected_post*/
-        1 && t2_value !== (t2_value =
-        /*$selected_post*/
-        ctx[0].technology + "")) set_data_dev(t2, t2_value);
-
-        if (dirty &
-        /*$selected_post*/
-        1 && img.src !== (img_src_value = "static/" +
-        /*$selected_post*/
-        ctx[0].main_photo_path)) {
-          attr_dev(img, "src", img_src_value);
-        }
-
-        if (dirty &
-        /*$selected_post*/
-        1 && img_alt_value !== (img_alt_value =
-        /*$selected_post*/
-        ctx[0].name)) {
-          attr_dev(img, "alt", img_alt_value);
-        }
-
-        if (dirty &
-        /*$selected_post*/
-        1 && raw_value !== (raw_value =
-        /*$selected_post*/
-        ctx[0].text + "")) html_tag.p(raw_value);
-      },
-      d: function destroy(detaching) {
-        if (detaching) detach_dev(h2);
-        if (detaching) detach_dev(t1);
-        if (detaching) detach_dev(h3);
-        if (detaching) detach_dev(t3);
-        if (detaching) detach_dev(div);
-        if (detaching) detach_dev(t4);
-        if (detaching) html_tag.d();
-      }
-    };
-    dispatch_dev("SvelteRegisterBlock", {
-      block: block,
-      id: create_if_block.name,
-      type: "if",
-      source: "(42:8) {#if $selected_post !== null}",
-      ctx: ctx
-    });
-    return block;
-  }
-
-  function create_fragment$2(ctx) {
-    var section;
-    var div;
-    var if_block =
-    /*$selected_post*/
-    ctx[0] !== null && create_if_block(ctx);
-    var block = {
-      c: function create() {
-        section = element("section");
-        div = element("div");
-        if (if_block) if_block.c();
-        attr_dev(div, "class", "px-4 md:px-8 lg:px-32");
-        add_location(div, file$2, 39, 4, 1332);
-        attr_dev(section, "id", "post_container");
-        attr_dev(section, "class", "container h-screen mt-32 mx-auto");
-        add_location(section, file$2, 38, 0, 1257);
-      },
-      l: function claim(nodes) {
-        throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-      },
-      m: function mount(target, anchor) {
-        insert_dev(target, section, anchor);
-        append_dev(section, div);
-        if (if_block) if_block.m(div, null);
-      },
-      p: function update(ctx, _ref) {
-        var _ref2 = _slicedToArray(_ref, 1),
-            dirty = _ref2[0];
-
-        if (
-        /*$selected_post*/
-        ctx[0] !== null) {
-          if (if_block) {
-            if_block.p(ctx, dirty);
-          } else {
-            if_block = create_if_block(ctx);
-            if_block.c();
-            if_block.m(div, null);
-          }
-        } else if (if_block) {
-          if_block.d(1);
-          if_block = null;
-        }
-      },
-      i: noop,
-      o: noop,
-      d: function destroy(detaching) {
-        if (detaching) detach_dev(section);
-        if (if_block) if_block.d();
-      }
-    };
-    dispatch_dev("SvelteRegisterBlock", {
-      block: block,
-      id: create_fragment$2.name,
-      type: "component",
-      source: "",
-      ctx: ctx
-    });
-    return block;
-  }
-
-  function get_gists() {
-    var modal_selector = "#post_container";
-    var gists = jQuery(modal_selector).find("div[gist^='https://gist.github.com/']");
-
-    if (gists.length) {
-      gists.each(function (index, element) {
-        jQuery.getJSON(jQuery(element).attr("gist") + "on?callback=?", function (data) {
-          jQuery(element).append(data.div);
-          add_stylesheet_gist(data.stylesheet);
-        });
-      });
-    }
-  }
-
-  function add_stylesheet_gist(url) {
-    var head = jQuery("head");
-
-    if (head.find("link[rel='stylesheet'][href='" + url + "']").length < 1) {
-      head.append("<link rel=\"stylesheet\" href=\"" + url + "\" type=\"text/css\" />");
-    }
-  }
-
-  function instance$2($$self, $$props, $$invalidate) {
-    var $selected_post;
-    validate_store(selected_post, "selected_post");
-    component_subscribe($$self, selected_post, function ($$value) {
-      return $$invalidate(0, $selected_post = $$value);
-    });
-    onMount( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
-      var post_text;
-      return regenerator.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              window.scrollTo(0, 0);
-              _context.next = 3;
-              return get_post_text($selected_post.slug);
-
-            case 3:
-              post_text = _context.sent;
-
-              if (post_text !== undefined) {
-                set_store_value(selected_post, $selected_post.text = post_text, $selected_post);
-                setTimeout(function () {
-                  return get_gists();
-                });
-              }
-
-            case 5:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    })));
-    var writable_props = [];
-    Object.keys($$props).forEach(function (key) {
-      if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<PostDetail> was created with unknown prop '".concat(key, "'"));
-    });
-    var _$$props$$$slots = $$props.$$slots,
-        $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
-        $$scope = $$props.$$scope;
-    validate_slots("PostDetail", $$slots, []);
-
-    $$self.$capture_state = function () {
-      return {
-        onMount: onMount,
-        Comments: Comments,
-        selected_post: selected_post,
-        requests: requests,
-        get_gists: get_gists,
-        add_stylesheet_gist: add_stylesheet_gist,
-        $selected_post: $selected_post
-      };
-    };
-
-    return [$selected_post];
-  }
-
-  var PostDetail = /*#__PURE__*/function (_SvelteComponentDev) {
-    _inherits(PostDetail, _SvelteComponentDev);
-
-    var _super = _createSuper$2(PostDetail);
-
-    function PostDetail(options) {
-      var _this;
-
-      _classCallCheck(this, PostDetail);
-
-      _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$2, create_fragment$2, safe_not_equal, {});
-      dispatch_dev("SvelteRegisterComponent", {
-        component: _assertThisInitialized(_this),
-        tagName: "PostDetail",
-        options: options,
-        id: create_fragment$2.name
-      });
-      return _this;
-    }
-
-    return PostDetail;
-  }(SvelteComponentDev);
-
-  function _createForOfIteratorHelper$1(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray$2(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-  function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
-
-  function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-  var Post = /*#__PURE__*/function () {
-    function Post(id, name, slug, technology, published, main_photo_path) {
-      _classCallCheck(this, Post);
-
-      this.id = id;
-      this.name = name;
-      this.slug = slug;
-      this.technology = technology;
-      this.published = published;
-      this.main_photo_path = main_photo_path;
-      this.text = null;
-    }
-
-    _createClass(Post, null, [{
-      key: "get_post_objects_from_data",
-      value: function get_post_objects_from_data(data) {
-        var posts = [];
-
-        var _iterator = _createForOfIteratorHelper$1(data),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var post_data = _step.value;
-
-            var post = _construct(Post, _toConsumableArray(Object.values(post_data)));
-
-            posts.push(post);
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-
-        return posts;
-      }
-    }, {
-      key: "search_post",
-      value: function search_post(posts, post_slug) {
-        var _iterator2 = _createForOfIteratorHelper$1(posts),
-            _step2;
-
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var post = _step2.value;
-
-            if (post.slug === post_slug) {
-              return post;
-            }
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-
-        return null;
-      }
-    }, {
-      key: "add_routes",
-      value: function add_routes(routes, posts) {
-        var _iterator3 = _createForOfIteratorHelper$1(posts),
-            _step3;
-
-        try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var post = _step3.value;
-            routes.push({
-              route: "#".concat(post.slug),
-              page: PostDetail
-            });
-          }
-        } catch (err) {
-          _iterator3.e(err);
-        } finally {
-          _iterator3.f();
-        }
-      }
-    }]);
-
-    return Post;
-  }();
-
-  function _createSuper$3(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$4()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-  function _isNativeReflectConstruct$4() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$3 = "src/components/PostCard.svelte";
-
-  function create_fragment$3(ctx) {
-    var div3;
-    var div2;
-    var img;
-    var img_src_value;
-    var img_alt_value;
-    var t0;
-    var div1;
-    var div0;
-    var t1_value =
-    /*post*/
-    ctx[0].name + "";
-    var t1;
-    var t2;
-    var p;
-    var t3_value =
-    /*post*/
-    ctx[0].technology + "";
-    var t3;
-    var dispose;
-    var block = {
-      c: function create() {
-        div3 = element("div");
-        div2 = element("div");
-        img = element("img");
-        t0 = space();
-        div1 = element("div");
-        div0 = element("div");
-        t1 = text(t1_value);
-        t2 = space();
-        p = element("p");
-        t3 = text(t3_value);
-        attr_dev(img, "class", "w-full h-64");
-        if (img.src !== (img_src_value = "static/" +
-        /*post*/
-        ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
-        attr_dev(img, "alt", img_alt_value =
-        /*post*/
-        ctx[0].name);
-        add_location(img, file$3, 10, 8, 381);
-        attr_dev(div0, "class", "font-medium text-xl mb-2");
-        set_style(div0, "color",
-        /*hover*/
-        ctx[1] ? "#feb72b" : "black");
-        add_location(div0, file$3, 12, 12, 588);
-        attr_dev(p, "class", "text-gray-700 text-base");
-        add_location(p, file$3, 15, 12, 803);
-        attr_dev(div1, "class", "px-6 py-4 border-t-2");
-        add_location(div1, file$3, 11, 8, 541);
-        attr_dev(div2, "class", "max-w-md md:max-w-md md:mx-3 lg:max-w-lg rounded overflow-hidden shadow-lg cursor-pointer border-1");
-        set_style(div2, "border-color",
-        /*hover*/
-        ctx[1] ? "#feb72b" : "black");
-        toggle_class(div2, "border-2",
-        /*hover*/
-        ctx[1] === true);
-        add_location(div2, file$3, 8, 4, 167);
-        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8");
-        add_location(div3, file$3, 7, 0, 66);
-      },
-      l: function claim(nodes) {
-        throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-      },
-      m: function mount(target, anchor, remount) {
-        insert_dev(target, div3, anchor);
-        append_dev(div3, div2);
-        append_dev(div2, img);
-        append_dev(div2, t0);
-        append_dev(div2, div1);
-        append_dev(div1, div0);
-        append_dev(div0, t1);
-        append_dev(div1, t2);
-        append_dev(div1, p);
-        append_dev(p, t3);
-        if (remount) run_all(dispose);
-        dispose = [listen_dev(img, "mouseover",
-        /*mouseover_handler*/
-        ctx[2], false, false, false), listen_dev(img, "mouseout",
-        /*mouseout_handler*/
-        ctx[3], false, false, false), listen_dev(div0, "mouseover",
-        /*mouseover_handler_1*/
-        ctx[4], false, false, false), listen_dev(div0, "mouseout",
-        /*mouseout_handler_1*/
-        ctx[5], false, false, false), listen_dev(p, "mouseover",
-        /*mouseover_handler_2*/
-        ctx[6], false, false, false), listen_dev(p, "mouseout",
-        /*mouseout_handler_2*/
-        ctx[7], false, false, false), listen_dev(div3, "click", function () {
-          if (is_function(location.hash =
-          /*post*/
-          ctx[0].slug)) (location.hash =
-          /*post*/
-          ctx[0].slug).apply(this, arguments);
-        }, false, false, false)];
-      },
-      p: function update(new_ctx, _ref) {
-        var _ref2 = _slicedToArray(_ref, 1),
-            dirty = _ref2[0];
-
-        ctx = new_ctx;
-
-        if (dirty &
-        /*post*/
-        1 && img.src !== (img_src_value = "static/" +
-        /*post*/
-        ctx[0].main_photo_path)) {
-          attr_dev(img, "src", img_src_value);
-        }
-
-        if (dirty &
-        /*post*/
-        1 && img_alt_value !== (img_alt_value =
-        /*post*/
-        ctx[0].name)) {
-          attr_dev(img, "alt", img_alt_value);
-        }
-
-        if (dirty &
-        /*post*/
-        1 && t1_value !== (t1_value =
-        /*post*/
-        ctx[0].name + "")) set_data_dev(t1, t1_value);
-
-        if (dirty &
-        /*hover*/
-        2) {
-          set_style(div0, "color",
-          /*hover*/
-          ctx[1] ? "#feb72b" : "black");
-        }
-
-        if (dirty &
-        /*post*/
-        1 && t3_value !== (t3_value =
-        /*post*/
-        ctx[0].technology + "")) set_data_dev(t3, t3_value);
-
-        if (dirty &
-        /*hover*/
-        2) {
-          set_style(div2, "border-color",
-          /*hover*/
-          ctx[1] ? "#feb72b" : "black");
-        }
-
-        if (dirty &
-        /*hover*/
-        2) {
-          toggle_class(div2, "border-2",
-          /*hover*/
-          ctx[1] === true);
-        }
-      },
-      i: noop,
-      o: noop,
-      d: function destroy(detaching) {
-        if (detaching) detach_dev(div3);
-        run_all(dispose);
-      }
-    };
-    dispatch_dev("SvelteRegisterBlock", {
-      block: block,
-      id: create_fragment$3.name,
-      type: "component",
-      source: "",
-      ctx: ctx
-    });
-    return block;
-  }
-
-  function instance$3($$self, $$props, $$invalidate) {
-    var post = $$props.post;
-    var hover = false;
-    var writable_props = ["post"];
-    Object.keys($$props).forEach(function (key) {
-      if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<PostCard> was created with unknown prop '".concat(key, "'"));
-    });
-    var _$$props$$$slots = $$props.$$slots,
-        $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
-        $$scope = $$props.$$scope;
-    validate_slots("PostCard", $$slots, []);
-
-    var mouseover_handler = function mouseover_handler() {
-      return $$invalidate(1, hover = true);
-    };
-
-    var mouseout_handler = function mouseout_handler() {
-      return $$invalidate(1, hover = false);
-    };
-
-    var mouseover_handler_1 = function mouseover_handler_1() {
-      return $$invalidate(1, hover = true);
-    };
-
-    var mouseout_handler_1 = function mouseout_handler_1() {
-      return $$invalidate(1, hover = false);
-    };
-
-    var mouseover_handler_2 = function mouseover_handler_2() {
-      return $$invalidate(1, hover = true);
-    };
-
-    var mouseout_handler_2 = function mouseout_handler_2() {
-      return $$invalidate(1, hover = false);
-    };
-
-    $$self.$set = function ($$props) {
-      if ("post" in $$props) $$invalidate(0, post = $$props.post);
-    };
-
-    $$self.$capture_state = function () {
-      return {
-        post: post,
-        hover: hover
-      };
-    };
-
-    $$self.$inject_state = function ($$props) {
-      if ("post" in $$props) $$invalidate(0, post = $$props.post);
-      if ("hover" in $$props) $$invalidate(1, hover = $$props.hover);
-    };
-
-    if ($$props && "$$inject" in $$props) {
-      $$self.$inject_state($$props.$$inject);
-    }
-
-    return [post, hover, mouseover_handler, mouseout_handler, mouseover_handler_1, mouseout_handler_1, mouseover_handler_2, mouseout_handler_2];
-  }
-
-  var PostCard = /*#__PURE__*/function (_SvelteComponentDev) {
-    _inherits(PostCard, _SvelteComponentDev);
-
-    var _super = _createSuper$3(PostCard);
-
-    function PostCard(options) {
-      var _this;
-
-      _classCallCheck(this, PostCard);
-
-      _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$3, create_fragment$3, safe_not_equal, {
-        post: 0
-      });
-      dispatch_dev("SvelteRegisterComponent", {
-        component: _assertThisInitialized(_this),
-        tagName: "PostCard",
-        options: options,
-        id: create_fragment$3.name
-      });
-      var ctx = _this.$$.ctx;
-      var props = options.props || {};
-
-      if (
-      /*post*/
-      ctx[0] === undefined && !("post" in props)) {
-        console.warn("<PostCard> was created without expected prop 'post'");
-      }
-
-      return _this;
-    }
-
-    _createClass(PostCard, [{
-      key: "post",
-      get: function get() {
-        throw new Error("<PostCard>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-      },
-      set: function set(value) {
-        throw new Error("<PostCard>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-      }
-    }]);
-
-    return PostCard;
-  }(SvelteComponentDev);
-
-  function _createSuper$4(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$5()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-  function _isNativeReflectConstruct$5() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$4 = "src/components/PostList.svelte";
-
-  function get_each_context$1(ctx, list, i) {
-    var child_ctx = ctx.slice();
-    child_ctx[2] = list[i];
-    return child_ctx;
-  } // (33:12) {#each $posts as post}
-
-
-  function create_each_block$1(ctx) {
-    var current;
-    var postcard = new PostCard({
-      props: {
-        post:
-        /*post*/
-        ctx[2]
-      },
-      $$inline: true
-    });
-    var block = {
-      c: function create() {
-        create_component(postcard.$$.fragment);
-      },
-      m: function mount(target, anchor) {
-        mount_component(postcard, target, anchor);
-        current = true;
-      },
-      p: function update(ctx, dirty) {
-        var postcard_changes = {};
-        if (dirty &
-        /*$posts*/
-        1) postcard_changes.post =
-        /*post*/
-        ctx[2];
-        postcard.$set(postcard_changes);
-      },
-      i: function intro(local) {
-        if (current) return;
-        transition_in(postcard.$$.fragment, local);
-        current = true;
-      },
-      o: function outro(local) {
-        transition_out(postcard.$$.fragment, local);
-        current = false;
-      },
-      d: function destroy(detaching) {
-        destroy_component(postcard, detaching);
-      }
-    };
-    dispatch_dev("SvelteRegisterBlock", {
-      block: block,
-      id: create_each_block$1.name,
-      type: "each",
-      source: "(33:12) {#each $posts as post}",
-      ctx: ctx
-    });
-    return block;
-  }
-
-  function create_fragment$4(ctx) {
-    var section;
-    var div1;
-    var div0;
-    var h2;
-    var t1;
-    var div3;
-    var div2;
-    var current;
-    var each_value =
-    /*$posts*/
-    ctx[0];
-    validate_each_argument(each_value);
-    var each_blocks = [];
-
-    for (var i = 0; i < each_value.length; i += 1) {
-      each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
-    }
-
-    var out = function out(i) {
-      return transition_out(each_blocks[i], 1, 1, function () {
-        each_blocks[i] = null;
-      });
-    };
-
-    var block = {
-      c: function create() {
-        section = element("section");
-        div1 = element("div");
-        div0 = element("div");
-        h2 = element("h2");
-        h2.textContent = "Posts";
-        t1 = space();
-        div3 = element("div");
-        div2 = element("div");
-
-        for (var _i = 0; _i < each_blocks.length; _i += 1) {
-          each_blocks[_i].c();
-        }
-
-        attr_dev(h2, "class", "text-3xl text-center");
-        add_location(h2, file$4, 25, 12, 700);
-        attr_dev(div0, "class", "w-full");
-        add_location(div0, file$4, 24, 8, 667);
-        attr_dev(div1, "class", "justify-start justify-center mt-20 mb-10");
-        add_location(div1, file$4, 23, 4, 604);
-        attr_dev(div2, "class", "flex flex-wrap -mx-1 lg:-mx-4");
-        add_location(div2, file$4, 30, 8, 835);
-        attr_dev(div3, "class", "container my-12 mx-auto px-4 md:px-12 svelte-lsoara");
-        add_location(div3, file$4, 29, 4, 775);
-        attr_dev(section, "id", "posts");
-        add_location(section, file$4, 21, 0, 578);
-      },
-      l: function claim(nodes) {
-        throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-      },
-      m: function mount(target, anchor) {
-        insert_dev(target, section, anchor);
-        append_dev(section, div1);
-        append_dev(div1, div0);
-        append_dev(div0, h2);
-        append_dev(section, t1);
-        append_dev(section, div3);
-        append_dev(div3, div2);
-
-        for (var _i2 = 0; _i2 < each_blocks.length; _i2 += 1) {
-          each_blocks[_i2].m(div2, null);
-        }
-
-        current = true;
-      },
-      p: function update(ctx, _ref) {
-        var _ref2 = _slicedToArray(_ref, 1),
-            dirty = _ref2[0];
-
-        if (dirty &
-        /*$posts*/
-        1) {
-          each_value =
-          /*$posts*/
-          ctx[0];
-          validate_each_argument(each_value);
-
-          var _i3;
-
-          for (_i3 = 0; _i3 < each_value.length; _i3 += 1) {
-            var child_ctx = get_each_context$1(ctx, each_value, _i3);
-
-            if (each_blocks[_i3]) {
-              each_blocks[_i3].p(child_ctx, dirty);
-
-              transition_in(each_blocks[_i3], 1);
-            } else {
-              each_blocks[_i3] = create_each_block$1(child_ctx);
-
-              each_blocks[_i3].c();
-
-              transition_in(each_blocks[_i3], 1);
-
-              each_blocks[_i3].m(div2, null);
-            }
-          }
-
-          group_outros();
-
-          for (_i3 = each_value.length; _i3 < each_blocks.length; _i3 += 1) {
-            out(_i3);
-          }
-
-          check_outros();
-        }
-      },
-      i: function intro(local) {
-        if (current) return;
-
-        for (var _i4 = 0; _i4 < each_value.length; _i4 += 1) {
-          transition_in(each_blocks[_i4]);
-        }
-
-        current = true;
-      },
-      o: function outro(local) {
-        each_blocks = each_blocks.filter(Boolean);
-
-        for (var _i5 = 0; _i5 < each_blocks.length; _i5 += 1) {
-          transition_out(each_blocks[_i5]);
-        }
-
-        current = false;
-      },
-      d: function destroy(detaching) {
-        if (detaching) detach_dev(section);
-        destroy_each(each_blocks, detaching);
-      }
-    };
-    dispatch_dev("SvelteRegisterBlock", {
-      block: block,
-      id: create_fragment$4.name,
-      type: "component",
-      source: "",
-      ctx: ctx
-    });
-    return block;
-  }
-
-  var section_id = "#posts";
-
-  function instance$4($$self, $$props, $$invalidate) {
-    var $posts;
-    var $routes;
-    validate_store(posts, "posts");
-    component_subscribe($$self, posts, function ($$value) {
-      return $$invalidate(0, $posts = $$value);
-    });
-    validate_store(routes, "routes");
-    component_subscribe($$self, routes, function ($$value) {
-      return $$invalidate(1, $routes = $$value);
-    });
-    onMount( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
-      var element;
-      return regenerator.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.t0 = set_store_value;
-              _context.t1 = posts;
-              _context.next = 4;
-              return get_posts();
-
-            case 4:
-              _context.t2 = $posts = _context.sent;
-              (0, _context.t0)(_context.t1, _context.t2);
-              Post.add_routes($routes, $posts);
-
-              if (location.hash === section_id) {
-                element = document.getElementById(section_id.substr(1));
-                element.scrollIntoView();
-              }
-
-            case 8:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    })));
-    var writable_props = [];
-    Object.keys($$props).forEach(function (key) {
-      if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<PostList> was created with unknown prop '".concat(key, "'"));
-    });
-    var _$$props$$$slots = $$props.$$slots,
-        $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
-        $$scope = $$props.$$scope;
-    validate_slots("PostList", $$slots, []);
-
-    $$self.$capture_state = function () {
-      return {
-        onMount: onMount,
-        Post: Post,
-        requests: requests,
-        posts: posts,
-        routes: routes,
-        active_route: active_route,
-        PostCard: PostCard,
-        section_id: section_id,
-        $posts: $posts,
-        $routes: $routes
-      };
-    };
-
-    return [$posts];
-  }
-
-  var PostList = /*#__PURE__*/function (_SvelteComponentDev) {
-    _inherits(PostList, _SvelteComponentDev);
-
-    var _super = _createSuper$4(PostList);
-
-    function PostList(options) {
-      var _this;
-
-      _classCallCheck(this, PostList);
-
-      _this = _super.call(this, options);
-      init(_assertThisInitialized(_this), options, instance$4, create_fragment$4, safe_not_equal, {});
-      dispatch_dev("SvelteRegisterComponent", {
-        component: _assertThisInitialized(_this),
-        tagName: "PostList",
-        options: options,
-        id: create_fragment$4.name
-      });
-      return _this;
-    }
-
-    return PostList;
-  }(SvelteComponentDev);
-
-  var RECAPTCHA_SITE_KEY = window.RECAPTCHA_SITE_KEY;
 
   const noDepth = ["white", "black", "transparent"];
 
@@ -8217,9 +6764,9 @@ var app = (function () {
 
   /* node_modules/smelte/src/components/Icon/Icon.svelte generated by Svelte v3.20.1 */
 
-  const file$5 = "node_modules/smelte/src/components/Icon/Icon.svelte";
+  const file$1 = "node_modules/smelte/src/components/Icon/Icon.svelte";
 
-  function create_fragment$5(ctx) {
+  function create_fragment$1(ctx) {
   	let i;
   	let i_class_value;
   	let i_style_value;
@@ -8239,7 +6786,7 @@ var app = (function () {
   			toggle_class(i, "tip", /*tip*/ ctx[4]);
   			toggle_class(i, "text-base", /*small*/ ctx[1]);
   			toggle_class(i, "text-xs", /*xs*/ ctx[2]);
-  			add_location(i, file$5, 20, 0, 324);
+  			add_location(i, file$1, 20, 0, 324);
   		},
   		l: function claim(nodes) {
   			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -8304,7 +6851,7 @@ var app = (function () {
 
   	dispatch_dev("SvelteRegisterBlock", {
   		block,
-  		id: create_fragment$5.name,
+  		id: create_fragment$1.name,
   		type: "component",
   		source: "",
   		ctx
@@ -8313,7 +6860,7 @@ var app = (function () {
   	return block;
   }
 
-  function instance$5($$self, $$props, $$invalidate) {
+  function instance$1($$self, $$props, $$invalidate) {
   	let { class: className = "" } = $$props;
   	let { small = false } = $$props;
   	let { xs = false } = $$props;
@@ -8372,7 +6919,7 @@ var app = (function () {
   	constructor(options) {
   		super(options);
 
-  		init(this, options, instance$5, create_fragment$5, safe_not_equal, {
+  		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
   			class: 0,
   			small: 1,
   			xs: 2,
@@ -8385,7 +6932,7 @@ var app = (function () {
   			component: this,
   			tagName: "Icon",
   			options,
-  			id: create_fragment$5.name
+  			id: create_fragment$1.name
   		});
   	}
 
@@ -8439,9 +6986,9 @@ var app = (function () {
   }
 
   /* node_modules/smelte/src/components/TextField/Label.svelte generated by Svelte v3.20.1 */
-  const file$6 = "node_modules/smelte/src/components/TextField/Label.svelte";
+  const file$2 = "node_modules/smelte/src/components/TextField/Label.svelte";
 
-  function create_fragment$6(ctx) {
+  function create_fragment$2(ctx) {
   	let label;
   	let current;
   	const default_slot_template = /*$$slots*/ ctx[22].default;
@@ -8466,7 +7013,7 @@ var app = (function () {
   			if (default_slot) default_slot.c();
   			set_attributes(label, label_data);
   			toggle_class(label, "svelte-81hn54", true);
-  			add_location(label, file$6, 66, 0, 1501);
+  			add_location(label, file$2, 66, 0, 1501);
   		},
   		l: function claim(nodes) {
   			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -8513,7 +7060,7 @@ var app = (function () {
 
   	dispatch_dev("SvelteRegisterBlock", {
   		block,
-  		id: create_fragment$6.name,
+  		id: create_fragment$2.name,
   		type: "component",
   		source: "",
   		ctx
@@ -8522,7 +7069,7 @@ var app = (function () {
   	return block;
   }
 
-  function instance$6($$self, $$props, $$invalidate) {
+  function instance$2($$self, $$props, $$invalidate) {
   	let { class: className = "" } = $$props;
   	let { focused = false } = $$props;
   	let { error = false } = $$props;
@@ -8647,7 +7194,7 @@ var app = (function () {
   	constructor(options) {
   		super(options);
 
-  		init(this, options, instance$6, create_fragment$6, safe_not_equal, {
+  		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
   			class: 0,
   			focused: 3,
   			error: 4,
@@ -8666,7 +7213,7 @@ var app = (function () {
   			component: this,
   			tagName: "Label",
   			options,
-  			id: create_fragment$6.name
+  			id: create_fragment$2.name
   		});
   	}
 
@@ -8791,9 +7338,9 @@ var app = (function () {
   }
 
   /* node_modules/smelte/src/components/TextField/Hint.svelte generated by Svelte v3.20.1 */
-  const file$7 = "node_modules/smelte/src/components/TextField/Hint.svelte";
+  const file$3 = "node_modules/smelte/src/components/TextField/Hint.svelte";
 
-  function create_fragment$7(ctx) {
+  function create_fragment$3(ctx) {
   	let div;
   	let t0;
   	let t1;
@@ -8808,7 +7355,7 @@ var app = (function () {
   			t1 = space();
   			t2 = text(/*error*/ ctx[0]);
   			attr_dev(div, "class", /*classes*/ ctx[3]);
-  			add_location(div, file$7, 36, 0, 813);
+  			add_location(div, file$3, 36, 0, 813);
   		},
   		l: function claim(nodes) {
   			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -8851,7 +7398,7 @@ var app = (function () {
 
   	dispatch_dev("SvelteRegisterBlock", {
   		block,
-  		id: create_fragment$7.name,
+  		id: create_fragment$3.name,
   		type: "component",
   		source: "",
   		ctx
@@ -8860,7 +7407,7 @@ var app = (function () {
   	return block;
   }
 
-  function instance$7($$self, $$props, $$invalidate) {
+  function instance$3($$self, $$props, $$invalidate) {
   	let { class: className = "text-xs py-1 pl-4 absolute bottom-1 left-0" } = $$props;
   	let { error = false } = $$props;
   	let { hint = "" } = $$props;
@@ -8937,7 +7484,7 @@ var app = (function () {
   	constructor(options) {
   		super(options);
 
-  		init(this, options, instance$7, create_fragment$7, safe_not_equal, {
+  		init(this, options, instance$3, create_fragment$3, safe_not_equal, {
   			class: 4,
   			error: 0,
   			hint: 1,
@@ -8951,7 +7498,7 @@ var app = (function () {
   			component: this,
   			tagName: "Hint",
   			options,
-  			id: create_fragment$7.name
+  			id: create_fragment$3.name
   		});
   	}
 
@@ -9013,9 +7560,9 @@ var app = (function () {
   }
 
   /* node_modules/smelte/src/components/TextField/Underline.svelte generated by Svelte v3.20.1 */
-  const file$8 = "node_modules/smelte/src/components/TextField/Underline.svelte";
+  const file$4 = "node_modules/smelte/src/components/TextField/Underline.svelte";
 
-  function create_fragment$8(ctx) {
+  function create_fragment$4(ctx) {
   	let div1;
   	let div0;
   	let div0_class_value;
@@ -9028,10 +7575,10 @@ var app = (function () {
   			attr_dev(div0, "class", div0_class_value = "" + (null_to_empty(/*classes*/ ctx[3]) + " svelte-xd9zs6"));
   			set_style(div0, "height", "2px");
   			set_style(div0, "transition", "width .2s ease");
-  			add_location(div0, file$8, 61, 2, 1180);
+  			add_location(div0, file$4, 61, 2, 1180);
   			attr_dev(div1, "class", div1_class_value = "line absolute bottom-0 left-0 w-full bg-gray-600 " + /*className*/ ctx[0] + " svelte-xd9zs6");
   			toggle_class(div1, "hidden", /*noUnderline*/ ctx[1] || /*outlined*/ ctx[2]);
-  			add_location(div1, file$8, 58, 0, 1060);
+  			add_location(div1, file$4, 58, 0, 1060);
   		},
   		l: function claim(nodes) {
   			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -9062,7 +7609,7 @@ var app = (function () {
 
   	dispatch_dev("SvelteRegisterBlock", {
   		block,
-  		id: create_fragment$8.name,
+  		id: create_fragment$4.name,
   		type: "component",
   		source: "",
   		ctx
@@ -9071,7 +7618,7 @@ var app = (function () {
   	return block;
   }
 
-  function instance$8($$self, $$props, $$invalidate) {
+  function instance$4($$self, $$props, $$invalidate) {
   	let { class: className = "" } = $$props;
   	let { noUnderline = false } = $$props;
   	let { outlined = false } = $$props;
@@ -9179,7 +7726,7 @@ var app = (function () {
   	constructor(options) {
   		super(options);
 
-  		init(this, options, instance$8, create_fragment$8, safe_not_equal, {
+  		init(this, options, instance$4, create_fragment$4, safe_not_equal, {
   			class: 0,
   			noUnderline: 1,
   			outlined: 2,
@@ -9196,7 +7743,7 @@ var app = (function () {
   			component: this,
   			tagName: "Underline",
   			options,
-  			id: create_fragment$8.name
+  			id: create_fragment$4.name
   		});
   	}
 
@@ -9282,7 +7829,7 @@ var app = (function () {
   }
 
   /* node_modules/smelte/src/components/TextField/TextField.svelte generated by Svelte v3.20.1 */
-  const file$9 = "node_modules/smelte/src/components/TextField/TextField.svelte";
+  const file$5 = "node_modules/smelte/src/components/TextField/TextField.svelte";
   const get_prepend_slot_changes = dirty => ({});
   const get_prepend_slot_context = ctx => ({});
   const get_append_slot_changes = dirty => ({});
@@ -9400,7 +7947,7 @@ var app = (function () {
   			attr_dev(input, "class", /*iClasses*/ ctx[25]);
   			input.disabled = /*disabled*/ ctx[19];
   			input.value = /*value*/ ctx[0];
-  			add_location(input, file$9, 179, 4, 4665);
+  			add_location(input, file$5, 179, 4, 4665);
   		},
   		m: function mount(target, anchor, remount) {
   			insert_dev(target, input, anchor);
@@ -9470,7 +8017,7 @@ var app = (function () {
   		c: function create() {
   			textarea_1 = element("textarea");
   			set_attributes(textarea_1, textarea_1_data);
-  			add_location(textarea_1, file$9, 163, 4, 4317);
+  			add_location(textarea_1, file$5, 163, 4, 4317);
   		},
   		m: function mount(target, anchor, remount) {
   			insert_dev(target, textarea_1, anchor);
@@ -9546,7 +8093,7 @@ var app = (function () {
   		c: function create() {
   			input = element("input");
   			set_attributes(input, input_data);
-  			add_location(input, file$9, 148, 4, 3989);
+  			add_location(input, file$5, 148, 4, 3989);
   		},
   		m: function mount(target, anchor, remount) {
   			insert_dev(target, input, anchor);
@@ -9610,7 +8157,7 @@ var app = (function () {
   			div = element("div");
   			if (append_slot_or_fallback) append_slot_or_fallback.c();
   			attr_dev(div, "class", /*aClasses*/ ctx[21]);
-  			add_location(div, file$9, 192, 4, 4849);
+  			add_location(div, file$5, 192, 4, 4849);
   		},
   		m: function mount(target, anchor, remount) {
   			insert_dev(target, div, anchor);
@@ -9767,7 +8314,7 @@ var app = (function () {
   			div = element("div");
   			if (prepend_slot_or_fallback) prepend_slot_or_fallback.c();
   			attr_dev(div, "class", /*pClasses*/ ctx[22]);
-  			add_location(div, file$9, 208, 4, 5158);
+  			add_location(div, file$5, 208, 4, 5158);
   		},
   		m: function mount(target, anchor, remount) {
   			insert_dev(target, div, anchor);
@@ -9911,7 +8458,7 @@ var app = (function () {
   }
 
   // (230:2) {#if showHint}
-  function create_if_block$1(ctx) {
+  function create_if_block(ctx) {
   	let current;
 
   	const hint_1 = new Hint({
@@ -9952,7 +8499,7 @@ var app = (function () {
 
   	dispatch_dev("SvelteRegisterBlock", {
   		block,
-  		id: create_if_block$1.name,
+  		id: create_if_block.name,
   		type: "if",
   		source: "(230:2) {#if showHint}",
   		ctx
@@ -9961,7 +8508,7 @@ var app = (function () {
   	return block;
   }
 
-  function create_fragment$9(ctx) {
+  function create_fragment$5(ctx) {
   	let div;
   	let t0;
   	let t1;
@@ -9994,7 +8541,7 @@ var app = (function () {
   			$$inline: true
   		});
 
-  	let if_block3 = /*showHint*/ ctx[23] && create_if_block$1(ctx);
+  	let if_block3 = /*showHint*/ ctx[23] && create_if_block(ctx);
 
   	const block = {
   		c: function create() {
@@ -10011,7 +8558,7 @@ var app = (function () {
   			t4 = space();
   			if (if_block3) if_block3.c();
   			attr_dev(div, "class", /*wClasses*/ ctx[20]);
-  			add_location(div, file$9, 134, 0, 3738);
+  			add_location(div, file$5, 134, 0, 3738);
   		},
   		l: function claim(nodes) {
   			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -10110,7 +8657,7 @@ var app = (function () {
   					if_block3.p(ctx, dirty);
   					transition_in(if_block3, 1);
   				} else {
-  					if_block3 = create_if_block$1(ctx);
+  					if_block3 = create_if_block(ctx);
   					if_block3.c();
   					transition_in(if_block3, 1);
   					if_block3.m(div, null);
@@ -10163,7 +8710,7 @@ var app = (function () {
 
   	dispatch_dev("SvelteRegisterBlock", {
   		block,
-  		id: create_fragment$9.name,
+  		id: create_fragment$5.name,
   		type: "component",
   		source: "",
   		ctx
@@ -10176,7 +8723,7 @@ var app = (function () {
   const appendDefault = "absolute right-0 top-0 pb-2 pr-4 pt-4 text-gray-700 z-10";
   const prependDefault = "absolute left-0 top-0 pb-2 pl-2 pt-4 text-xs text-gray-700 z-10";
 
-  function instance$9($$self, $$props, $$invalidate) {
+  function instance$5($$self, $$props, $$invalidate) {
   	let { class: className = "" } = $$props;
   	let { outlined = false } = $$props;
   	let { value = null } = $$props;
@@ -10582,8 +9129,8 @@ var app = (function () {
   		init(
   			this,
   			options,
-  			instance$9,
-  			create_fragment$9,
+  			instance$5,
+  			create_fragment$5,
   			safe_not_equal,
   			{
   				class: 30,
@@ -10625,7 +9172,7 @@ var app = (function () {
   			component: this,
   			tagName: "TextField",
   			options,
-  			id: create_fragment$9.name
+  			id: create_fragment$5.name
   		});
   	}
 
@@ -10926,7 +9473,7 @@ var app = (function () {
   }
 
   /* node_modules/smelte/src/components/Button/Button.svelte generated by Svelte v3.20.1 */
-  const file$a = "node_modules/smelte/src/components/Button/Button.svelte";
+  const file$6 = "node_modules/smelte/src/components/Button/Button.svelte";
 
   // (150:0) {:else}
   function create_else_block(ctx) {
@@ -10958,7 +9505,7 @@ var app = (function () {
   			t = space();
   			if (default_slot) default_slot.c();
   			set_attributes(button, button_data);
-  			add_location(button, file$a, 150, 2, 4076);
+  			add_location(button, file$6, 150, 2, 4076);
   		},
   		m: function mount(target, anchor, remount) {
   			insert_dev(target, button, anchor);
@@ -11044,7 +9591,7 @@ var app = (function () {
   }
 
   // (129:0) {#if href}
-  function create_if_block$2(ctx) {
+  function create_if_block$1(ctx) {
   	let a;
   	let button;
   	let t;
@@ -11082,9 +9629,9 @@ var app = (function () {
   			t = space();
   			if (default_slot) default_slot.c();
   			set_attributes(button, button_data);
-  			add_location(button, file$a, 133, 4, 3776);
+  			add_location(button, file$6, 133, 4, 3776);
   			set_attributes(a, a_data);
-  			add_location(a, file$a, 129, 2, 3739);
+  			add_location(a, file$6, 129, 2, 3739);
   		},
   		m: function mount(target, anchor, remount) {
   			insert_dev(target, a, anchor);
@@ -11166,7 +9713,7 @@ var app = (function () {
 
   	dispatch_dev("SvelteRegisterBlock", {
   		block: block_1,
-  		id: create_if_block$2.name,
+  		id: create_if_block$1.name,
   		type: "if",
   		source: "(129:0) {#if href}",
   		ctx
@@ -11351,12 +9898,12 @@ var app = (function () {
   	return block_1;
   }
 
-  function create_fragment$a(ctx) {
+  function create_fragment$6(ctx) {
   	let current_block_type_index;
   	let if_block;
   	let if_block_anchor;
   	let current;
-  	const if_block_creators = [create_if_block$2, create_else_block];
+  	const if_block_creators = [create_if_block$1, create_else_block];
   	const if_blocks = [];
 
   	function select_block_type(ctx, dirty) {
@@ -11422,7 +9969,7 @@ var app = (function () {
 
   	dispatch_dev("SvelteRegisterBlock", {
   		block: block_1,
-  		id: create_fragment$a.name,
+  		id: create_fragment$6.name,
   		type: "component",
   		source: "",
   		ctx
@@ -11441,7 +9988,7 @@ var app = (function () {
   const disabledDefault = "bg-gray-300 text-gray-500 dark:bg-dark-400 elevation-none pointer-events-none hover:bg-gray-300 cursor-default";
   const elevationDefault = "hover:elevation-5 elevation-3";
 
-  function instance$a($$self, $$props, $$invalidate) {
+  function instance$6($$self, $$props, $$invalidate) {
   	let { class: className = "" } = $$props;
   	let { value = false } = $$props;
   	let { outlined = false } = $$props;
@@ -11760,8 +10307,8 @@ var app = (function () {
   		init(
   			this,
   			options,
-  			instance$a,
-  			create_fragment$a,
+  			instance$6,
+  			create_fragment$6,
   			safe_not_equal,
   			{
   				class: 10,
@@ -11799,7 +10346,7 @@ var app = (function () {
   			component: this,
   			tagName: "Button",
   			options,
-  			id: create_fragment$a.name
+  			id: create_fragment$6.name
   		});
   	}
 
@@ -12020,12 +10567,1640 @@ var app = (function () {
   	}
   }
 
+  function _createSuper$1(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$2()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$2() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+  var file$7 = "src/components/Comments.svelte";
+
+  function get_each_context(ctx, list, i) {
+    var child_ctx = ctx.slice();
+    child_ctx[10] = list[i];
+    return child_ctx;
+  } // (62:0) {#each comments as comment}
+
+
+  function create_each_block(ctx) {
+    var div2;
+    var div0;
+    var p0;
+    var t0_value =
+    /*comment*/
+    ctx[10].text + "";
+    var t0;
+    var t1;
+    var div1;
+    var p1;
+    var t2_value =
+    /*comment*/
+    ctx[10].contact_name + "";
+    var t2;
+    var t3;
+    var span;
+    var t5;
+    var t6_value =
+    /*comment*/
+    ctx[10].created + "";
+    var t6;
+    var block = {
+      c: function create() {
+        div2 = element("div");
+        div0 = element("div");
+        p0 = element("p");
+        t0 = text(t0_value);
+        t1 = space();
+        div1 = element("div");
+        p1 = element("p");
+        t2 = text(t2_value);
+        t3 = space();
+        span = element("span");
+        span.textContent = "•";
+        t5 = space();
+        t6 = text(t6_value);
+        attr_dev(p0, "class", "text-grey-darkest leading-normal text-md");
+        add_location(p0, file$7, 66, 12, 1934);
+        attr_dev(div0, "class", "flex justify-between mb-1");
+        add_location(div0, file$7, 65, 8, 1882);
+        attr_dev(span, "class", "mx-1 text-xs");
+        add_location(span, file$7, 70, 38, 2133);
+        add_location(p1, file$7, 70, 12, 2107);
+        attr_dev(div1, "class", "text-grey-dark leading-normal text-sm text-gray-900");
+        add_location(div1, file$7, 69, 8, 2029);
+        attr_dev(div2, "class", "bg-grey-lightest rounded shadow-md p-4");
+        add_location(div2, file$7, 63, 4, 1820);
+      },
+      m: function mount(target, anchor) {
+        insert_dev(target, div2, anchor);
+        append_dev(div2, div0);
+        append_dev(div0, p0);
+        append_dev(p0, t0);
+        append_dev(div2, t1);
+        append_dev(div2, div1);
+        append_dev(div1, p1);
+        append_dev(p1, t2);
+        append_dev(p1, t3);
+        append_dev(p1, span);
+        append_dev(p1, t5);
+        append_dev(p1, t6);
+      },
+      p: function update(ctx, dirty) {
+        if (dirty &
+        /*comments*/
+        1 && t0_value !== (t0_value =
+        /*comment*/
+        ctx[10].text + "")) set_data_dev(t0, t0_value);
+        if (dirty &
+        /*comments*/
+        1 && t2_value !== (t2_value =
+        /*comment*/
+        ctx[10].contact_name + "")) set_data_dev(t2, t2_value);
+        if (dirty &
+        /*comments*/
+        1 && t6_value !== (t6_value =
+        /*comment*/
+        ctx[10].created + "")) set_data_dev(t6, t6_value);
+      },
+      d: function destroy(detaching) {
+        if (detaching) detach_dev(div2);
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_each_block.name,
+      type: "each",
+      source: "(62:0) {#each comments as comment}",
+      ctx: ctx
+    });
+    return block;
+  } // (83:8) <Button color="primary" dark block on:click={publish_comment}>
+
+
+  function create_default_slot$2(ctx) {
+    var t;
+    var block = {
+      c: function create() {
+        t = text("Send comment");
+      },
+      m: function mount(target, anchor) {
+        insert_dev(target, t, anchor);
+      },
+      d: function destroy(detaching) {
+        if (detaching) detach_dev(t);
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_default_slot$2.name,
+      type: "slot",
+      source: "(83:8) <Button color=\\\"primary\\\" dark block on:click={publish_comment}>",
+      ctx: ctx
+    });
+    return block;
+  }
+
+  function create_fragment$7(ctx) {
+    var div0;
+    var t0;
+    var div2;
+    var div1;
+    var h4;
+    var t2;
+    var t3;
+    var div4;
+    var div3;
+    var updating_value;
+    var t4;
+    var updating_value_1;
+    var t5;
+    var updating_value_2;
+    var t6;
+    var current;
+    var each_value =
+    /*comments*/
+    ctx[0];
+    validate_each_argument(each_value);
+    var each_blocks = [];
+
+    for (var i = 0; i < each_value.length; i += 1) {
+      each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    }
+
+    function textfield0_value_binding(value) {
+      /*textfield0_value_binding*/
+      ctx[7].call(null, value);
+    }
+
+    var textfield0_props = {
+      label: "Name",
+      error:
+      /*errors*/
+      ctx[2].name
+    };
+
+    if (
+    /*comment_data*/
+    ctx[1].name !== void 0) {
+      textfield0_props.value =
+      /*comment_data*/
+      ctx[1].name;
+    }
+
+    var textfield0 = new TextField({
+      props: textfield0_props,
+      $$inline: true
+    });
+    binding_callbacks.push(function () {
+      return bind(textfield0, "value", textfield0_value_binding);
+    });
+
+    function textfield1_value_binding(value) {
+      /*textfield1_value_binding*/
+      ctx[8].call(null, value);
+    }
+
+    var textfield1_props = {
+      label: "Email",
+      error:
+      /*errors*/
+      ctx[2].email
+    };
+
+    if (
+    /*comment_data*/
+    ctx[1].email !== void 0) {
+      textfield1_props.value =
+      /*comment_data*/
+      ctx[1].email;
+    }
+
+    var textfield1 = new TextField({
+      props: textfield1_props,
+      $$inline: true
+    });
+    binding_callbacks.push(function () {
+      return bind(textfield1, "value", textfield1_value_binding);
+    });
+
+    function textfield2_value_binding(value) {
+      /*textfield2_value_binding*/
+      ctx[9].call(null, value);
+    }
+
+    var textfield2_props = {
+      label: "Message text",
+      textarea: true,
+      rows: "3",
+      error:
+      /*errors*/
+      ctx[2].text
+    };
+
+    if (
+    /*comment_data*/
+    ctx[1].text !== void 0) {
+      textfield2_props.value =
+      /*comment_data*/
+      ctx[1].text;
+    }
+
+    var textfield2 = new TextField({
+      props: textfield2_props,
+      $$inline: true
+    });
+    binding_callbacks.push(function () {
+      return bind(textfield2, "value", textfield2_value_binding);
+    });
+    var button = new Button({
+      props: {
+        color: "primary",
+        dark: true,
+        block: true,
+        $$slots: {
+          default: [create_default_slot$2]
+        },
+        $$scope: {
+          ctx: ctx
+        }
+      },
+      $$inline: true
+    });
+    button.$on("click",
+    /*publish_comment*/
+    ctx[3]);
+    var block = {
+      c: function create() {
+        div0 = element("div");
+        t0 = space();
+        div2 = element("div");
+        div1 = element("div");
+        h4 = element("h4");
+        h4.textContent = "Comments";
+        t2 = space();
+
+        for (var _i = 0; _i < each_blocks.length; _i += 1) {
+          each_blocks[_i].c();
+        }
+
+        t3 = space();
+        div4 = element("div");
+        div3 = element("div");
+        create_component(textfield0.$$.fragment);
+        t4 = space();
+        create_component(textfield1.$$.fragment);
+        t5 = space();
+        create_component(textfield2.$$.fragment);
+        t6 = space();
+        create_component(button.$$.fragment);
+        attr_dev(div0, "class", "h-2 border-t-2");
+        add_location(div0, file$7, 53, 0, 1600);
+        attr_dev(h4, "class", "text-xl text-center");
+        add_location(h4, file$7, 57, 8, 1722);
+        attr_dev(div1, "class", "w-full");
+        add_location(div1, file$7, 56, 4, 1693);
+        attr_dev(div2, "class", "justify-start justify-center mt-4 mb-4");
+        add_location(div2, file$7, 55, 0, 1636);
+        attr_dev(div3, "class", "m-auto");
+        add_location(div3, file$7, 78, 4, 2263);
+        attr_dev(div4, "class", "mt-16 mb-16");
+        add_location(div4, file$7, 77, 0, 2233);
+      },
+      l: function claim(nodes) {
+        throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+      },
+      m: function mount(target, anchor) {
+        insert_dev(target, div0, anchor);
+        insert_dev(target, t0, anchor);
+        insert_dev(target, div2, anchor);
+        append_dev(div2, div1);
+        append_dev(div1, h4);
+        insert_dev(target, t2, anchor);
+
+        for (var _i2 = 0; _i2 < each_blocks.length; _i2 += 1) {
+          each_blocks[_i2].m(target, anchor);
+        }
+
+        insert_dev(target, t3, anchor);
+        insert_dev(target, div4, anchor);
+        append_dev(div4, div3);
+        mount_component(textfield0, div3, null);
+        append_dev(div3, t4);
+        mount_component(textfield1, div3, null);
+        append_dev(div3, t5);
+        mount_component(textfield2, div3, null);
+        append_dev(div3, t6);
+        mount_component(button, div3, null);
+        current = true;
+      },
+      p: function update(ctx, _ref) {
+        var _ref2 = _slicedToArray(_ref, 1),
+            dirty = _ref2[0];
+
+        if (dirty &
+        /*comments*/
+        1) {
+          each_value =
+          /*comments*/
+          ctx[0];
+          validate_each_argument(each_value);
+
+          var _i3;
+
+          for (_i3 = 0; _i3 < each_value.length; _i3 += 1) {
+            var child_ctx = get_each_context(ctx, each_value, _i3);
+
+            if (each_blocks[_i3]) {
+              each_blocks[_i3].p(child_ctx, dirty);
+            } else {
+              each_blocks[_i3] = create_each_block(child_ctx);
+
+              each_blocks[_i3].c();
+
+              each_blocks[_i3].m(t3.parentNode, t3);
+            }
+          }
+
+          for (; _i3 < each_blocks.length; _i3 += 1) {
+            each_blocks[_i3].d(1);
+          }
+
+          each_blocks.length = each_value.length;
+        }
+
+        var textfield0_changes = {};
+        if (dirty &
+        /*errors*/
+        4) textfield0_changes.error =
+        /*errors*/
+        ctx[2].name;
+
+        if (!updating_value && dirty &
+        /*comment_data*/
+        2) {
+          updating_value = true;
+          textfield0_changes.value =
+          /*comment_data*/
+          ctx[1].name;
+          add_flush_callback(function () {
+            return updating_value = false;
+          });
+        }
+
+        textfield0.$set(textfield0_changes);
+        var textfield1_changes = {};
+        if (dirty &
+        /*errors*/
+        4) textfield1_changes.error =
+        /*errors*/
+        ctx[2].email;
+
+        if (!updating_value_1 && dirty &
+        /*comment_data*/
+        2) {
+          updating_value_1 = true;
+          textfield1_changes.value =
+          /*comment_data*/
+          ctx[1].email;
+          add_flush_callback(function () {
+            return updating_value_1 = false;
+          });
+        }
+
+        textfield1.$set(textfield1_changes);
+        var textfield2_changes = {};
+        if (dirty &
+        /*errors*/
+        4) textfield2_changes.error =
+        /*errors*/
+        ctx[2].text;
+
+        if (!updating_value_2 && dirty &
+        /*comment_data*/
+        2) {
+          updating_value_2 = true;
+          textfield2_changes.value =
+          /*comment_data*/
+          ctx[1].text;
+          add_flush_callback(function () {
+            return updating_value_2 = false;
+          });
+        }
+
+        textfield2.$set(textfield2_changes);
+        var button_changes = {};
+
+        if (dirty &
+        /*$$scope*/
+        8192) {
+          button_changes.$$scope = {
+            dirty: dirty,
+            ctx: ctx
+          };
+        }
+
+        button.$set(button_changes);
+      },
+      i: function intro(local) {
+        if (current) return;
+        transition_in(textfield0.$$.fragment, local);
+        transition_in(textfield1.$$.fragment, local);
+        transition_in(textfield2.$$.fragment, local);
+        transition_in(button.$$.fragment, local);
+        current = true;
+      },
+      o: function outro(local) {
+        transition_out(textfield0.$$.fragment, local);
+        transition_out(textfield1.$$.fragment, local);
+        transition_out(textfield2.$$.fragment, local);
+        transition_out(button.$$.fragment, local);
+        current = false;
+      },
+      d: function destroy(detaching) {
+        if (detaching) detach_dev(div0);
+        if (detaching) detach_dev(t0);
+        if (detaching) detach_dev(div2);
+        if (detaching) detach_dev(t2);
+        destroy_each(each_blocks, detaching);
+        if (detaching) detach_dev(t3);
+        if (detaching) detach_dev(div4);
+        destroy_component(textfield0);
+        destroy_component(textfield1);
+        destroy_component(textfield2);
+        destroy_component(button);
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_fragment$7.name,
+      type: "component",
+      source: "",
+      ctx: ctx
+    });
+    return block;
+  }
+
+  var user_avatar_url = "static/img/user.png";
+  var publish_comment_url = "/send/message/";
+
+  function instance$7($$self, $$props, $$invalidate) {
+    var $selected_post;
+    validate_store(selected_post, "selected_post");
+    component_subscribe($$self, selected_post, function ($$value) {
+      return $$invalidate(4, $selected_post = $$value);
+    });
+    var comments = [];
+    var comment_data = {
+      name: "",
+      email: "",
+      text: ""
+    };
+    var errors = {
+      name: "",
+      email: "",
+      text: ""
+    };
+    onMount( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
+      return regenerator.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.t0 = $$invalidate;
+              _context.next = 3;
+              return get_comments($selected_post.slug);
+
+            case 3:
+              _context.t1 = comments = _context.sent;
+              (0, _context.t0)(0, _context.t1);
+
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    })));
+
+    function publish_comment() {
+      return _publish_comment.apply(this, arguments);
+    }
+
+    function _publish_comment() {
+      _publish_comment = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2() {
+        var response;
+        return regenerator.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return publish_comment_request($selected_post.slug, comment_data);
+
+              case 2:
+                response = _context2.sent;
+
+                if (response.error) {
+                  show_errors(response.data);
+                } else {
+                  show_notification("success", "Comment published");
+                  $$invalidate(0, comments = [response].concat(_toConsumableArray(comments)));
+                  reset_comment_form();
+                }
+
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+      return _publish_comment.apply(this, arguments);
+    }
+
+    function show_errors(response_errors) {
+      if ("name" in response_errors) $$invalidate(2, errors.name = response_errors["name"], errors);
+      if ("email" in response_errors) $$invalidate(2, errors.email = response_errors["email"], errors);
+      if ("text" in response_errors) $$invalidate(2, errors.text = response_errors["text"], errors);
+      show_notification("error", "Some errors have been found");
+    }
+
+    function reset_comment_form() {
+      $$invalidate(1, comment_data.name = "", comment_data);
+      $$invalidate(1, comment_data.email = "", comment_data);
+      $$invalidate(1, comment_data.text = "", comment_data);
+    }
+
+    var writable_props = [];
+    Object.keys($$props).forEach(function (key) {
+      if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<Comments> was created with unknown prop '".concat(key, "'"));
+    });
+    var _$$props$$$slots = $$props.$$slots,
+        $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
+        $$scope = $$props.$$scope;
+    validate_slots("Comments", $$slots, []);
+
+    function textfield0_value_binding(value) {
+      comment_data.name = value;
+      $$invalidate(1, comment_data);
+    }
+
+    function textfield1_value_binding(value) {
+      comment_data.email = value;
+      $$invalidate(1, comment_data);
+    }
+
+    function textfield2_value_binding(value) {
+      comment_data.text = value;
+      $$invalidate(1, comment_data);
+    }
+
+    $$self.$capture_state = function () {
+      return {
+        onMount: onMount,
+        utils: utils,
+        selected_post: selected_post,
+        requests: requests,
+        TextField: TextField,
+        Button: Button,
+        user_avatar_url: user_avatar_url,
+        publish_comment_url: publish_comment_url,
+        comments: comments,
+        comment_data: comment_data,
+        errors: errors,
+        publish_comment: publish_comment,
+        show_errors: show_errors,
+        reset_comment_form: reset_comment_form,
+        $selected_post: $selected_post
+      };
+    };
+
+    $$self.$inject_state = function ($$props) {
+      if ("comments" in $$props) $$invalidate(0, comments = $$props.comments);
+      if ("comment_data" in $$props) $$invalidate(1, comment_data = $$props.comment_data);
+    };
+
+    if ($$props && "$$inject" in $$props) {
+      $$self.$inject_state($$props.$$inject);
+    }
+
+    return [comments, comment_data, errors, publish_comment, $selected_post, show_errors, reset_comment_form, textfield0_value_binding, textfield1_value_binding, textfield2_value_binding];
+  }
+
+  var Comments = /*#__PURE__*/function (_SvelteComponentDev) {
+    _inherits(Comments, _SvelteComponentDev);
+
+    var _super = _createSuper$1(Comments);
+
+    function Comments(options) {
+      var _this;
+
+      _classCallCheck(this, Comments);
+
+      _this = _super.call(this, options);
+      init(_assertThisInitialized(_this), options, instance$7, create_fragment$7, safe_not_equal, {});
+      dispatch_dev("SvelteRegisterComponent", {
+        component: _assertThisInitialized(_this),
+        tagName: "Comments",
+        options: options,
+        id: create_fragment$7.name
+      });
+      return _this;
+    }
+
+    return Comments;
+  }(SvelteComponentDev);
+
+  function _createSuper$2(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$3()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$3() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+  var file$8 = "src/pages/PostDetail.svelte"; // (42:8) {#if $selected_post !== null}
+
+  function create_if_block$2(ctx) {
+    var h2;
+    var t0_value =
+    /*$selected_post*/
+    ctx[0].name + "";
+    var t0;
+    var t1;
+    var h3;
+    var t2_value =
+    /*$selected_post*/
+    ctx[0].technology + "";
+    var t2;
+    var t3;
+    var div;
+    var img;
+    var img_src_value;
+    var img_alt_value;
+    var t4;
+    var html_tag;
+    var raw_value =
+    /*$selected_post*/
+    ctx[0].text + "";
+    var t5;
+    var current;
+    var comments = new Comments({
+      $$inline: true
+    });
+    var block = {
+      c: function create() {
+        h2 = element("h2");
+        t0 = text(t0_value);
+        t1 = space();
+        h3 = element("h3");
+        t2 = text(t2_value);
+        t3 = space();
+        div = element("div");
+        img = element("img");
+        t4 = space();
+        t5 = space();
+        create_component(comments.$$.fragment);
+        attr_dev(h2, "class", "text-3xl text-center");
+        add_location(h2, file$8, 43, 12, 1420);
+        attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
+        add_location(h3, file$8, 46, 12, 1522);
+        attr_dev(img, "class", "w-full");
+        if (img.src !== (img_src_value = "static/" +
+        /*$selected_post*/
+        ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
+        attr_dev(img, "alt", img_alt_value =
+        /*$selected_post*/
+        ctx[0].name);
+        add_location(img, file$8, 51, 16, 1693);
+        attr_dev(div, "class", "mx-auto px-56");
+        add_location(div, file$8, 50, 12, 1649);
+        html_tag = new HtmlTag(raw_value, t5);
+      },
+      m: function mount(target, anchor) {
+        insert_dev(target, h2, anchor);
+        append_dev(h2, t0);
+        insert_dev(target, t1, anchor);
+        insert_dev(target, h3, anchor);
+        append_dev(h3, t2);
+        insert_dev(target, t3, anchor);
+        insert_dev(target, div, anchor);
+        append_dev(div, img);
+        insert_dev(target, t4, anchor);
+        html_tag.m(target, anchor);
+        insert_dev(target, t5, anchor);
+        mount_component(comments, target, anchor);
+        current = true;
+      },
+      p: function update(ctx, dirty) {
+        if ((!current || dirty &
+        /*$selected_post*/
+        1) && t0_value !== (t0_value =
+        /*$selected_post*/
+        ctx[0].name + "")) set_data_dev(t0, t0_value);
+        if ((!current || dirty &
+        /*$selected_post*/
+        1) && t2_value !== (t2_value =
+        /*$selected_post*/
+        ctx[0].technology + "")) set_data_dev(t2, t2_value);
+
+        if (!current || dirty &
+        /*$selected_post*/
+        1 && img.src !== (img_src_value = "static/" +
+        /*$selected_post*/
+        ctx[0].main_photo_path)) {
+          attr_dev(img, "src", img_src_value);
+        }
+
+        if (!current || dirty &
+        /*$selected_post*/
+        1 && img_alt_value !== (img_alt_value =
+        /*$selected_post*/
+        ctx[0].name)) {
+          attr_dev(img, "alt", img_alt_value);
+        }
+
+        if ((!current || dirty &
+        /*$selected_post*/
+        1) && raw_value !== (raw_value =
+        /*$selected_post*/
+        ctx[0].text + "")) html_tag.p(raw_value);
+      },
+      i: function intro(local) {
+        if (current) return;
+        transition_in(comments.$$.fragment, local);
+        current = true;
+      },
+      o: function outro(local) {
+        transition_out(comments.$$.fragment, local);
+        current = false;
+      },
+      d: function destroy(detaching) {
+        if (detaching) detach_dev(h2);
+        if (detaching) detach_dev(t1);
+        if (detaching) detach_dev(h3);
+        if (detaching) detach_dev(t3);
+        if (detaching) detach_dev(div);
+        if (detaching) detach_dev(t4);
+        if (detaching) html_tag.d();
+        if (detaching) detach_dev(t5);
+        destroy_component(comments, detaching);
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_if_block$2.name,
+      type: "if",
+      source: "(42:8) {#if $selected_post !== null}",
+      ctx: ctx
+    });
+    return block;
+  }
+
+  function create_fragment$8(ctx) {
+    var section;
+    var div;
+    var current;
+    var if_block =
+    /*$selected_post*/
+    ctx[0] !== null && create_if_block$2(ctx);
+    var block = {
+      c: function create() {
+        section = element("section");
+        div = element("div");
+        if (if_block) if_block.c();
+        attr_dev(div, "class", "px-4 md:px-8 lg:px-32");
+        add_location(div, file$8, 39, 4, 1332);
+        attr_dev(section, "id", "post_container");
+        attr_dev(section, "class", "container h-screen mt-32 mx-auto");
+        add_location(section, file$8, 38, 0, 1257);
+      },
+      l: function claim(nodes) {
+        throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+      },
+      m: function mount(target, anchor) {
+        insert_dev(target, section, anchor);
+        append_dev(section, div);
+        if (if_block) if_block.m(div, null);
+        current = true;
+      },
+      p: function update(ctx, _ref) {
+        var _ref2 = _slicedToArray(_ref, 1),
+            dirty = _ref2[0];
+
+        if (
+        /*$selected_post*/
+        ctx[0] !== null) {
+          if (if_block) {
+            if_block.p(ctx, dirty);
+            transition_in(if_block, 1);
+          } else {
+            if_block = create_if_block$2(ctx);
+            if_block.c();
+            transition_in(if_block, 1);
+            if_block.m(div, null);
+          }
+        } else if (if_block) {
+          group_outros();
+          transition_out(if_block, 1, 1, function () {
+            if_block = null;
+          });
+          check_outros();
+        }
+      },
+      i: function intro(local) {
+        if (current) return;
+        transition_in(if_block);
+        current = true;
+      },
+      o: function outro(local) {
+        transition_out(if_block);
+        current = false;
+      },
+      d: function destroy(detaching) {
+        if (detaching) detach_dev(section);
+        if (if_block) if_block.d();
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_fragment$8.name,
+      type: "component",
+      source: "",
+      ctx: ctx
+    });
+    return block;
+  }
+
+  function get_gists() {
+    var modal_selector = "#post_container";
+    var gists = jQuery(modal_selector).find("div[gist^='https://gist.github.com/']");
+
+    if (gists.length) {
+      gists.each(function (index, element) {
+        jQuery.getJSON(jQuery(element).attr("gist") + "on?callback=?", function (data) {
+          jQuery(element).append(data.div);
+          add_stylesheet_gist(data.stylesheet);
+        });
+      });
+    }
+  }
+
+  function add_stylesheet_gist(url) {
+    var head = jQuery("head");
+
+    if (head.find("link[rel='stylesheet'][href='" + url + "']").length < 1) {
+      head.append("<link rel=\"stylesheet\" href=\"" + url + "\" type=\"text/css\" />");
+    }
+  }
+
+  function instance$8($$self, $$props, $$invalidate) {
+    var $selected_post;
+    validate_store(selected_post, "selected_post");
+    component_subscribe($$self, selected_post, function ($$value) {
+      return $$invalidate(0, $selected_post = $$value);
+    });
+    onMount( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
+      var post_text;
+      return regenerator.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              window.scrollTo(0, 0);
+              _context.next = 3;
+              return get_post_text($selected_post.slug);
+
+            case 3:
+              post_text = _context.sent;
+
+              if (post_text !== undefined) {
+                set_store_value(selected_post, $selected_post.text = post_text, $selected_post);
+                setTimeout(function () {
+                  return get_gists();
+                });
+              }
+
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    })));
+    var writable_props = [];
+    Object.keys($$props).forEach(function (key) {
+      if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<PostDetail> was created with unknown prop '".concat(key, "'"));
+    });
+    var _$$props$$$slots = $$props.$$slots,
+        $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
+        $$scope = $$props.$$scope;
+    validate_slots("PostDetail", $$slots, []);
+
+    $$self.$capture_state = function () {
+      return {
+        onMount: onMount,
+        Comments: Comments,
+        selected_post: selected_post,
+        requests: requests,
+        get_gists: get_gists,
+        add_stylesheet_gist: add_stylesheet_gist,
+        $selected_post: $selected_post
+      };
+    };
+
+    return [$selected_post];
+  }
+
+  var PostDetail = /*#__PURE__*/function (_SvelteComponentDev) {
+    _inherits(PostDetail, _SvelteComponentDev);
+
+    var _super = _createSuper$2(PostDetail);
+
+    function PostDetail(options) {
+      var _this;
+
+      _classCallCheck(this, PostDetail);
+
+      _this = _super.call(this, options);
+      init(_assertThisInitialized(_this), options, instance$8, create_fragment$8, safe_not_equal, {});
+      dispatch_dev("SvelteRegisterComponent", {
+        component: _assertThisInitialized(_this),
+        tagName: "PostDetail",
+        options: options,
+        id: create_fragment$8.name
+      });
+      return _this;
+    }
+
+    return PostDetail;
+  }(SvelteComponentDev);
+
+  function _createForOfIteratorHelper$1(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray$2(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+  function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
+
+  function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+  var Post = /*#__PURE__*/function () {
+    function Post(id, name, slug, technology, published, main_photo_path) {
+      _classCallCheck(this, Post);
+
+      this.id = id;
+      this.name = name;
+      this.slug = slug;
+      this.technology = technology;
+      this.published = published;
+      this.main_photo_path = main_photo_path;
+      this.text = null;
+    }
+
+    _createClass(Post, null, [{
+      key: "get_post_objects_from_data",
+      value: function get_post_objects_from_data(data) {
+        var posts = [];
+
+        var _iterator = _createForOfIteratorHelper$1(data),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var post_data = _step.value;
+
+            var post = _construct(Post, _toConsumableArray(Object.values(post_data)));
+
+            posts.push(post);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        return posts;
+      }
+    }, {
+      key: "search_post",
+      value: function search_post(posts, post_slug) {
+        var _iterator2 = _createForOfIteratorHelper$1(posts),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var post = _step2.value;
+
+            if (post.slug === post_slug) {
+              return post;
+            }
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+
+        return null;
+      }
+    }, {
+      key: "add_routes",
+      value: function add_routes(routes, posts) {
+        var _iterator3 = _createForOfIteratorHelper$1(posts),
+            _step3;
+
+        try {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var post = _step3.value;
+            routes.push({
+              route: "#".concat(post.slug),
+              page: PostDetail
+            });
+          }
+        } catch (err) {
+          _iterator3.e(err);
+        } finally {
+          _iterator3.f();
+        }
+      }
+    }]);
+
+    return Post;
+  }();
+
+  function _createSuper$3(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$4()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$4() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+  var file$9 = "src/components/PostCard.svelte";
+
+  function create_fragment$9(ctx) {
+    var div3;
+    var div2;
+    var img;
+    var img_src_value;
+    var img_alt_value;
+    var t0;
+    var div1;
+    var div0;
+    var t1_value =
+    /*post*/
+    ctx[0].name + "";
+    var t1;
+    var t2;
+    var p;
+    var t3_value =
+    /*post*/
+    ctx[0].technology + "";
+    var t3;
+    var dispose;
+    var block = {
+      c: function create() {
+        div3 = element("div");
+        div2 = element("div");
+        img = element("img");
+        t0 = space();
+        div1 = element("div");
+        div0 = element("div");
+        t1 = text(t1_value);
+        t2 = space();
+        p = element("p");
+        t3 = text(t3_value);
+        attr_dev(img, "class", "w-full h-64");
+        if (img.src !== (img_src_value = "static/" +
+        /*post*/
+        ctx[0].main_photo_path)) attr_dev(img, "src", img_src_value);
+        attr_dev(img, "alt", img_alt_value =
+        /*post*/
+        ctx[0].name);
+        add_location(img, file$9, 10, 8, 381);
+        attr_dev(div0, "class", "font-medium text-xl mb-2");
+        set_style(div0, "color",
+        /*hover*/
+        ctx[1] ? "#feb72b" : "black");
+        add_location(div0, file$9, 12, 12, 588);
+        attr_dev(p, "class", "text-gray-700 text-base");
+        add_location(p, file$9, 15, 12, 803);
+        attr_dev(div1, "class", "px-6 py-4 border-t-2");
+        add_location(div1, file$9, 11, 8, 541);
+        attr_dev(div2, "class", "max-w-md md:max-w-md md:mx-3 lg:max-w-lg rounded overflow-hidden shadow-lg cursor-pointer border-1");
+        set_style(div2, "border-color",
+        /*hover*/
+        ctx[1] ? "#feb72b" : "black");
+        toggle_class(div2, "border-2",
+        /*hover*/
+        ctx[1] === true);
+        add_location(div2, file$9, 8, 4, 167);
+        attr_dev(div3, "class", "w-full sm:w-1 md:w-1/2 lg:w-1/3 xl:w-1/4 mb-8");
+        add_location(div3, file$9, 7, 0, 66);
+      },
+      l: function claim(nodes) {
+        throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+      },
+      m: function mount(target, anchor, remount) {
+        insert_dev(target, div3, anchor);
+        append_dev(div3, div2);
+        append_dev(div2, img);
+        append_dev(div2, t0);
+        append_dev(div2, div1);
+        append_dev(div1, div0);
+        append_dev(div0, t1);
+        append_dev(div1, t2);
+        append_dev(div1, p);
+        append_dev(p, t3);
+        if (remount) run_all(dispose);
+        dispose = [listen_dev(img, "mouseover",
+        /*mouseover_handler*/
+        ctx[2], false, false, false), listen_dev(img, "mouseout",
+        /*mouseout_handler*/
+        ctx[3], false, false, false), listen_dev(div0, "mouseover",
+        /*mouseover_handler_1*/
+        ctx[4], false, false, false), listen_dev(div0, "mouseout",
+        /*mouseout_handler_1*/
+        ctx[5], false, false, false), listen_dev(p, "mouseover",
+        /*mouseover_handler_2*/
+        ctx[6], false, false, false), listen_dev(p, "mouseout",
+        /*mouseout_handler_2*/
+        ctx[7], false, false, false), listen_dev(div3, "click", function () {
+          if (is_function(location.hash =
+          /*post*/
+          ctx[0].slug)) (location.hash =
+          /*post*/
+          ctx[0].slug).apply(this, arguments);
+        }, false, false, false)];
+      },
+      p: function update(new_ctx, _ref) {
+        var _ref2 = _slicedToArray(_ref, 1),
+            dirty = _ref2[0];
+
+        ctx = new_ctx;
+
+        if (dirty &
+        /*post*/
+        1 && img.src !== (img_src_value = "static/" +
+        /*post*/
+        ctx[0].main_photo_path)) {
+          attr_dev(img, "src", img_src_value);
+        }
+
+        if (dirty &
+        /*post*/
+        1 && img_alt_value !== (img_alt_value =
+        /*post*/
+        ctx[0].name)) {
+          attr_dev(img, "alt", img_alt_value);
+        }
+
+        if (dirty &
+        /*post*/
+        1 && t1_value !== (t1_value =
+        /*post*/
+        ctx[0].name + "")) set_data_dev(t1, t1_value);
+
+        if (dirty &
+        /*hover*/
+        2) {
+          set_style(div0, "color",
+          /*hover*/
+          ctx[1] ? "#feb72b" : "black");
+        }
+
+        if (dirty &
+        /*post*/
+        1 && t3_value !== (t3_value =
+        /*post*/
+        ctx[0].technology + "")) set_data_dev(t3, t3_value);
+
+        if (dirty &
+        /*hover*/
+        2) {
+          set_style(div2, "border-color",
+          /*hover*/
+          ctx[1] ? "#feb72b" : "black");
+        }
+
+        if (dirty &
+        /*hover*/
+        2) {
+          toggle_class(div2, "border-2",
+          /*hover*/
+          ctx[1] === true);
+        }
+      },
+      i: noop,
+      o: noop,
+      d: function destroy(detaching) {
+        if (detaching) detach_dev(div3);
+        run_all(dispose);
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_fragment$9.name,
+      type: "component",
+      source: "",
+      ctx: ctx
+    });
+    return block;
+  }
+
+  function instance$9($$self, $$props, $$invalidate) {
+    var post = $$props.post;
+    var hover = false;
+    var writable_props = ["post"];
+    Object.keys($$props).forEach(function (key) {
+      if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<PostCard> was created with unknown prop '".concat(key, "'"));
+    });
+    var _$$props$$$slots = $$props.$$slots,
+        $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
+        $$scope = $$props.$$scope;
+    validate_slots("PostCard", $$slots, []);
+
+    var mouseover_handler = function mouseover_handler() {
+      return $$invalidate(1, hover = true);
+    };
+
+    var mouseout_handler = function mouseout_handler() {
+      return $$invalidate(1, hover = false);
+    };
+
+    var mouseover_handler_1 = function mouseover_handler_1() {
+      return $$invalidate(1, hover = true);
+    };
+
+    var mouseout_handler_1 = function mouseout_handler_1() {
+      return $$invalidate(1, hover = false);
+    };
+
+    var mouseover_handler_2 = function mouseover_handler_2() {
+      return $$invalidate(1, hover = true);
+    };
+
+    var mouseout_handler_2 = function mouseout_handler_2() {
+      return $$invalidate(1, hover = false);
+    };
+
+    $$self.$set = function ($$props) {
+      if ("post" in $$props) $$invalidate(0, post = $$props.post);
+    };
+
+    $$self.$capture_state = function () {
+      return {
+        post: post,
+        hover: hover
+      };
+    };
+
+    $$self.$inject_state = function ($$props) {
+      if ("post" in $$props) $$invalidate(0, post = $$props.post);
+      if ("hover" in $$props) $$invalidate(1, hover = $$props.hover);
+    };
+
+    if ($$props && "$$inject" in $$props) {
+      $$self.$inject_state($$props.$$inject);
+    }
+
+    return [post, hover, mouseover_handler, mouseout_handler, mouseover_handler_1, mouseout_handler_1, mouseover_handler_2, mouseout_handler_2];
+  }
+
+  var PostCard = /*#__PURE__*/function (_SvelteComponentDev) {
+    _inherits(PostCard, _SvelteComponentDev);
+
+    var _super = _createSuper$3(PostCard);
+
+    function PostCard(options) {
+      var _this;
+
+      _classCallCheck(this, PostCard);
+
+      _this = _super.call(this, options);
+      init(_assertThisInitialized(_this), options, instance$9, create_fragment$9, safe_not_equal, {
+        post: 0
+      });
+      dispatch_dev("SvelteRegisterComponent", {
+        component: _assertThisInitialized(_this),
+        tagName: "PostCard",
+        options: options,
+        id: create_fragment$9.name
+      });
+      var ctx = _this.$$.ctx;
+      var props = options.props || {};
+
+      if (
+      /*post*/
+      ctx[0] === undefined && !("post" in props)) {
+        console.warn("<PostCard> was created without expected prop 'post'");
+      }
+
+      return _this;
+    }
+
+    _createClass(PostCard, [{
+      key: "post",
+      get: function get() {
+        throw new Error("<PostCard>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+      },
+      set: function set(value) {
+        throw new Error("<PostCard>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+      }
+    }]);
+
+    return PostCard;
+  }(SvelteComponentDev);
+
+  function _createSuper$4(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$5()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$5() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+  var file$a = "src/components/PostList.svelte";
+
+  function get_each_context$1(ctx, list, i) {
+    var child_ctx = ctx.slice();
+    child_ctx[2] = list[i];
+    return child_ctx;
+  } // (33:12) {#each $posts as post}
+
+
+  function create_each_block$1(ctx) {
+    var current;
+    var postcard = new PostCard({
+      props: {
+        post:
+        /*post*/
+        ctx[2]
+      },
+      $$inline: true
+    });
+    var block = {
+      c: function create() {
+        create_component(postcard.$$.fragment);
+      },
+      m: function mount(target, anchor) {
+        mount_component(postcard, target, anchor);
+        current = true;
+      },
+      p: function update(ctx, dirty) {
+        var postcard_changes = {};
+        if (dirty &
+        /*$posts*/
+        1) postcard_changes.post =
+        /*post*/
+        ctx[2];
+        postcard.$set(postcard_changes);
+      },
+      i: function intro(local) {
+        if (current) return;
+        transition_in(postcard.$$.fragment, local);
+        current = true;
+      },
+      o: function outro(local) {
+        transition_out(postcard.$$.fragment, local);
+        current = false;
+      },
+      d: function destroy(detaching) {
+        destroy_component(postcard, detaching);
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_each_block$1.name,
+      type: "each",
+      source: "(33:12) {#each $posts as post}",
+      ctx: ctx
+    });
+    return block;
+  }
+
+  function create_fragment$a(ctx) {
+    var section;
+    var div1;
+    var div0;
+    var h2;
+    var t1;
+    var div3;
+    var div2;
+    var current;
+    var each_value =
+    /*$posts*/
+    ctx[0];
+    validate_each_argument(each_value);
+    var each_blocks = [];
+
+    for (var i = 0; i < each_value.length; i += 1) {
+      each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    }
+
+    var out = function out(i) {
+      return transition_out(each_blocks[i], 1, 1, function () {
+        each_blocks[i] = null;
+      });
+    };
+
+    var block = {
+      c: function create() {
+        section = element("section");
+        div1 = element("div");
+        div0 = element("div");
+        h2 = element("h2");
+        h2.textContent = "Posts";
+        t1 = space();
+        div3 = element("div");
+        div2 = element("div");
+
+        for (var _i = 0; _i < each_blocks.length; _i += 1) {
+          each_blocks[_i].c();
+        }
+
+        attr_dev(h2, "class", "text-3xl text-center");
+        add_location(h2, file$a, 25, 12, 700);
+        attr_dev(div0, "class", "w-full");
+        add_location(div0, file$a, 24, 8, 667);
+        attr_dev(div1, "class", "justify-start justify-center mt-20 mb-10");
+        add_location(div1, file$a, 23, 4, 604);
+        attr_dev(div2, "class", "flex flex-wrap -mx-1 lg:-mx-4");
+        add_location(div2, file$a, 30, 8, 835);
+        attr_dev(div3, "class", "container my-12 mx-auto px-4 md:px-12 svelte-lsoara");
+        add_location(div3, file$a, 29, 4, 775);
+        attr_dev(section, "id", "posts");
+        add_location(section, file$a, 21, 0, 578);
+      },
+      l: function claim(nodes) {
+        throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+      },
+      m: function mount(target, anchor) {
+        insert_dev(target, section, anchor);
+        append_dev(section, div1);
+        append_dev(div1, div0);
+        append_dev(div0, h2);
+        append_dev(section, t1);
+        append_dev(section, div3);
+        append_dev(div3, div2);
+
+        for (var _i2 = 0; _i2 < each_blocks.length; _i2 += 1) {
+          each_blocks[_i2].m(div2, null);
+        }
+
+        current = true;
+      },
+      p: function update(ctx, _ref) {
+        var _ref2 = _slicedToArray(_ref, 1),
+            dirty = _ref2[0];
+
+        if (dirty &
+        /*$posts*/
+        1) {
+          each_value =
+          /*$posts*/
+          ctx[0];
+          validate_each_argument(each_value);
+
+          var _i3;
+
+          for (_i3 = 0; _i3 < each_value.length; _i3 += 1) {
+            var child_ctx = get_each_context$1(ctx, each_value, _i3);
+
+            if (each_blocks[_i3]) {
+              each_blocks[_i3].p(child_ctx, dirty);
+
+              transition_in(each_blocks[_i3], 1);
+            } else {
+              each_blocks[_i3] = create_each_block$1(child_ctx);
+
+              each_blocks[_i3].c();
+
+              transition_in(each_blocks[_i3], 1);
+
+              each_blocks[_i3].m(div2, null);
+            }
+          }
+
+          group_outros();
+
+          for (_i3 = each_value.length; _i3 < each_blocks.length; _i3 += 1) {
+            out(_i3);
+          }
+
+          check_outros();
+        }
+      },
+      i: function intro(local) {
+        if (current) return;
+
+        for (var _i4 = 0; _i4 < each_value.length; _i4 += 1) {
+          transition_in(each_blocks[_i4]);
+        }
+
+        current = true;
+      },
+      o: function outro(local) {
+        each_blocks = each_blocks.filter(Boolean);
+
+        for (var _i5 = 0; _i5 < each_blocks.length; _i5 += 1) {
+          transition_out(each_blocks[_i5]);
+        }
+
+        current = false;
+      },
+      d: function destroy(detaching) {
+        if (detaching) detach_dev(section);
+        destroy_each(each_blocks, detaching);
+      }
+    };
+    dispatch_dev("SvelteRegisterBlock", {
+      block: block,
+      id: create_fragment$a.name,
+      type: "component",
+      source: "",
+      ctx: ctx
+    });
+    return block;
+  }
+
+  var section_id = "#posts";
+
+  function instance$a($$self, $$props, $$invalidate) {
+    var $posts;
+    var $routes;
+    validate_store(posts, "posts");
+    component_subscribe($$self, posts, function ($$value) {
+      return $$invalidate(0, $posts = $$value);
+    });
+    validate_store(routes, "routes");
+    component_subscribe($$self, routes, function ($$value) {
+      return $$invalidate(1, $routes = $$value);
+    });
+    onMount( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
+      var element;
+      return regenerator.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.t0 = set_store_value;
+              _context.t1 = posts;
+              _context.next = 4;
+              return get_posts();
+
+            case 4:
+              _context.t2 = $posts = _context.sent;
+              (0, _context.t0)(_context.t1, _context.t2);
+              Post.add_routes($routes, $posts);
+
+              if (location.hash === section_id) {
+                element = document.getElementById(section_id.substr(1));
+                element.scrollIntoView();
+              }
+
+            case 8:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    })));
+    var writable_props = [];
+    Object.keys($$props).forEach(function (key) {
+      if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn("<PostList> was created with unknown prop '".concat(key, "'"));
+    });
+    var _$$props$$$slots = $$props.$$slots,
+        $$slots = _$$props$$$slots === void 0 ? {} : _$$props$$$slots,
+        $$scope = $$props.$$scope;
+    validate_slots("PostList", $$slots, []);
+
+    $$self.$capture_state = function () {
+      return {
+        onMount: onMount,
+        Post: Post,
+        requests: requests,
+        posts: posts,
+        routes: routes,
+        active_route: active_route,
+        PostCard: PostCard,
+        section_id: section_id,
+        $posts: $posts,
+        $routes: $routes
+      };
+    };
+
+    return [$posts];
+  }
+
+  var PostList = /*#__PURE__*/function (_SvelteComponentDev) {
+    _inherits(PostList, _SvelteComponentDev);
+
+    var _super = _createSuper$4(PostList);
+
+    function PostList(options) {
+      var _this;
+
+      _classCallCheck(this, PostList);
+
+      _this = _super.call(this, options);
+      init(_assertThisInitialized(_this), options, instance$a, create_fragment$a, safe_not_equal, {});
+      dispatch_dev("SvelteRegisterComponent", {
+        component: _assertThisInitialized(_this),
+        tagName: "PostList",
+        options: options,
+        id: create_fragment$a.name
+      });
+      return _this;
+    }
+
+    return PostList;
+  }(SvelteComponentDev);
+
+  var RECAPTCHA_SITE_KEY = window.RECAPTCHA_SITE_KEY;
+
   function _createSuper$5(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct$6()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct$6() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var file$b = "src/components/ContactForm.svelte"; // (91:8) <Button color="primary" dark block on:click={send_message}>
+  var file$b = "src/components/ContactForm.svelte"; // (87:8) <Button color="primary" dark block on:click={send_message}>
 
-  function create_default_slot$2(ctx) {
+  function create_default_slot$3(ctx) {
     var t;
     var block = {
       c: function create() {
@@ -12040,9 +12215,9 @@ var app = (function () {
     };
     dispatch_dev("SvelteRegisterBlock", {
       block: block,
-      id: create_default_slot$2.name,
+      id: create_default_slot$3.name,
       type: "slot",
-      source: "(91:8) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
+      source: "(87:8) <Button color=\\\"primary\\\" dark block on:click={send_message}>",
       ctx: ctx
     });
     return block;
@@ -12067,7 +12242,7 @@ var app = (function () {
 
     function textfield0_value_binding(value) {
       /*textfield0_value_binding*/
-      ctx[10].call(null, value);
+      ctx[6].call(null, value);
     }
 
     var textfield0_props = {
@@ -12095,7 +12270,7 @@ var app = (function () {
 
     function textfield1_value_binding(value) {
       /*textfield1_value_binding*/
-      ctx[11].call(null, value);
+      ctx[7].call(null, value);
     }
 
     var textfield1_props = {
@@ -12123,7 +12298,7 @@ var app = (function () {
 
     function textfield2_value_binding(value) {
       /*textfield2_value_binding*/
-      ctx[12].call(null, value);
+      ctx[8].call(null, value);
     }
 
     var textfield2_props = {
@@ -12156,7 +12331,7 @@ var app = (function () {
         dark: true,
         block: true,
         $$slots: {
-          default: [create_default_slot$2]
+          default: [create_default_slot$3]
         },
         $$scope: {
           ctx: ctx
@@ -12187,17 +12362,17 @@ var app = (function () {
         t7 = space();
         create_component(button.$$.fragment);
         attr_dev(h2, "class", "text-3xl text-center text-white");
-        add_location(h2, file$b, 80, 8, 2453);
+        add_location(h2, file$b, 76, 8, 2349);
         attr_dev(h3, "class", "text-xl text-center text-white font-hairline mb-10");
-        add_location(h3, file$b, 83, 8, 2540);
+        add_location(h3, file$b, 79, 8, 2436);
         attr_dev(div0, "class", "g-recaptcha pb-4");
         attr_dev(div0, "data-sitekey", RECAPTCHA_SITE_KEY);
-        add_location(div0, file$b, 88, 8, 2847);
+        add_location(div0, file$b, 84, 8, 2743);
         attr_dev(div1, "class", "m-auto");
-        add_location(div1, file$b, 79, 4, 2424);
+        add_location(div1, file$b, 75, 4, 2320);
         attr_dev(section, "id", "contact");
         attr_dev(section, "class", "flex h-screen svelte-1ylt5nz");
-        add_location(section, file$b, 78, 0, 2375);
+        add_location(section, file$b, 74, 0, 2271);
       },
       l: function claim(nodes) {
         throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -12288,7 +12463,7 @@ var app = (function () {
 
         if (dirty &
         /*$$scope*/
-        8192) {
+        512) {
           button_changes.$$scope = {
             dirty: dirty,
             ctx: ctx
@@ -12345,10 +12520,6 @@ var app = (function () {
       captcha: "",
       text: ""
     };
-    var name_error = "";
-    var email_error = "";
-    var captcha_error = "";
-    var text_error = "";
     onMount( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
       var element;
       return regenerator.wrap(function _callee$(_context) {
@@ -12473,10 +12644,6 @@ var app = (function () {
         errors: errors,
         send_message_url: send_message_url$1,
         section_id: section_id$1,
-        name_error: name_error,
-        email_error: email_error,
-        captcha_error: captcha_error,
-        text_error: text_error,
         send_message: send_message,
         reset_form: reset_form,
         show_errors: show_errors,
@@ -12484,18 +12651,7 @@ var app = (function () {
       };
     };
 
-    $$self.$inject_state = function ($$props) {
-      if ("name_error" in $$props) name_error = $$props.name_error;
-      if ("email_error" in $$props) email_error = $$props.email_error;
-      if ("captcha_error" in $$props) captcha_error = $$props.captcha_error;
-      if ("text_error" in $$props) text_error = $$props.text_error;
-    };
-
-    if ($$props && "$$inject" in $$props) {
-      $$self.$inject_state($$props.$$inject);
-    }
-
-    return [message_data, errors, send_message, name_error, email_error, captcha_error, text_error, reset_form, show_errors, reset_errors, textfield0_value_binding, textfield1_value_binding, textfield2_value_binding];
+    return [message_data, errors, send_message, reset_form, show_errors, reset_errors, textfield0_value_binding, textfield1_value_binding, textfield2_value_binding];
   }
 
   var ContactForm = /*#__PURE__*/function (_SvelteComponentDev) {

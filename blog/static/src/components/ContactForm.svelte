@@ -20,10 +20,6 @@
     }
     const send_message_url = "/send/message/";
     const section_id = "#contact";
-    let name_error = "";
-    let email_error = "";
-    let captcha_error = "";
-    let text_error = "";
 
     onMount(async() => {
         if (location.hash === section_id) {
