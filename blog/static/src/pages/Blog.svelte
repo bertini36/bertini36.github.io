@@ -13,8 +13,6 @@
 
     <PostList/>
 
-    <ContactForm/>
-
     <Footer/>
 
 </main>

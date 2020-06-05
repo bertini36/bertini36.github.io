@@ -4137,7 +4137,7 @@ var app = (function () {
 
   })));
 
-
+  //# sourceMappingURL=es6-promise.map
 
   /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)));
 
@@ -4955,7 +4955,7 @@ var app = (function () {
   /***/ })
   /******/ ]);
   });
-
+  //# sourceMappingURL=noty.js.map
   });
 
   var Noty = unwrapExports(noty);
@@ -11233,11 +11233,6 @@ var app = (function () {
     var raw_value =
     /*$selected_post*/
     ctx[0].text + "";
-    var t5;
-    var current;
-    var comments = new Comments({
-      $$inline: true
-    });
     var block = {
       c: function create() {
         h2 = element("h2");
@@ -11249,8 +11244,6 @@ var app = (function () {
         div = element("div");
         img = element("img");
         t4 = space();
-        t5 = space();
-        create_component(comments.$$.fragment);
         attr_dev(h2, "class", "text-3xl text-center");
         add_location(h2, file$8, 43, 12, 1420);
         attr_dev(h3, "class", "text-xl text-center font-hairline mb-8");
@@ -11265,7 +11258,7 @@ var app = (function () {
         add_location(img, file$8, 51, 16, 1693);
         attr_dev(div, "class", "mx-auto px-56");
         add_location(div, file$8, 50, 12, 1649);
-        html_tag = new HtmlTag(raw_value, t5);
+        html_tag = new HtmlTag(raw_value, null);
       },
       m: function mount(target, anchor) {
         insert_dev(target, h2, anchor);
@@ -11278,23 +11271,20 @@ var app = (function () {
         append_dev(div, img);
         insert_dev(target, t4, anchor);
         html_tag.m(target, anchor);
-        insert_dev(target, t5, anchor);
-        mount_component(comments, target, anchor);
-        current = true;
       },
       p: function update(ctx, dirty) {
-        if ((!current || dirty &
+        if (dirty &
         /*$selected_post*/
-        1) && t0_value !== (t0_value =
+        1 && t0_value !== (t0_value =
         /*$selected_post*/
         ctx[0].name + "")) set_data_dev(t0, t0_value);
-        if ((!current || dirty &
+        if (dirty &
         /*$selected_post*/
-        1) && t2_value !== (t2_value =
+        1 && t2_value !== (t2_value =
         /*$selected_post*/
         ctx[0].technology + "")) set_data_dev(t2, t2_value);
 
-        if (!current || dirty &
+        if (dirty &
         /*$selected_post*/
         1 && img.src !== (img_src_value = "static/" +
         /*$selected_post*/
@@ -11302,7 +11292,7 @@ var app = (function () {
           attr_dev(img, "src", img_src_value);
         }
 
-        if (!current || dirty &
+        if (dirty &
         /*$selected_post*/
         1 && img_alt_value !== (img_alt_value =
         /*$selected_post*/
@@ -11310,20 +11300,11 @@ var app = (function () {
           attr_dev(img, "alt", img_alt_value);
         }
 
-        if ((!current || dirty &
+        if (dirty &
         /*$selected_post*/
-        1) && raw_value !== (raw_value =
+        1 && raw_value !== (raw_value =
         /*$selected_post*/
         ctx[0].text + "")) html_tag.p(raw_value);
-      },
-      i: function intro(local) {
-        if (current) return;
-        transition_in(comments.$$.fragment, local);
-        current = true;
-      },
-      o: function outro(local) {
-        transition_out(comments.$$.fragment, local);
-        current = false;
       },
       d: function destroy(detaching) {
         if (detaching) detach_dev(h2);
@@ -11333,8 +11314,6 @@ var app = (function () {
         if (detaching) detach_dev(div);
         if (detaching) detach_dev(t4);
         if (detaching) html_tag.d();
-        if (detaching) detach_dev(t5);
-        destroy_component(comments, detaching);
       }
     };
     dispatch_dev("SvelteRegisterBlock", {
@@ -11350,7 +11329,6 @@ var app = (function () {
   function create_fragment$8(ctx) {
     var section;
     var div;
-    var current;
     var if_block =
     /*$selected_post*/
     ctx[0] !== null && create_if_block$2(ctx);
@@ -11372,7 +11350,6 @@ var app = (function () {
         insert_dev(target, section, anchor);
         append_dev(section, div);
         if (if_block) if_block.m(div, null);
-        current = true;
       },
       p: function update(ctx, _ref) {
         var _ref2 = _slicedToArray(_ref, 1),
@@ -11383,30 +11360,18 @@ var app = (function () {
         ctx[0] !== null) {
           if (if_block) {
             if_block.p(ctx, dirty);
-            transition_in(if_block, 1);
           } else {
             if_block = create_if_block$2(ctx);
             if_block.c();
-            transition_in(if_block, 1);
             if_block.m(div, null);
           }
         } else if (if_block) {
-          group_outros();
-          transition_out(if_block, 1, 1, function () {
-            if_block = null;
-          });
-          check_outros();
+          if_block.d(1);
+          if_block = null;
         }
       },
-      i: function intro(local) {
-        if (current) return;
-        transition_in(if_block);
-        current = true;
-      },
-      o: function outro(local) {
-        transition_out(if_block);
-        current = false;
-      },
+      i: noop,
+      o: noop,
       d: function destroy(detaching) {
         if (detaching) detach_dev(section);
         if (if_block) if_block.d();
@@ -12841,15 +12806,11 @@ var app = (function () {
     var main;
     var t0;
     var t1;
-    var t2;
     var current;
     var header = new Header({
       $$inline: true
     });
     var postlist = new PostList({
-      $$inline: true
-    });
-    var contactform = new ContactForm({
       $$inline: true
     });
     var footer = new Footer({
@@ -12862,8 +12823,6 @@ var app = (function () {
         t0 = space();
         create_component(postlist.$$.fragment);
         t1 = space();
-        create_component(contactform.$$.fragment);
-        t2 = space();
         create_component(footer.$$.fragment);
         add_location(main, file$d, 9, 0, 252);
       },
@@ -12876,8 +12835,6 @@ var app = (function () {
         append_dev(main, t0);
         mount_component(postlist, main, null);
         append_dev(main, t1);
-        mount_component(contactform, main, null);
-        append_dev(main, t2);
         mount_component(footer, main, null);
         current = true;
       },
@@ -12886,14 +12843,12 @@ var app = (function () {
         if (current) return;
         transition_in(header.$$.fragment, local);
         transition_in(postlist.$$.fragment, local);
-        transition_in(contactform.$$.fragment, local);
         transition_in(footer.$$.fragment, local);
         current = true;
       },
       o: function outro(local) {
         transition_out(header.$$.fragment, local);
         transition_out(postlist.$$.fragment, local);
-        transition_out(contactform.$$.fragment, local);
         transition_out(footer.$$.fragment, local);
         current = false;
       },
@@ -12901,7 +12856,6 @@ var app = (function () {
         if (detaching) detach_dev(main);
         destroy_component(header);
         destroy_component(postlist);
-        destroy_component(contactform);
         destroy_component(footer);
       }
     };
