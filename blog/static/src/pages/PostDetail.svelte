@@ -40,15 +40,15 @@
 
         {#if $selected_post !== null}
 
-            <h2 class="text-3xl text-center">
+            <h2 class="text-4xl text-center">
                 {$selected_post.name}
             </h2>
-            <h3 class="text-xl text-center font-hairline mb-8">
+            <h3 class="text-2xl text-center font-hairline mb-8">
                 {$selected_post.technology}
             </h3>
 
-            <div class="mx-auto px-56">
-                <img class="w-full" src="static/{$selected_post.main_photo_path}" alt="{$selected_post.name}">
+            <div class="post_image_div px-56">
+                <img class="post_image" src="static/{$selected_post.main_photo_path}" alt="{$selected_post.name}">
             </div>
 
             {@html $selected_post.text}
