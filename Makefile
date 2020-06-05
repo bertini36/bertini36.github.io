@@ -80,8 +80,6 @@ loadbackup:
 npm_install:
 	$(DOCKER_COMPOSE) run --rm --entrypoint npm svelte-app install ${args}
 
-svelte_build:
-	$(DOCKER_COMPOSE) run --user=${UID} --rm --entrypoint npm svelte-app run build:svelte
+build_frontend:
+	$(DOCKER_COMPOSE) run --user=${UID} --rm --entrypoint npm svelte-app run build
 
-tailwind_build:
-	$(DOCKER_COMPOSE) run --user=${UID} --rm --entrypoint npm svelte-app run build:tailwind

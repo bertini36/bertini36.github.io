@@ -1,6 +1,6 @@
 {% load static %}
 
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p>
     Nowadays one of the main problems of any algorithm is its facility to scale it, in other words, its facility to
     be executed over multiple cores (parallelization) or nodes (distribution). The amount of data that is available
     today has led the world of computing to develop technologies with which to parallelize and distribute processes
@@ -9,34 +9,34 @@
     models, which would spend years to get results, can obtain it in a few hours thanks to the joint work of many
     computers.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p>
     Precisely this is what supercomputing centers like <a href="https://www.bsc.es/" style="color: #feb72b"  target="_blank">BSC</a> are
     engaged. BSC has a supercomputer, called Marenostrum III, which avoids to its users to run computationally
     expensive algorithms or algorithms that require a huge amount of data in a distributed way. Specifically,
     Marenostrum III has 3108 nodes each with 2 processors of 8 cores (over 49.728 cores).
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/distributed_matrix_product/marenostrum.jpg' %}"
              alt="Marenostrum III supercomputer">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">Marenostrum III</figcaption>
+        <figcaption class="post_image_figcaption">Marenostrum III</figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p>
     In this post I'm going to show, with a simple example, how to distribute a matrix product over several nodes and
     how to parallelize at each node. Matrix product is a mathematical operation that, when it is taken to the extreme
     using very large matrices it is become in a very computationally expensive operation.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/distributed_matrix_product/matrix_product.png' %}"
              alt="Matrix product">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">Matrix product</figcaption>
+        <figcaption class="post_image_figcaption">Matrix product</figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p>
     Since each element of the resulting matrix does not depend on any other element of it we can distribute without
     any restriction. For this example I could use 4 nodes, so I decided that each node would be responsible for
     calculating a quarter of the resulting matrix. A and B matrices will be sent to each node to avoid them to
@@ -45,15 +45,15 @@
     (lines 123 and 124) and to specify, using process id, which part of the result matrix each node has to calculate
     (lines 116, 117 and 118).
 </p>
-<div class="mx-auto md:px-20 mb-6 mt-6">
+<div class="post_image_div md:px-20">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/distributed_matrix_product/distributed_matrix_product.png' %}"
              alt="Distributed matrix product">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">Matrix product distribution and parallelization</figcaption>
+        <figcaption class="post_image_figcaption">Matrix product distribution and parallelization</figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p>
     Nowadays, for parallel computation, the power of GPUs is being used. In our case each node of Marenostrum III has a
     Nvidia K80 graphic card. This graphic cards can be used for parallel computation using Nvidia
     <a href="https://en.wikipedia.org/wiki/CUDA" style="color: #feb72b" target="_blank">CUDA</a> (Compute Unified Device Architecture)
@@ -64,17 +64,17 @@
     threadId and its blockId (lines 56 and 57). These threads will be executed in one kernel, in other words,
     a GPU program (lines 55-62: kernel definition, 143: kernel call).
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/95b3843bdc608fc6a8232b43372bd677.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/95b3843bdc608fc6a8232b43372bd677.js"></div>
+<p>
     One of the main problems of CUDA is that to get the most out of it you have to know the technical specifications
     of the GPU on which it will run the code. Block size (number of threads) or the use of the memory hierarchy
     of the graphic card are aspects that the coder has to take into account when programming with this technology.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p>
     At this <a href="https://github.com/bertini36/distributedMatrixProduct" style="color: #feb72b" target="_blank">Github repository</a>
     you will find two versions of matrix product, one just using MPI technology and another just with CUDA. Also,
     at config folder, there are a script to know graphic card specifications and a possible CUDA configuration
     for that card.
 </p>
 
-<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">Date: 02/02/2017</h5>
+<h5 class="post_date" style="color: #feb72b">02/02/2017</h5>

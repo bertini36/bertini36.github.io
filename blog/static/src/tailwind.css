@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+p {
+    @apply text-gray-900 leading-relaxed mt-4;
+}
+
+.post_image_div {
+    @apply mx-auto mb-6 mt-6;
+}
+
+.post_image {
+    @apply w-full h-full;
+}
+
+.post_image_figcaption {
+    @apply text-center text-gray-900 leading-relaxed text-sm;
+}
+
+.post_gist {
+    @apply mb-6 mt-6;
+}
+
+.post_date {
+    @apply mt-10 mb-10 text-center text-base;
+}

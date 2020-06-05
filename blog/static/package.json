@@ -2,10 +2,13 @@
   "name": "blog",
   "version": "1.0.0",
   "scripts": {
-    "build:svelte": "rollup -c",
-    "build:tailwind": "tailwind build src/tailwind.css -o dist/tailwind.css",
-    "dev": "rollup -c -w",
-    "start": "sirv public"
+    "watch:tailwind": "postcss src/tailwind.css -o dist/tailwind.css -w",
+    "build:tailwind": "NODE_ENV=production postcss src/tailwind.css -o dist/tailwind.css",
+    "dev": "run-p start:dev autobuild watch:tailwind",
+    "build": "npm run build:tailwind && rollup -c",
+    "start": "sirv public --single",
+    "start:dev": "sirv public --single --dev",
+    "autobuild": "rollup -c -w"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -27,6 +30,8 @@
     "babel": "^6.23.0",
     "jquery": "^3.5.0",
     "noty": "^3.2.0-beta",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^7.1.1",
     "sirv-cli": "^0.4.4",
     "tailwindcss": "^1.4.6"
   }
