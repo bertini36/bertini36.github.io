@@ -6,7 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import copy from 'rollup-plugin-copy';
 import babel from "rollup-plugin-babel";
 
-const production = !process.env.ROLLUP_WATCH;
+const production = process.env.NODE_ENV === "production";
 
 console.log(`Production: ${production}`)
 
@@ -16,7 +16,7 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'dist/svelte.js'
+		file: 'dist/svelte.min.js'
 	},
 	plugins: [
 
@@ -26,7 +26,7 @@ export default {
 			// we'll extract any component CSS out into
 			// a separate file - better for performance
 			css: css => {
-				css.write('dist/svelte.css');
+				css.write('dist/svelte.min.css');
 			}
 		}),
 

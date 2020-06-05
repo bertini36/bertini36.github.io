@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "file": "svelte.css",
+  "file": "svelte.min.css",
   "sources": [
     "../Navbar.svelte",
     "../PageNotFound.svelte",
