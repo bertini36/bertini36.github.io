@@ -2,7 +2,8 @@
   "name": "blog",
   "version": "1.0.0",
   "scripts": {
-    "build": "rollup -c",
+    "build:svelte": "rollup -c",
+    "build:tailwind": "tailwind build src/tailwind.css -o dist/tailwind.css",
     "dev": "rollup -c -w",
     "start": "sirv public"
   },
@@ -27,6 +28,6 @@
     "jquery": "^3.5.0",
     "noty": "^3.2.0-beta",
     "sirv-cli": "^0.4.4",
-    "smelte": "^1.0.12"
+    "tailwindcss": "^1.4.6"
   }
 }

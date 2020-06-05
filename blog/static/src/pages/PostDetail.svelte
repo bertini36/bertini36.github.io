@@ -1,7 +1,6 @@
 <script>
 
     import {onMount} from "svelte";
-    import Comments from "../components/Comments.svelte";
     import {selected_post} from "../stores.js";
     import * as requests from "../requests.js";
 

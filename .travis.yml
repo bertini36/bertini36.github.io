@@ -8,6 +8,6 @@ python:
 before_install:
   - touch .env
   - cd environments/test/
-  - docker-compose build tests-runner
+  - docker-compose dist tests-runner
 script:
   - docker-compose run --rm --entrypoint pytest tests-runner --cov-report term --cov=blog/blog/

@@ -7,7 +7,6 @@ import copy from 'rollup-plugin-copy';
 import babel from "rollup-plugin-babel";
 
 const production = !process.env.ROLLUP_WATCH;
-const smelte = require("smelte/rollup-plugin-smelte")
 
 console.log(`Production: ${production}`)
 
@@ -17,7 +16,7 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'build/bundle.js'
+		file: 'dist/svelte.js'
 	},
 	plugins: [
 
@@ -27,29 +26,9 @@ export default {
 			// we'll extract any component CSS out into
 			// a separate file - better for performance
 			css: css => {
-				css.write('build/bundle.css');
+				css.write('dist/svelte.css');
 			}
 		}),
-
-        smelte({
-            purge: production,
-            output: "build/tailwind.css",
-            postcss: [],
-            whitelist: [],
-            whitelistPatterns: [],
-            tailwind: {
-                colors: {
-                    primary: "#feb72b",
-                    secondary: "#009688",
-                    error: "#f44336",
-                    success: "#4caf50",
-                    alert: "#ff9800",
-                    blue: "#2196f3",
-                    dark: "#212121"
-                },
-                darkMode: true
-            },
-        }),
 
         babel({
 			extensions: ['.js', '.mjs', '.html', '.svelte'],
@@ -98,7 +77,7 @@ export default {
 		// browser on changes when not in production
 		!production && livereload('src'),
 
-		// If we're building for production (npm run build
+		// If we're building for production (npm run dist
 		// instead of npm run dev), minify
 		production && terser(),
 

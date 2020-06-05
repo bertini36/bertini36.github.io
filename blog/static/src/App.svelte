@@ -1,6 +1,5 @@
 <script>
 
-    import "smelte/src/tailwind.css";
     import Navbar from "./components/Navbar.svelte";
 
     let active_page;
