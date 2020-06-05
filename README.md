@@ -119,9 +119,14 @@ make createsuperuser
 make npminstall
 ```
 
-**Compile Svelte files to Javascript**
+**Build Tailwind styles**
 ```bash
-make svbuild
+make tailwind_build
+```
+
+**Build Svelte app**
+```bash
+make svelte_build
 ```
 
 ## Run tests
