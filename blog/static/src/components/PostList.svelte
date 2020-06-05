@@ -21,13 +21,11 @@
 
 <section id="posts">
 
-    <div class="justify-start justify-center mt-20 mb-10">
-        <div class="w-full">
-            <h2 class="text-3xl text-center">Posts</h2>
-        </div>
+    <div class="section_header_div">
+        <h2 class="section_header_text">Posts</h2>
     </div>
 
-    <div class="container my-12 mx-auto px-4 md:px-12">
+    <div class="container lg:max-w-3/4 mx-auto my-12 px-4 md:px-12">
         <div class="flex flex-wrap -mx-1 lg:-mx-4">
 
             {#each $posts as post}
@@ -40,11 +38,3 @@
     </div>
 
 </section>
-
-<style>
-
-    .container {
-        max-width: 90%;
-    }
-
-</style>

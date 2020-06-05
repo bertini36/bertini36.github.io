@@ -67,7 +67,7 @@
 
 </script>
 
-<nav class="fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-dark-500">
+<nav class="fixed top-0 w-screen items-center flex-wrap flex left-0 z-30 p-0 h-16 elevation-3 bg-black">
     <a class="px-2 md:px-8 flex items-center" href="#">
         <img alt="Blog logo" src="{logo_img_url}" width="35" height="35">
     </a>

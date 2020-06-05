@@ -10,7 +10,7 @@
     computers.
 </p>
 <p>
-    Precisely this is what supercomputing centers like <a href="https://www.bsc.es/" style="color: #feb72b"  target="_blank">BSC</a> are
+    Precisely this is what supercomputing centers like <a href="https://www.bsc.es/" class="post_link" target="_blank">BSC</a> are
     engaged. BSC has a supercomputer, called Marenostrum III, which avoids to its users to run computationally
     expensive algorithms or algorithms that require a huge amount of data in a distributed way. Specifically,
     Marenostrum III has 3108 nodes each with 2 processors of 8 cores (over 49.728 cores).
@@ -40,7 +40,7 @@
     Since each element of the resulting matrix does not depend on any other element of it we can distribute without
     any restriction. For this example I could use 4 nodes, so I decided that each node would be responsible for
     calculating a quarter of the resulting matrix. A and B matrices will be sent to each node to avoid them to
-    do its computations. For the distribution I'm using <a href="https://www.open-mpi.org/" style="color: #feb72b" target="_blank">MPI</a>
+    do its computations. For the distribution I'm using <a href="https://www.open-mpi.org/" class="post_link" target="_blank">MPI</a>
     (Message Passing Interface) technology. Using functions of this library data can be shared over the nodes
     (lines 123 and 124) and to specify, using process id, which part of the result matrix each node has to calculate
     (lines 116, 117 and 118).
@@ -56,7 +56,7 @@
 <p>
     Nowadays, for parallel computation, the power of GPUs is being used. In our case each node of Marenostrum III has a
     Nvidia K80 graphic card. This graphic cards can be used for parallel computation using Nvidia
-    <a href="https://en.wikipedia.org/wiki/CUDA" style="color: #feb72b" target="_blank">CUDA</a> (Compute Unified Device Architecture)
+    <a href="https://en.wikipedia.org/wiki/CUDA" class="post_link" target="_blank">CUDA</a> (Compute Unified Device Architecture)
     platform. GPUs are essentially a big number of simple processors that can be used to speed up some parts of the
     code. For this, the program has to be decomposed in a big number of threads which will be executed concurrently.
     In this example, each thread will be responsible for calculating just an element of the resulting matrix. Using
@@ -71,7 +71,7 @@
     of the graphic card are aspects that the coder has to take into account when programming with this technology.
 </p>
 <p>
-    At this <a href="https://github.com/bertini36/distributedMatrixProduct" style="color: #feb72b" target="_blank">Github repository</a>
+    At this <a href="https://github.com/bertini36/distributedMatrixProduct" class="post_link" target="_blank">Github repository</a>
     you will find two versions of matrix product, one just using MPI technology and another just with CUDA. Also,
     at config folder, there are a script to know graphic card specifications and a possible CUDA configuration
     for that card.

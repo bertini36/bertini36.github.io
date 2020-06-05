@@ -11,25 +11,17 @@
     <div class="w-full">
         <div class="text-center">
             <a href="{instagram_url}" target="_blank" class="mr-4">
-                <i class="fa fa-instagram text-xl"></i>
+                <i class="fa fa-instagram text-xl hover:text-yellow"></i>
             </a>
             <a href={twitter_url} target="_blank" class="mr-4">
-                <i class="fa fa-twitter text-xl"></i>
+                <i class="fa fa-twitter text-xl hover:text-yellow"></i>
             </a>
             <a href={linkedin_url} target="_blank" class="mr-4">
-                <i class="fa fa-linkedin text-xl"></i>
+                <i class="fa fa-linkedin text-xl hover:text-yellow"></i>
             </a>
             <a href={github_url} target="_blank">
-                <i class="fa fa-github text-xl"></i>
+                <i class="fa fa-github text-xl hover:text-yellow"></i>
             </a>
         </div>
     </div>
 </footer>
-
-<style>
-
-    a:hover, a:focus, a:active {
-        color: #feb72b;
-    }
-
-</style>
