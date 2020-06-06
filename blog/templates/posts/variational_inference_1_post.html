@@ -1,36 +1,36 @@
 {% load static %}
 
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     In next posts I'm going to speak about probabilistic machine learning. Last months I was learning about this
     field, specifically about a type of inference on these models known as Variational Inference, and I reckon can be
     interesting to write a set of posts summarizing my experience about it thanks to my teacher
-    <a href="https://twitter.com/CapdevilaPujol" style="color: #feb72b" target="_blank">Joan Capdevila</a>.
+    <a href="https://twitter.com/CapdevilaPujol" class="post_link" target="_blank">Joan Capdevila</a>.
 </p>
-<h4 class="mt-6 mb-2">Probabilistic Machine Learning</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Probabilistic Machine Learning</h4>
+<p class="post_p">
     Last decades studies about machine learning has caused the appearance of a wide variety of algorithms to solve
     a large set of problems covering areas such as driving autonomous vehicles, medical diagnosis, speech recognition
     or user ranking for marketing campaigns. These algorithms are mainly based on aa construction of a model which
     describes data as closely as possible.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     A model is a compact description of a set of data that avoids us to make predictions about future samples. The main
     difference between a conventional machine learning model and a probabilistic one is that the last avoids to model
     uncertainty, in other words, it avoids to know how probably is a prediction to be fulfilled. This aspect can
     be very valuable in areas such as medicine or economy where risk about to take a bad decision can be detrimental to
     a person's health or lead to financial loss.
 </p>
-<div class="mx-auto md:px-56 mb-6 mt-6">
+<div class="post_image_div md:px-56">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/esquema_situacion.png' %}"
              alt="Probabilistic Machine Learning situation">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <figcaption class="post_image_figcaption">
             Probabilistic machine learning situation at artificial intelligence area
         </figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     This kind of models uses the probability theory to model priori information, in this way the algorithm is not
     based just on sample data. These models permit the use of different datasets to learn (this is useful when
     we have a small quantity of data) and to define complex models with a quantity of random variables required.
@@ -39,28 +39,28 @@
     model is required. Finally they are generative models, thanks to the distributions that they infer, they allow
     to generate new data simulating values ​​of any random variable of the model.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Unlike discriminant models which only model the probability of the variable to be predicted, a generative model is
     a complete model which uses all the variables (observed and latent), allowing multiple questions to be
     answered.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     The construction of this type of models with latent variables is done following Box Loop philosophy. This loop
     was created by the statistician
-    <a href="https://en.wikipedia.org/wiki/George_E._P._Box" style="color: #feb72b" target="_blank">George E. P. Box</a>. This loop is
+    <a href="https://en.wikipedia.org/wiki/George_E._P._Box" class="post_link" target="_blank">George E. P. Box</a>. This loop is
     iterated several times during the construction of a probabilistic model.
 </p>
-<div class="mx-auto md:px-10 mb-6 mt-6">
+<div class="post_image_div md:px-10">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/box_loop.png' %}"
              alt="Box loop">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
-            <small>Box loop graphical scheme</small>
+        <figcaption class="post_image_figcaption">
+            Box loop graphical scheme
         </figcaption>
     </figure>
 </div>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>First, probabilistic model is made based on environment knowledge that we already have.</li>
     <li>After some patterns are discovered using the model previously defined and with an inference method.</li>
     <li>
@@ -68,33 +68,33 @@
         used to describe or predict new data.
     </li>
 </ul>
-<h4 class="mt-6 mb-2">Bayesian inference</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Bayesian inference</h4>
+<p class="post_p">
     Bayesian inference tries to reveal a hidden structure in data that cannot be directly observed. For
     traditional machine learning methods parameters are values that are determined by optimization algorithms
     minimizing an error function. The bayesian point of view is a little bit different. For a bayesian all the
     unknown parameters are described by probability distributions and observation of evidence avoids to update
     these distrubutions using Bayes rule.
 </p>
-<h5 class="mt-6 mb-2">Bayes rule</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Bayes rule</h5>
+<p class="post_p">
     The first thing you need to be clear about to understand Bayesian inference is Bayes rule. Bayes rule indicates
     how a priori probability about an event has to be updated after observe evidences about it. From a bayesian point
     of view there are no differences between parameters and observed variables, both are random variables. I'm going to
     use x to reference observed variables and θ to reference latent variables.
 </p>
-<div class="mx-auto md:px-64 mb-6 mt-6">
+<div class="post_image_div md:px-64">
     <figure class="md:px-32">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/bayes_rule.png' %}"
              alt="Bayes rule">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     The following explains what is each term of the formula, being x and &theta; data and model
     parameters respectively:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>
         <strong>Posterior p(&theta;|x)</strong>: It is the probability of data, the probability that the model with &theta;
         parameters has generated x data.
@@ -116,10 +116,10 @@
         the same for each model because it just depends on data.
     </li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Product p(x|θ)p(θ) is also known as joint probability: p(θ,x).
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Use the likelihood to estimate θ parameters is known as Maximum Likelihood Estimation (MLE) while if you take
     the prior into account then is known as Maximum A Posteriori estimation (MAP). MLE and MAP are equivalents if
     there is an uniform prior. However these methods only allow estimating a mean, a median and a mode of the
@@ -128,7 +128,7 @@
     (MCMC) allow to infer this distribution. Taking into account the Bayes normalizer constant p(x) is what allows
     these methods to calculate a posterior distribution.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     A summary of this formula would be: At the beginning we have a belief (prior) about an event θ (p(θ)), for example,
     that the height of Barcelona population is described by a Normal distribution. After we observe evidences (x),
     a sample of the heights of Barcelona population. With this evidence our belief about θ has to be updated, in
@@ -136,21 +136,21 @@
     change is reflected by the posterior distribution (p(θ|x)). In this example we can appreciate the support to
     online learning that offers this kind of models.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/online_learning.png' %}"
              alt="Online learning">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     At the end it is an iterative process of updating beliefs (prior) based on evidences (x) where posterior of one
     iteration will be the prior of next one.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Posterior inference algorithms avoid to analyze information under certain assumptions (priors) discovering a
     hidden structure which best fits with our data. When all relations between model random variable are
-    <a href="https://en.wikipedia.org/wiki/Conjugate_prior" style="color: #feb72b" target="_blank">conjugated</a>, this is, when joint
+    <a href="https://en.wikipedia.org/wiki/Conjugate_prior" class="post_link" target="_blank">conjugated</a>, this is, when joint
     distribution has the same form as the prior, posterior can be calculated analytically. This is the
     case of models like Dirichlet-Categorical o Normal Inverse Wishart-Normal. In the opposite case, the problem of
     this formula resides in the calculation of the evidence (p(x)). For many models of interest (no conjugated) to
@@ -158,8 +158,8 @@
     that requires to calculate the evidence. For these models, another strategy is required to obtain the posterior,
     for that reason the calculation of the posterior becomes an approximation problem.
 </p>
-<h5 class="mt-6 mb-2">Posterior approximation</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Posterior approximation</h5>
+<p class="post_p">
     Probabilistic machine learning uses latent variables to describe data hidden structure, some relations
     between observed and latent variables are modeled using probability distributions and inference algorithms are used
     to estimate the posterior, that is the conditional distribution about latent variables given the observed
@@ -169,114 +169,114 @@
     set of tools which have been developed to approximate this posterior and it is one of the central problems in
     bayesian statistics. Nowadays there are 2 algorithmic branches:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>
-        <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo" style="color: #feb72b" target="_blank">
+        <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo" class="post_link" target="_blank">
             Markov Chain Monte Carlo (MCMC)
         </a>:
         Sampling approximate inference.
     </li>
     <li>
-        <a href="https://en.wikipedia.org/wiki/Variational_Bayesian_methods" style="color: #feb72b" target="_blank">
+        <a href="https://en.wikipedia.org/wiki/Variational_Bayesian_methods" class="post_link" target="_blank">
             Variational Inference (VI)
         </a>:
         Structural approximate inference.
     </li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     On the one hand, MCMC is based on the construction of a Markov chain over all latent variables being the posterior
     its stationary distribution. After the chain is executed till it arrives to its equilibrium point.
     Finally, results obtained sampling the Markov chain in its stationary section, are the posterior samples. The
     best known algorithms of this family are
-    <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" style="color: #feb72b" target="_blank">Metropolis–Hastings</a>
-    , <a href="https://en.wikipedia.org/wiki/Gibbs_sampling" style="color: #feb72b" target="_blank">Gibbs sampling</a> and
+    <a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" class="post_link" target="_blank">Metropolis–Hastings</a>
+    , <a href="https://en.wikipedia.org/wiki/Gibbs_sampling" class="post_link" target="_blank">Gibbs sampling</a> and
     <a href="{https://en.wikipedia.org/wiki/Hybrid_Monte_Carlo">Hamiltonian Monte Carlo</a>.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     On the other hand, Variational Inference approximates the posterior creating an analytical approximation, the
     variational model, which is adjusted in order to reduce the distance with the posterior. In this family the
     problem is transformed from an approximation one to an optimization one.
 </p>
-<h5 class="mt-6 mb-2">Probabilistic Graphical Models</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Probabilistic Graphical Models</h5>
+<p class="post_p">
     In the bayesian field, a model represents a joint probability over all random variables of the problem.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure class="md:px-56">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/joint_dist.png' %}"
              alt="Joint distribution">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     A very practical way of representing these models is using
-    <a href="https://en.wikipedia.org/wiki/Graphical_model" style="color: #feb72b" target="_blank">probabilistic graphical models</a>. A
+    <a href="https://en.wikipedia.org/wiki/Graphical_model" class="post_link" target="_blank">probabilistic graphical models</a>. A
     probabilistic graphical model is a directed graph where nodes are random variables and edges are dependency
     relations between those variables. For example, joint distribution probabilistic graphical model is:
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure class="md:px-40">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/joint_dist2.png' %}"
              alt="Joint distribution">
     </figure>
 </div>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure class="px-40">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/graphical_model.png' %}"
              alt="Joint distribution">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     At this context, p(x|y) represents the conditional probability in which <i>x</i> variable depends on the
     value of y. At this kind of diagrams also exists another components called plates.
 </p>
-<div class="mx-auto md:px-56 mb-6 mt-6">
+<div class="post_image_div md:px-56">
     <figure class="px-56">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/plate.png' %}"
              alt="Plate">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     This notation indicates a vector of n random variables <i>x</i>.
 </p>
-<h5 class="mt-6 mb-2">Local and global variables</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Local and global variables</h5>
+<p class="post_p">
     In a probabilistic model two types of random variables can be distinguished: globals and locals. A global variable
     is the one which is shared between all dataset examples while a local variable is owned by each example. For
     example, the following probabilistic graphical model, <i>y</i> variable is local while <i>z</i> variable is a
     global one. When a node appears obscured it means that it is an observed variable.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure class="px-56">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/global_local_variables.png' %}"
              alt="Model example">
     </figure>
 </div>
-<h4 class="mt-6 mb-2">Variational inference</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Variational inference</h4>
+<p class="post_p">
     In next posts we will focus on the different variational strategies for posterior approach.
 </p>
-<h5 class="mt-6 mb-2">Strategy</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Strategy</h5>
+<p class="post_p">
     As already mentioned, Variational Inference consists in defining a distribution, q(&theta;|&lambda;), whose parameters &lambda;
     will be optimized in order to reduce the differences with the posterior p(&theta;|x). This new distribution is known as
     variational model and the posterior as probabilistic model. To summarize, VI goal is to optimize variational model
     &lambda; parameters in order to reduce the distance with probabilistic model p(&theta;|x). &lambda; parameters are known also as
     variational parameters.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full" style="width: 90%"
+        <img class="post_image" style="width: 90%"
              src="{% static 'img/posts/variational_inference/variational_inference.jpg' %}"
              alt="Variational inference">
     </figure>
 </div>
-<h5 class="mt-6 mb-2">Kullback-Leibler divergence</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Kullback-Leibler divergence</h5>
+<p class="post_p">
     To calculate Euclidean distance between distribution parameters to establish the similarity between both is an
     imperfect measure since we are comparing distributions and not points. Imagine a Normal distribution with 0 mean
     and 5 variance, N(0, 5), and another one with 5 mean and 5 variance, N(5, 5). These two distributions are very
@@ -285,91 +285,91 @@
     but Euclidean distance that separates them is 4. For this reason we have to use another measure: Kullback-Leibler
     divergence (KL).
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     KL is a divergence, in other words, a non-simmetric distance, it isn't the same to calculate KL[p(θ|x)||q(θ|λ)]
     (forwards KL) than KL[q(θ|λ)||p(θ|x)] (reverse KL). The fact of use one or another rises to different algorithms:
-     <a href="https://tminka.github.io/papers/ep/minka-ep-uai.pdf" style="color: #feb72b" target="_blank">Expectation Propagation</a> uses
+     <a href="https://tminka.github.io/papers/ep/minka-ep-uai.pdf" class="post_link" target="_blank">Expectation Propagation</a> uses
     forwards KL while VI uses reverse KL. In general terms, Expectation Propagation is more computationally expensive.
     KL quantifies loss information when you approximate one distribution with another. It is based on the concept of
     entropy. Entropy measures the quantity of information that own data and is defined as follows:
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure class="px-56">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/entropia.png' %}"
              alt="Entropy">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     KL definition consists in modify entropy formula to take q distribution into account.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure class="md:px-32">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/kl1.png' %}"
              alt="Kullback-Leibler divergence">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     If we adapt this form to the VI problem and we apply logarithms properties we have:
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure class="md:px-40">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/kl_rule.png' %}"
              alt="Kullback-Leibler definition">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     This divergence avoids us to find the real similarity between two probability distributions and it is the measure
     that is minimized at VI algorithm.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/kullback-leibler1.png' %}"
              alt="Kullback-Leibler divergence">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <figcaption class="post_image_figcaption">
             Forwards and reverse KL comparison to approximate a bimodal distribution. Blue part represents distribution
             to be approximated and red one the approximation. <strong>a</strong> image is an approximation
             with forwards KL and <strong>b</strong> and <strong>c</strong> are approximation with reverse KL.
         </figcaption>
     </figure>
 </div>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/kullback-leibler2.png' %}"
              alt="Kullback-Leibler visualization">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <figcaption class="post_image_figcaption">
             Forwards and reverse KL comparison to approximate a unimodal distribution. Blue part represents distribution
             to be approximated and red one the approximation. <strong>a</strong> image is an approximation
             with forwards KL and <strong>b</strong> is an approximation with reverse KL.
         </figcaption>
     </figure>
 </div>
-<h5 class="mt-6 mb-2">Mean-Field assumption</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Mean-Field assumption</h5>
+<p class="post_p">
     In order to define a treatable distribution over all latent variables to approximate the posterior we can
     simplify variational model optimization assuming that it is a factorized model. It is to suppose that q(&theta;|&lambda;) is
     composed by a set of distributions q<sub>i</sub>(&theta;<sub>i</sub>|&lambda;<sub>i</sub>) (of the
-    <a href="https://en.wikipedia.org/wiki/Exponential_family" style="color: #feb72b" target="_blank">Exponential Family</a>). Each one of
+    <a href="https://en.wikipedia.org/wiki/Exponential_family" class="post_link" target="_blank">Exponential Family</a>). Each one of
     these distributions has its own parameters &lambda;<sub>i</sub> which could be optimized individually.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
-    <figure class="md:px-56">
-        <img class="w-full h-full"
+<div class="post_image_div md:px-40">
+    <figure class="md:px-64">
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/mean_field.png' %}"
              alt="Mean-Field assumption">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Main goal of this post is not more than to present the basic idea of Variational Inference and its main players.
     In following posts we will go deeper into these algorithms and programming tools to code this models will be
     presented.
 </p>
-<h4 class="mt-6 mb-2">References</h4>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">References</h4>
+<ul class="post_list">
     <li>
         Journal of the American Statistical AssociationGeorge (E. P. Box)
     </li>
@@ -391,4 +391,4 @@
     </li>
 </ul>
 
-<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">09/02/2017</h5>
+<h5 class="post_date">09/02/2017</h5>

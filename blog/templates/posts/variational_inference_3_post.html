@@ -1,9 +1,9 @@
 {% load static %}
 
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     In this post I'm going to continue explaining concepts that I introduced in previous posts
-    (<a href="https://albertopou.herokuapp.com/#variational_inference_1" style="color: #feb72b" target="_blank">1</a> and
-    <a href="https://albertopou.herokuapp.com/#variational_inference_2" style="color: #feb72b" target="_blank">2</a>) about Variational
+    (<a href="https://albertopou.herokuapp.com/#variational_inference_1" class="post_link" target="_blank">1</a> and
+    <a href="https://albertopou.herokuapp.com/#variational_inference_2" class="post_link" target="_blank">2</a>) about Variational
     inference (VI). Algorithms presented till now have scalability problems. For each iteration the algorithm
     requires to go through all the data and this, for massive volumes of data, is impracticable. An alternative to
     solve this problem is: Sthocastic Variational Inference. This version is based on using a batch (set of points)
@@ -11,95 +11,97 @@
     will tend to a local optimum. The main advantage of this mechanism is that it doesn't require to keep all dataset in
     memory, solving the bottleneck that could be formed by using VI with very big datasets.
 </p>
-<h4 class="mt-6 mb-2">Sthocastic Variational Inference</h4>
-<h5 class="mt-6 mb-2">Sthocastic optimization</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Sthocastic Variational Inference</h4>
+<h5 class="post_section_title text-xl text-bold">Sthocastic optimization</h5>
+<p class="post_p">
     This technique obtains estimations of the real gradient of an objective function.
     Thus we obtain an algorithm which iterates each batch and adjusts the hidden structure of the model based only
     on that batch of data. Stochastic optimization finds a function relative maximum or minimum using real gradient
     estimations. Estimations expectation  E(∇λC(λ,x)), being x a batch of data, is equivalent to the
     real gradient ∇λC(λ,X), being X the full dataset.
 </p>
-<div class="mx-auto md:px-56 mb-6 mt-6">
+<div class="post_image_div md:px-56">
     <figure class="md:px-40">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/svi.png' %}"
              alt="Sthocastic Optimization">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Under ideal conditions these stochastic algorithms converge to a local optimum of the function
     if ρ meets the Robins-Monro conditions:
 </p>
-<div class="mx-auto md:px-56 mb-6 mt-6">
+<div class="post_image_div md:px-56">
     <figure class="md:px-48">
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/robins.png' %}"
              alt="Robins-Monro">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     The use of this technique results in the algorithm Stochastic Gradient Ascent Variational Inference (SGAVI)
     and Stochastic Natural Gradient Ascent Variational Inference (SNGAVI) if natural gradients are used to estimate.
     These algorthims, thanks to the real gradient estimations, can avoid saddle points.
 </p>
-<div class="mx-auto md:px-56 mb-6 mt-6">
+<div class="post_image_div md:px-56">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/saddle-point.png' %}"
              alt="Saddle point">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">Saddle point. (Source: Wikipedia)</figcaption>
+        <figcaption class="post_image_figcaption">
+            Saddle point. (Source: Wikipedia)
+        </figcaption>
     </figure>
 </div>
-<h5 class="mt-6 mb-2">Algorithm</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Algorithm</h5>
+<p class="post_p">
     In VI, the function to be optimized is called ELBO. If variational parameters are updated by closed analytical
     formulas, the algorithm is known as Sthocastic Coordinate Ascent Variational Inference (SCAVI) while if we use
     sthocastic optimization the algorithm is known as SGAVI. This version uses a corrector term using calculations
     from previous iterations. The generic algorithm would be as follows:
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/svi-algorithm.png' %}"
              alt="Sthocastic Variational Inference Algorithm">
     </figure>
 </div>
-<h4 class="mt-6 mb-2">Black Box Variational Inference</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Black Box Variational Inference</h4>
+<p class="post_p">
     Starting from the ELBO formula that was reached in the
-    <a href="https://albertopou.herokuapp.com/#variational_inference_2" style="color: #feb72b" target="_blank">previous post</a>:
+    <a href="https://albertopou.herokuapp.com/#variational_inference_2" class="post_link" target="_blank">previous post</a>:
 </p>
-<div class="mx-auto md:px-48 mb-6 mt-6">
+<div class="post_image_div md:px-48">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/elbo2.png' %}"
              alt="ELBO">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     The main idea of Black Box Variational Inference (BBVI) consists of sampling the variational model q(θ|λ) with
     the purpose of obtain an approach of formula expectations. Such expectations regarding the variational model
     can be computationally expensive and can be a bottleneck at computer memory level.
 </p>
-<h5 class="mt-6 mb-2">Score Gradients</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Score Gradients</h5>
+<p class="post_p">
     Now we apply gradients and some algebraic transformations into the analytic ELBO formula (complete derivation
     is not shown):
 </p>
-<div class="mx-auto md:px-48 mb-6 mt-6">
+<div class="post_image_div md:px-48">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/elbo3.png' %}"
              alt="ELBO">
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     After these transformations you could notice that it is not necesary to obtain gradients of complete ELBO, it
     is enough to derive the variational model (q(θ|λ)).
 </p>
-<h5 class="mt-6 mb-2">Monte-Carlo Integration</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Monte-Carlo Integration</h5>
+<p class="post_p">
     Monte-Carlo integration is a mechanism to approximate integrals. It consists of sampling the variable
     with respect to which we are integrating and do a summation of function values given those samples.
     The more samples are taken from the variable more exact will be the approximation. In our case we are going
@@ -107,32 +109,32 @@
     Then a set of samples (θs) obtained from the q(θ|λ) distribution will allow us to get an approximation of
     the integral. The formula would be as follows:
 </p>
-<div class="mx-auto md:px-48 mb-6 mt-6">
+<div class="post_image_div md:px-48">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/montecarlo.png' %}"
              alt="Monte-Carlo Integration">
     </figure>
 </div>
-<h5 class="mt-6 mb-2">Algorithm</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h5 class="post_section_title text-xl text-bold">Algorithm</h5>
+<p class="post_p">
     Below is the BBVI algorithm:
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/variational_inference/bbvi.png' %}"
              alt="Black Box Variational Inference Algorithm">
     </figure>
 </div>
-<h4 class="mt-6 mb-2">Considerations</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Considerations</h4>
+<p class="post_p">
     This algorithm is the result of get some measures that can question the convergence of VI algorithm. Starting by
     supposing q(θ|λ) factorizes (mean field assumption) to approximate ELBO integral using Monte-Carlo.
     All this causes that this algorithm is subjected to a high variance, and depending on the model, slow convergence.
     In order to reduce the variance that this method can cause some mechanisms have appeared:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>
         <strong>Rao-Blackwellization</strong>. This method reduces the variance of an aleatory variable replacing it
         by its conditional expectation with respect to a subset of variables.
@@ -142,53 +144,53 @@
         less variance.
     </li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     A positive aspect of this method is that it is not necessary to derive the analytical formulas used to update
     the variational parameters either analytical ELBO. This permits the access to these algorithms to people who have
     less statistical knowledge (as me). It exists another approximation called Automatic Differentiation Variational
     Inference (ADVI). This method also has these advantages and improves the convergence of unconjugated models
     that can be a challenge for the rest of VI variants.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Formerly with VI only conjugated models could be inferred since the unconjugated models didn't be easily derivable.
     The discovery of algorithms like ADVI and BBVI allowed the inference of this kind of models because they changed
     the analytical calculus for an approximate strategy.
 </p>
-<h4 class="mt-6 mb-2">Variational inference libraries</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Variational inference libraries</h4>
+<p class="post_p">
     Best-known libraries for the use of VI and Markov Chain Monte-Carlo (MCMC):
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>
-        <a href="http://edwardlib.org/" style="color: #feb72b" target="_blank">Edward</a>: It uses Tensorflow for gradients computations
+        <a href="http://edwardlib.org/" class="post_link" target="_blank">Edward</a>: It uses Tensorflow for gradients computations
         and has BBVI, reparameterization BBVI and Metropolis-Hastings implementations.
     </li>
     <li>
-        <a href="http://mc-stan.org/" style="color: #feb72b" target="_blank">Stan</a>: It uses C++ Automatic Differentiation
+        <a href="http://mc-stan.org/" class="post_link" target="_blank">Stan</a>: It uses C++ Automatic Differentiation
         reverse mode for gradients computation and has ADVI and HMC implementations.
     </li>
     <li>
-        <a href="https://github.com/pymc-devs/pymc3" style="color: #feb72b" target="_blank">PyMC3</a>: It uses Theano for gradient computations
+        <a href="https://github.com/pymc-devs/pymc3" class="post_link" target="_blank">PyMC3</a>: It uses Theano for gradient computations
         and has ADVI, Gibbs sampling and Metropolis-Hastings implementations.
     </li>
     <li>
-        <a href="https://www.tensorflow.org/versions/r0.12/api_docs/python/contrib.bayesflow.variational_inference/" style="color: #feb72b" target="_blank">Bayesflow</a>:
+        <a href="https://www.tensorflow.org/versions/r0.12/api_docs/python/contrib.bayesflow.variational_inference/" class="post_link" target="_blank">Bayesflow</a>:
         Young Google module for VI.
     </li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     If you want to learn more about Variational Inference and its uses in probabilistic models inference you can take
-    a look to my <a href="https://github.com/bertini36/GMM/blob/master/docs/doc.pdf" style="color: #feb72b" target="_blank">
+    a look to my <a href="https://github.com/bertini36/GMM/blob/master/docs/doc.pdf" class="post_link" target="_blank">
     master thesis</a>. It focuses on the use of automatic differentiation tools to apply Variational Inference into a
-    Gaussian Mixture Model (GMM). At the <a href="https://github.com/bertini36/GMM" style="color: #feb72b" target="_blank">repository</a> you can
+    Gaussian Mixture Model (GMM). At the <a href="https://github.com/bertini36/GMM" class="post_link" target="_blank">repository</a> you can
     find implementations of Gaussian Mixture Model with different technologies like
-    <a href="https://www.tensorflow.org/" style="color: #feb72b" target="_blank">Tensorflow</a>, Python,
-    <a href="https://github.com/blei-lab/edward" style="color: #feb72b" target="_blank">Edward</a>,
-    <a href="https://github.com/HIPS/autograd" style="color: #feb72b" target="_blank">Autograd</a>, ...
+    <a href="https://www.tensorflow.org/" class="post_link" target="_blank">Tensorflow</a>, Python,
+    <a href="https://github.com/blei-lab/edward" class="post_link" target="_blank">Edward</a>,
+    <a href="https://github.com/HIPS/autograd" class="post_link" target="_blank">Autograd</a>, ...
     And also other probabilistic models that helped me to learn.
 </p>
-<h4 class="mt-6 mb-2">References</h4>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">References</h4>
+<ul class="post_list">
     <li>
         Journal of the American Statistical AssociationGeorge
         (E. P. Box)
@@ -239,4 +241,4 @@
     </li>
 </ul>
 
-<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">11/05/2017</h5>
+<h5 class="post_date">11/05/2017</h5>
