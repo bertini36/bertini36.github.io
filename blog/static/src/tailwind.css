@@ -14,12 +14,12 @@ button {
     @apply bg-yellow text-white font-bold py-2 px-4 rounded;
 }
 
-.input_label_contact_form {
+.input_label {
     @apply block uppercase tracking-wide text-white text-xs font-bold;
 }
 
-.input_contact_form {
-   @apply appearance-none block w-full text-gray-700 border-2 border-black rounded py-3 px-4 leading-tight;
+.input {
+   @apply appearance-none block w-full text-gray-700 border-black rounded py-3 px-4 leading-tight;
 }
 
 .post_p {

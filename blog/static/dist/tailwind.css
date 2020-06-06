@@ -17203,7 +17203,7 @@ button {
   border-radius: 0.25rem;
 }
 
-.input_label_contact_form {
+.input_label {
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -17214,7 +17214,7 @@ button {
   font-weight: 700;
 }
 
-.input_contact_form {
+.input {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
@@ -17223,7 +17223,6 @@ button {
   --text-opacity: 1;
   color: #4a5568;
   color: rgba(74, 85, 104, var(--text-opacity));
-  border-width: 2px;
   --border-opacity: 1;
   border-color: #212121;
   border-color: rgba(33, 33, 33, var(--border-opacity));

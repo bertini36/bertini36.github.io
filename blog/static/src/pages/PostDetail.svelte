@@ -3,6 +3,7 @@
     import {onMount} from "svelte";
     import {selected_post} from "../stores.js";
     import * as requests from "../requests.js";
+    import Comments from "../components/Comments.svelte";
 
     onMount(async() => {
         window.scrollTo(0, 0);
@@ -52,6 +53,8 @@
             </div>
 
             {@html $selected_post.text}
+
+            <Comments/>
 
         {/if}
 

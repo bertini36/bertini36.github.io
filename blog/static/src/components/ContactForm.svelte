@@ -81,24 +81,24 @@
         </h3>
         <div class="flex flex-wrap mb-2">
             <div class="w-full">
-                <label class="input_label_contact_form">Name</label>
-                <input class="input_contact_form focus:outline-none focus:bg-white focus:border-yellow"
+                <label class="input_label">Name</label>
+                <input class="input border-2 focus:outline-none focus:bg-white focus:border-yellow"
                        type="text" placeholder="Name" bind:value={message_data.name}>
                 <p class="text-red-600 text-xs mt-2">{errors.name}</p>
             </div>
         </div>
         <div class="flex flex-wrap mb-2">
             <div class="w-full">
-                <label class="input_label_contact_form">Email</label>
-                <input class="input_contact_form focus:outline-none focus:bg-white focus:border-yellow"
+                <label class="input_label">Email</label>
+                <input class="input border-2 focus:outline-none focus:bg-white focus:border-yellow"
                        type="email" placeholder="Email" bind:value={message_data.email}>
                 <p class="text-red-600 text-xs mt-2">{errors.email}</p>
             </div>
         </div>
         <div class="flex flex-wrap mb-3">
             <div class="w-full">
-                <label class="input_label_contact_form">Message</label>
-                <textarea class="input_contact_form focus:outline-none focus:bg-white focus:border-yellow"
+                <label class="input_label">Message</label>
+                <textarea class="input border-2 focus:outline-none focus:bg-white focus:border-yellow"
                           placeholder="Message" bind:value={message_data.text} rows="5"></textarea>
                 <p class="text-red-600 text-xs mt-2">{errors.text}</p>
             </div>
