@@ -1,94 +1,94 @@
 {% load static %}
 
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Muchas veces, la creación de una plataforma o la realización de un estudio puede requerir información contenida en diferentes sitios web.
     Esta información suele ser accesible por los usuarios fácilmente. El problema aparece cuando se necesita una gran cantidad. En este caso,
     acceder página a página manualmente para obtener la información puede ser un trabajo muy laborioso.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     El web scraping consiste en automatizar la obtención de datos procedentes de páginas web. Se trata de programas (crawlers) que navegan
     de forma automática por las páginas y almacenan la información requerida.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Existen una gran cantidad de librerías y herramientas para hacer Web Scraping. Por ejemplo, para el lenguaje Python disponemos de la librería
-    <a href="http://scrapy.org/" style="color: #feb72b" target="_blank">Scrapy</a> y para Java tenemos <a href="http://htmlunit.sourceforge.net/" style="color: #feb72b" target="_blank">HTMLUnit</a>.
+    <a href="http://scrapy.org/" class="post_link" target="_blank">Scrapy</a> y para Java tenemos <a href="http://htmlunit.sourceforge.net/" class="post_link" target="_blank">HTMLUnit</a>.
     Estas librerías disponen de una sintaxis de selectores (tipo CSS o X-Path) que permiten la realización de consultas al DOM con el objetivo de acceder
     al contenido de etiquetas concretas del archivo HTML. No obstante, en este post no explicaré como obtener datos de forma convencional con
     estas herramientras, sino que me centraré en explicar el web scraping anónimo.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Uno de los principales problemas de solicitar mucha información a un servidor web es que éste puede identificar dicho procedimiento como un
-    <a href="https://es.wikipedia.org/wiki/Ataque_de_denegaci%C3%B3n_de_servicio" style="color: #feb72b" target="_blank">ataque DDoS</a>.
+    <a href="https://es.wikipedia.org/wiki/Ataque_de_denegaci%C3%B3n_de_servicio" class="post_link" target="_blank">ataque DDoS</a>.
     Estos ataques pueden detectarse mediante la identificación de las direcciones IPs de los equipos que realizan peticiones a un servidor.
     De esta manera, si el servidor identifica que una determinada dirección IP realiza una cantidad elevada de peticiones en un intérvalo muy reducido de tiempo
     se le deniega el acceso temporal o permanentemente. <br>
     A continuación explicaré dos formas de evitar que nos restrinjan el acceso a la información de un servidor.
 </p>
 
-<h4 class="mt-8 mb-2">1.- Servidores proxy</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title">1.- Servidores proxy</h4>
+<p class="post_p">
     Un servidor proxy es un intermediario entre el cliente y el servidor. El cliente realiza la petición al servidor proxy y éste, seguidamente, a la web
     objetivo. Así, la web, registra la dirección IP del servidor proxy y no la del cliente. Es decir, nuestra dirección IP queda enmascarada con la del servidor
     proxy.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full" src="{% static 'img/posts/anonymous_webscraping/proxy.jpg' %}" alt="Proxy flow">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <img class="post_image" src="{% static 'img/posts/anonymous_webscraping/proxy.jpg' %}" alt="Proxy flow">
+        <figcaption class="post_image_figcaption">
             Flujo de peticiones con un servidor proxy de intermediario
         </figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
-    En primer lugar elaboramos una lista de <a href="http://proxylist.hidemyass.com/" style="color: #feb72b" target="_blank">servidores proxy gratuitos</a> para que, cada vez que se nos deniegue el
+<p class="post_p">
+    En primer lugar elaboramos una lista de <a href="http://proxylist.hidemyass.com/" class="post_link" target="_blank">servidores proxy gratuitos</a> para que, cada vez que se nos deniegue el
     servicio por IP, el crawler utilice el siguiente servidor proxy de la lista para enmascarar nuestra dirección IP. <br>
-    A continuación se muestra un prototipo mediante Python y su librería <a href="http://docs.python-requests.org/en/latest/" style="color: #feb72b" target="_blank">requests</a>.
+    A continuación se muestra un prototipo mediante Python y su librería <a href="http://docs.python-requests.org/en/latest/" class="post_link" target="_blank">requests</a>.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/9f47f7cca3221603444d.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
-    Este código permite la descarga de diferentes archivos GPX de la página <a href="http://es.wikiloc.com/wikiloc/home.do" style="color: #feb72b" target="_blank">Wikiloc</a>.
+<div class="post_gist" gist="https://gist.github.com/bertini36/9f47f7cca3221603444d.js"></div>
+<p class="post_p">
+    Este código permite la descarga de diferentes archivos GPX de la página <a href="http://es.wikiloc.com/wikiloc/home.do" class="post_link" target="_blank">Wikiloc</a>.
     Para ello el script requiere de:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>Una lista de identificadores de las rutas a descargar.</li>
     <li>
         Una lista de usuarios de la plataforma Wikiloc (Wikiloc solo permite la descarga de los archivos GPX a sus usuarios).
     </li>
     <li>Una lista de servidores proxy.</li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     El crawler va descargando los diferentes archivos GPX de la lista. En el caso de tener problemas en la descarga de algún archivo,
     éste puede ser debido a un baneo por usuario o un baneo por IP.<br>
     En el caso de ser un baneo por usuario el crawler inicia sesión nuevamente en la plataforma con otro usuario. Por otro lado,
     si el baneo es por IP pasa a utilizar el siguiente proxy de la lista. <br>
 </p>
 
-<h4 class="mt-8 mb-2">2.- Utilizando la red Tor</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
-    <a href="https://www.torproject.org/" style="color: #feb72b" target="_blank">La red Tor</a> permite navegar por internet con total anonimato. Normalmente cuando te conectas
+<h4 class="post_section_title">2.- Utilizando la red Tor</h4>
+<p class="post_p">
+    <a href="https://www.torproject.org/" class="post_link" target="_blank">La red Tor</a> permite navegar por internet con total anonimato. Normalmente cuando te conectas
     a una página web la petición va directamente de tu sistema al servidor de la web. Tor basa su funcionamiento en un cifrado por capas. La petición circula por diferentes
     servidores y cada uno aporta una parte del cifrado total del contenido de la petición. Si quieres saber más sobre el funcionamiento de
-    esta red puedes visitar este <a href="http://www.genbeta.com/seguridad/como-funciona-la-red-tor" style="color: #feb72b" target="_blank">enlace</a>.
+    esta red puedes visitar este <a href="http://www.genbeta.com/seguridad/como-funciona-la-red-tor" class="post_link" target="_blank">enlace</a>.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     A continuación tenéis un pequeño programa en Python que utiliza la red Tor y la librería requests para realizar peticiones anónimas.
     Este script requiere la instalación de la red Tor, la librería requests y la librería pysocks. Pysocks proporciona una interfaz de sockets
     como estándar para realizar conexiones con Python. Requirements:
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Primero debes instalar Tor y las siguientes librerías de Python
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>sudo apt-get install tor</li>
     <li>pip install requests</li>
     <li>pip install pysocks</li>
 </ul>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/5d2ed0b921b379fef2f6.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/5d2ed0b921b379fef2f6.js"></div>
+<p class="post_p">
     Especificamos el puerto 9050 puesto que es con el que trabaja por defecto la red Tor.
     Si ejecutamos este programa veremos que la IP pública que nos detecta no es la misma que si accedemos a la web
-    <a href="http://www.vermiip.es/" style="color: #feb72b" target="_blank">vermiip</a> desde nuestro navegador. De esta forma conseguimos que el servidor
+    <a href="http://www.vermiip.es/" class="post_link" target="_blank">vermiip</a> desde nuestro navegador. De esta forma conseguimos que el servidor
     no pueda saber desde dónde ni quién esta realizando la petición.
 </p>
 
-<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">20/09/2015</h5>
+<h5 class="post_date">20/09/2015</h5>

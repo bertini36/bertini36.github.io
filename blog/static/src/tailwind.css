@@ -42,8 +42,16 @@ button {
     @apply mb-6 mt-6;
 }
 
+.post_list {
+    @apply list-disc px-6 text-md text-gray-900 leading-relaxed mt-4;
+}
+
 .post_date {
     @apply mt-10 mb-10 text-center text-base text-yellow;
+}
+
+.post_section_title {
+    @apply mt-8 mb-2;
 }
 
 .post_link {

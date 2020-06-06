@@ -17268,6 +17268,9 @@ button {
   margin-top: 1.5rem;
 }
 
+.post_list {
+}
+
 .post_date {
   margin-top: 2.5rem;
   margin-bottom: 2.5rem;
@@ -17276,6 +17279,11 @@ button {
   --text-opacity: 1;
   color: #FD9010;
   color: rgba(253, 144, 16, var(--text-opacity));
+}
+
+.post_section_title {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .post_link {
