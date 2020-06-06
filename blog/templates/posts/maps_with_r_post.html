@@ -1,44 +1,44 @@
 {% load static %}
 
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     En este post voy a introducir la representación de información geográfica con el lenguaje
-    <a href="https://www.r-project.org/" style="color: #feb72b" target="_blank">R</a>.
+    <a href="https://www.r-project.org/" class="post_link" target="_blank">R</a>.
     R es un avanzado sistema de computación estadística con gráficos que se encuentra
     disponible gratuitamente para la mayoría de plataformas. <br>
     Gracias al bum que se esta viviendo actualmente con la
-    <a href="https://es.wikipedia.org/wiki/Miner%C3%ADa_de_datos" style="color: #feb72b" target="_blank">minería de datos</a>, el lenguaje R ha cobrado
+    <a href="https://es.wikipedia.org/wiki/Miner%C3%ADa_de_datos" class="post_link" target="_blank">minería de datos</a>, el lenguaje R ha cobrado
     mucha fuerza y es una de las mejores alternativas para la realización de esta práctica. En este
     post lo utilizaré para generar diferentes tipos de mapas para la representación de información
     geográfica. <br>
     La información geográfica de la que disponía para representar en los mapas estaba en formato GPX.
 </p>
-<h4 class="mt-6 mb-2">Mapa de Google</h4>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/f2d7adf92acd767591bb.js"></div>
-<div class="mx-auto md:px-56 mb-6 mt-6">
+<h4 class="post_section_title text-2xl text-bold">Mapa de Google</h4>
+<div class="post_gist" gist="https://gist.github.com/bertini36/f2d7adf92acd767591bb.js"></div>
+<div class="post_image_div md:px-56">
     <figure>
-        <img class="w-full h-full" src="{% static 'img/posts/maps_with_r/mapa_google.png' %}" alt="Google map representation">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <img class="post_image" src="{% static 'img/posts/maps_with_r/mapa_google.png' %}" alt="Google map representation">
+        <figcaption class="post_image_figcaption">
             Representación de la información geográfica sobre un mapa de Google
         </figcaption>
     </figure>
 </div>
-<h4 class="mt-6 mb-2">Mapa de colisiones</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Mapa de colisiones</h4>
+<p class="post_p">
     Una forma de visualizar la colisión de puntos puede ser oscureciéndolos. En este mapa se pueden
     apreciar fácilmente las rutas más transitadas. Además la información no esta representada
     sobre un mapa sino que es la propia información la que genera la silueta de la isla de Mallorca.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/18daed8d2e15b257b7e4.js"></div>
-<div class="mx-auto md:px-48 mb-6 mt-6">
+<div class="post_gist" gist="https://gist.github.com/bertini36/18daed8d2e15b257b7e4.js"></div>
+<div class="post_image_div md:px-48">
     <figure>
-        <img class="w-full h-full" src="{% static 'img/posts/maps_with_r/mapa_rutas.png' %}" alt="Colision representation" style="width: 500px">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <img class="post_image" src="{% static 'img/posts/maps_with_r/mapa_rutas.png' %}" alt="Colision representation" style="width: 500px">
+        <figcaption class="post_image_figcaption">
             Representación de colisiones en la información geográfica
         </figcaption>
     </figure>
 </div>
-<h4 class="mt-6 mb-2">Mapa de calor</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Mapa de calor</h4>
+<p class="post_p">
     Cuando se dispone de una gran cantidad de puntos, mostrar cada entidad de forma individual
     a menudo no es útil. En este escenario, los puntos a menudo se superponen, lo que hace difícil
     distinguirlos. Incluso cuando no se superponen, normalmente es difícil o imposible extraer
@@ -46,12 +46,12 @@
     de calor. Un mapa de calor representa la densidad geográfica de puntos de un mapa utilizando
     áreas de color para representar los puntos.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/ff7733a29453db905f85.js"></div>
-<div class="mx-auto md:px-64 mb-6 mt-6">
+<div class="post_gist" gist="https://gist.github.com/bertini36/ff7733a29453db905f85.js"></div>
+<div class="post_image_div md:px-64">
     <figure>
-        <img class="w-full h-full" src="{% static 'img/posts/maps_with_r/mapa_calor.png' %}" alt="Hot map">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">Mapa de calor</figcaption>
+        <img class="post_image" src="{% static 'img/posts/maps_with_r/mapa_calor.png' %}" alt="Hot map">
+        <figcaption class="post_image_figcaption">Mapa de calor</figcaption>
     </figure>
 </div>
 
-<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">Fecha: 24/10/2015</h5>
+<h5 class="post_date">Fecha: 24/10/2015</h5>
