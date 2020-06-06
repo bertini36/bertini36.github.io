@@ -27,6 +27,7 @@
     });
 
     async function send_message() {
+        reset_errors();
         if (grecaptcha) {
             try {
                 message_data["captcha"] = grecaptcha.getResponse();
@@ -36,7 +37,7 @@
         if (response.error) {
             show_errors(response.data);
         } else {
-            utils.show_notification("success", "Message sent");
+            utils.show_notification("success", "Message sent! I will reply it as soon as possible");
             location.hash = "";
             reset_form();
             reset_errors();
@@ -78,8 +79,32 @@
         <h3 class="text-xl text-center text-white font-hairline mb-10">
             Send me a message for any questions
         </h3>
-        <div class="g-recaptcha pb-4" data-sitekey="{RECAPTCHA_SITE_KEY}"></div>
-        <button on:click={send_message} class="w-full hover:bg-light_yellow mt-8">Send</button>
+        <div class="flex flex-wrap mb-2">
+            <div class="w-full">
+                <label class="input_label_contact_form">Name</label>
+                <input class="input_contact_form focus:outline-none focus:bg-white focus:border-yellow"
+                       type="text" placeholder="Name" bind:value={message_data.name}>
+                <p class="text-red-600 text-xs mt-2">{errors.name}</p>
+            </div>
+        </div>
+        <div class="flex flex-wrap mb-2">
+            <div class="w-full">
+                <label class="input_label_contact_form">Email</label>
+                <input class="input_contact_form focus:outline-none focus:bg-white focus:border-yellow"
+                       type="email" placeholder="Email" bind:value={message_data.email}>
+                <p class="text-red-600 text-xs mt-2">{errors.email}</p>
+            </div>
+        </div>
+        <div class="flex flex-wrap mb-3">
+            <div class="w-full">
+                <label class="input_label_contact_form">Message</label>
+                <textarea class="input_contact_form focus:outline-none focus:bg-white focus:border-yellow"
+                          placeholder="Message" bind:value={message_data.text} rows="5"></textarea>
+                <p class="text-red-600 text-xs mt-2">{errors.text}</p>
+            </div>
+        </div>
+        <div class="g-recaptcha pb-2 mb-3" data-sitekey="{RECAPTCHA_SITE_KEY}"></div>
+        <button on:click={send_message} class="w-full hover:bg-light_yellow focus:outline-none">Send</button>
     </div>
 </section>
 
