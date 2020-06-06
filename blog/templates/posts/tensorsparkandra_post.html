@@ -1,6 +1,6 @@
 {% load static %}
 
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     En el mundo de la informática
     están apareciendo constantemente nuevas tecnologías. Muchas de
     ellas suelen ser de código libre
@@ -10,26 +10,26 @@
     un pequeño ejemplo de integración de tecnologías
     que desarrollé con mi amigo
     <a href="https://es.linkedin.com/in/francesc-sastre-cabot-5723587a"
-       style="color: #feb72b" target="_blank">Xisco Sastre</a> para la
+       class="post_link" target="_blank">Xisco Sastre</a> para la
     asignatura de Cloud Computing.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     En esta aplicación decidimos integrar 3
     tecnologías que actualmente están teniendo
     bastante impacto:
     <a href="https://www.tensorflow.org/"
-       style="color: #feb72b" target="_blank">Tensorflow</a>,
+       class="post_link" target="_blank">Tensorflow</a>,
     <a href="http://spark.apache.org/"
-       style="color: #feb72b" target="_blank">Spark</a>
+       class="post_link" target="_blank">Spark</a>
     y <a href="http://cassandra.apache.org/"
-         style="color: #feb72b" target="_blank">Cassandra</a>. En primer
+         class="post_link" target="_blank">Cassandra</a>. En primer
     lugar haré una breve explicación
     de cada una de estas tecnologías para luego
     explicar con más detalle la aplicación que
     desarrollamos.
 </p>
-<h4 class="mt-6 mb-2">Tensorflow</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Tensorflow</h4>
+<p class="post_p">
 Se trata de una librería de código abierto para
 computación numérica mediante la utilización de
 grafos de flujo. Antes de la
@@ -46,7 +46,7 @@ transparente al programador, Tensorflow paraleliza
 todo lo que puede entre los recursos de los que
 disponga.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     La librería dispone de implementaciones de
     diversos algoritmos analíticos (clustering,
     clasificación, optimización, ...) y,
@@ -62,17 +62,17 @@ disponga.
     aplicaciones es el reconocimiento de imágenes
     mediante redes neuronales convulacionales.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/tensorsparkandra/classification.gif' %}"
              alt="Clasificación mediante una red neuronal">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <figcaption class="post_image_figcaption">
             Clasificación mediante una red neuronal
         </figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Entrenar una red neuronal es un proceso costoso.
     Una red neuronal más o menos simple ya puede
     contener varios miles de hiperparámetros
@@ -91,30 +91,30 @@ disponga.
     convulacional (el último modelo de red diseñado
     por Google es Inception-v3) y entrenado con el
     dataset de
-    <a href="http://image-net.org/" style="color: #feb72b" target="_blank">Imagenet</a>.
+    <a href="http://image-net.org/" class="post_link" target="_blank">Imagenet</a>.
     Este clasificador lo podéis encontrar
     <a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/models/image/imagenet/classify_image.py"
-       style="color: #feb72b" target="_blank">aquí</a>.
+       class="post_link" target="_blank">aquí</a>.
     Para utilizarlo simplemente se tiene que
     ejecutar el siguiente comando en un entorno
     virtual con Tensorflow y todas sus dependencias:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>python classify_image.py --image_file="path"</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     La salida será un conjunto de clases con un peso
     asociado a cada una, el cual representa la
     probabilidad de pertenencia de
     la imagen a dicha clase.
 </p>
-<h4 class="mt-6 mb-2">Spark</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Spark</h4>
+<p class="post_p">
     Apache Spark es un sistema para la computación de
     datos distribuida. Es el siguiente paso al modelo de
     programación
     <a href="https://en.wikipedia.org/wiki/MapReduce"
-       style="color: #feb72b" target="_blank">MapReduce</a>. Con una sintaxi
+       class="post_link" target="_blank">MapReduce</a>. Con una sintaxi
     sencilla permite la distribución y
     computación de un dataset en un cluster. Spark
     intenta mantener la escalabilidad lineal (si la cantidad de
@@ -127,17 +127,17 @@ disponga.
     Spark no necesita pasar el resultado entre etapas a
     disco sino que lo mantiene en memoria.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/tensorsparkandra/sparkmodules.png' %}"
              alt="Módulos de Spark">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <figcaption class="post_image_figcaption">
             Módulos de Spark
         </figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Spark representa los datasets en una estructura
     llamada RDD (Resilient Distributed Dataset).
     Esta estructura
@@ -148,7 +148,7 @@ disponga.
     podemos realizar sobre los datos (RDDs) tenemos
     de dos tipos:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>
         <strong>Transformaciones: </strong> Dado un
         RDD de entrada obtenemos un RDD de salida.
@@ -161,27 +161,27 @@ disponga.
         ...
     </li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     En el desarrollo de la aplicación utilizamos el
     módulo Spark Streaming para realizar streaming a
     Twitter.
 </p>
 <h5>Cassandra</h5>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Cassandra es un sistema NoSQL distribuido y
     preparado para el Big Data creado por Facebook.
     Forma parte de la familia de NoSQL de bases
     de datos basadas en columnas. Se podría considerar una fusión
     del
     <a href="https://aws.amazon.com/es/documentation/dynamodb/"
-       style="color: #feb72b" target="_blank">Dynamo</a> de Amazon con el
+       class="post_link" target="_blank">Dynamo</a> de Amazon con el
     <a href="https://cloud.google.com/bigtable/?utm_source=google&utm_medium=cpc&utm_campaign=2015-q2-cloud-emea-bigdata-bkws-freetrial-en&gclid=CjwKEAjw7qi7BRCvsr3N58GvsTkSJAA3UzLvao8a6vtVPj5Gn_gEMstqFLyowyChD6cRG1C1hzRfcxoCfQfw_wcB"
-       style="color: #feb72b" target="_blank">BigTable</a>
+       class="post_link" target="_blank">BigTable</a>
     de Google. De Dynamo adquirieron la consistencia
     eventual y de BigTable su estructuración de los
     datos en columnas.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Las bases de datos se pueden situar con respecto
     a 3 ejes: consistencia, escalabilidad y
     disponibilidad de los datos.
@@ -196,17 +196,17 @@ disponga.
     fácilmente los datos junto a una alta
     disponibilidad de éstos.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/tensorsparkandra/esquemaBDs.GIF' %}"
              alt="Esquema bases de datos">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <figcaption class="post_image_figcaptionm">
             Esquema bases de datos
         </figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Cassandra fue diseñado para manejar grandes
     cantidades de información a través de múltiples
     nodos. Su arquitectura
@@ -225,7 +225,7 @@ disponga.
     deben realizar las escrituras, sobre cuántos las
     lecturas y el nivel de replicación.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     La información se indexa y almacena en memoria
     pero cuando ésta se llena se pasa a almacenar en
     disco. Todas las escrituras
@@ -243,18 +243,18 @@ disponga.
     la primary key, de la configuración
     del cluster y de la estrategia de replicación.
 </p>
-<div class="mx-auto md:px-40 mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/tensorsparkandra/cassandraRequest.jpg' %}"
              alt="Esquema bases de datos">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <figcaption class="post_image_figcaption">
             Esquema de petición
         </figcaption>
     </figure>
 </div>
-<h4 class="mt-6 mb-2">Configuración del cluster</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Configuración del cluster</h4>
+<p class="post_p">
     Decidimos utilizar estas 3 tecnologías para
     implementar una aplicación que dado un hashtag de
     Twitter monitorizara toda la subida
@@ -265,31 +265,31 @@ disponga.
     Todo esto distribuyendo toda la información en un
     cluster con Spark y Cassandra.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     El cluster lo configuramos en <a
         href="https://www.digitalocean.com/?refcode=98b3c0c5a987"
-        style="color: #feb72b" target="_blank">Digital Ocean</a>.
+        class="post_link" target="_blank">Digital Ocean</a>.
     Los nodos de Cassandra los creamos en base a
     <a href="https://www.digitalocean.com/community/tutorials/how-to-use-digitalocean-snapshots-to-automatically-backup-your-droplets"
-       style="color: #feb72b" target="_blank">snapshots</a>
+       class="post_link" target="_blank">snapshots</a>
     de los que ya dispone Digital Ocean. La
     instalación de Spark en los nodos del cluster la
     realizamos siguiendo las instrucciones de este
     <a href="http://blog.insightdatalabs.com/spark-cluster-step-by-step/"
-       style="color: #feb72b" target="_blank">tutorial</a>.
+       class="post_link" target="_blank">tutorial</a>.
 </p>
-<h4 class="mt-6 mb-2">Estructura de la aplicación</h4>
-<div class="mx-auto md:md:px-40 mb-6 mt-6">
+<h4 class="post_section_title text-2xl text-bold">Estructura de la aplicación</h4>
+<div class="post_image_div md:md:px-40">
     <figure>
-        <img class="w-full h-full"
+        <img class="post_image"
              src="{% static 'img/posts/tensorsparkandra/structure.png' %}"
              alt="Estructura de la aplicación">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <figcaption class="post_image_figcaption">
             Estructura de la aplicación
         </figcaption>
     </figure>
 </div>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>Conexión a Twitter LiveStream filtrando los
         tweets por hashtag.
     </li>
@@ -298,7 +298,7 @@ disponga.
     </li>
     <li>
         Para cada trozo:
-        <ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+        <ul class="post_list">
             <li>Filtramos los tweets que tienen
                 imágenes.
             </li>
@@ -318,20 +318,20 @@ disponga.
         Finalmente implementamos una pequeña
         aplicación web mediante el framework
         <a href="https://www.djangoproject.com/"
-           style="color: #feb72b" target="_blank">Django</a> para poder ver
+           class="post_link" target="_blank">Django</a> para poder ver
         fácilmente los resultados en tiempo real.
     </li>
 </ul>
-<h4 class="mt-6 mb-2">Código principal de la aplicación</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Código principal de la aplicación</h4>
+<p class="post_p">
     Para la implementación de la aplicación se decidió
     utilizar el lenguaje
     <a href="http://www.scala-lang.org/"
-       style="color: #feb72b" target="_blank">Scala</a> puesto que dispone de
+       class="post_link" target="_blank">Scala</a> puesto que dispone de
     las librerías de Spark y Twitter que necesitábamos.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/50b4302c5ec4a06707c50bbd35712487.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/50b4302c5ec4a06707c50bbd35712487.js"></div>
+<p class="post_p">
     Esta aplicación se desarrolló como un simple
     ejemplo de integración con el objetivo de
     demostrar que
@@ -342,7 +342,7 @@ disponga.
 </p>
 <p class="text-md text-gray-900 leading-relaxed mt-4 text-center">
     <a href="https://github.com/bertini36/tensorsparkandra"
-       style="color: #feb72b" target="_blank">Código completo</a>
+       class="post_link" target="_blank">Código completo</a>
 </p>
 
-<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">12/09/2016</h5>
+<h5 class="post_date">12/09/2016</h5>
