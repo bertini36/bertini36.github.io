@@ -74,13 +74,13 @@
     <div class="flex-grow"></div>
     <div class="y-0 h-full items-center relative mx-auto z-20 flex">
         <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight"
-           class:border-b-2="{section === '#posts'}" href="#posts">
+           class:border-b-4="{section === '#posts'}" href="#posts">
             <div class="flex flex-col items-center content-center text-base">
                 Posts
             </div>
         </a>
         <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight"
-           class:border-b-2="{section === '#contact'}" href="#contact">
+           class:border-b-4="{section === '#contact'}" href="#contact">
             <div class="flex flex-col items-center content-center text-base">
                 Contact
             </div>
