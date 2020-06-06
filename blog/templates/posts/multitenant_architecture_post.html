@@ -1,6 +1,6 @@
 {% load static %}
 
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     En algunas ocasiones la naturaleza de la aplicación nos obliga a definir una arquitectura
     en la que cada usuario debe disponer únicamente de sus propios datos. Son aplicaciones
     multi-propietario donde cada usuario sólo tiene accesibilidad y permisos para modificar
@@ -8,11 +8,11 @@
     En esta arquitectura software se ejecuta una única instancia del software en un servidor
     y al servicio de múltiples clientes. Es lo que se conoce como SAAS (Software As A Service).
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Uno de los pilares de este tipo de arquitectura por tanto es la partición de los datos y
     se conocen 3 enfoques diferentes para solventarlo:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li>
         <strong>Bases de datos separadas</strong>.
         Con este enfoque cada usuario dispone de su propia base de datos.
@@ -21,7 +21,7 @@
         <strong>Base de datos compartida, esquemas separados</strong>.
         Cada usuario dispone de un esquema propio (conjunto de tablas) donde se almacenan únicamente sus datos pero todos
         dentro de la misma base de datos. Si quieres saber más sobre los esquemas de base de datos puedes leerlo de
-        la web de <a href="http://www.postgresql.org/docs/9.1/static/ddl-schemas.html" style="color: #feb72b" target="_blank"><i>PostgreSQL</i></a>.
+        la web de <a href="http://www.postgresql.org/docs/9.1/static/ddl-schemas.html" class="post_link" target="_blank"><i>PostgreSQL</i></a>.
     </li>
     <li>
         <strong>Base de datos compartida</strong>.
@@ -29,14 +29,14 @@
         de una clave foranea hacia la tabla de usuarios para poder identificar al dueño de cada instancia.
     </li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     No es el objetivo de este post debatir cual es la mejor opción puesto que depende mucho del
     servicio a ofrecer y la aplicación. En este post explicaré una forma de implementar la segunda
-    opción mediante <a href="https://www.djangoproject.com/" style="color: #feb72b" target="_blank"><i>Django</i></a>,
-    <a href="http://www.postgresql.org.es/" style="color: #feb72b" target="_blank"><i>PostgreSQL</i></a>
-    y la aplicación <a href="https://github.com/bernardopires/django-tenant-schemas" style="color: #feb72b" target="_blank"><i>Django Tenant Schemas</i></a>.
+    opción mediante <a href="https://www.djangoproject.com/" class="post_link" target="_blank"><i>Django</i></a>,
+    <a href="http://www.postgresql.org.es/" class="post_link" target="_blank"><i>PostgreSQL</i></a>
+    y la aplicación <a href="https://github.com/bernardopires/django-tenant-schemas" class="post_link" target="_blank"><i>Django Tenant Schemas</i></a>.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     En una arquitectura multitenant basada en esquemas se dispone en primer lugar de un esquema <i>public</i>,
     este esquema dispone de la funcionalidad común para todos los clientes, como por ejemplo: la
     gestión de altas. Por otro lado, se dispone de un esquema independiente para cada cliente.
@@ -44,220 +44,214 @@
     en la base de datos con las tablas necesarias para que el usuario pueda hacer uso de su aplicación.
     Gracias a los esquemas tenemos una independencia total de los datos de cada cliente.
 </p>
-<h4 class="mt-6 mb-2">Creación del proyecto</h4>
+<h4 class="post_section_title text-2xl text-bold">Creación del proyecto</h4>
 <div class="alert alert-warning">
      Este tutorial se realiza sobre un ordenador con sistema operativo <strong>Ubuntu 14.04</strong>.
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
-    Antes de crear el proyecto <i>Django</i> es necesario tener instalado <a href="https://pypi.python.org/pypi/pip" style="color: #feb72b" target="_blank"><i>pip</i></a>,
-    <a href="https://virtualenv.readthedocs.org/en/latest/" style="color: #feb72b" target="_blank"><i>virtualenv</i></a> y
-    <a href="https://virtualenvwrapper.readthedocs.org/en/latest/" style="color: #feb72b" target="_blank"><i>virtualenvwrapper</i></a>.
+<p class="post_p">
+    Antes de crear el proyecto <i>Django</i> es necesario tener instalado <a href="https://pypi.python.org/pypi/pip" class="post_link" target="_blank"><i>pip</i></a>,
+    <a href="https://virtualenv.readthedocs.org/en/latest/" class="post_link" target="_blank"><i>virtualenv</i></a> y
+    <a href="https://virtualenvwrapper.readthedocs.org/en/latest/" class="post_link" target="_blank"><i>virtualenvwrapper</i></a>.
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>sudo apt-get install python-pip</code></li>
     <li><code>pip install virtualenv</code></li>
     <li><code>pip install virtualenvwrapper</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Virtualenv y virtualenvwrapper nos permitirán gestionar entornos virtuales de <i>Python</i> fácilmente.
     Definición del directorio donde se almacenarán nuestros entornos virtuales:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>export WORKON_HOME=~/.virtualenvs/</code></li>
     <li><code>source $HOME/.local/bin/virtualenvwrapper.sh</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Ahora ya podemos empezar con la creación del proyecto <i>Django</i>.
     Creación del entorno virtual:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>mkvirtualenv multitenancy</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Una vez dentro del entorno virtual instalamos la versión LTS de <i>Django</i> (1.8) y el módulo de <i>Python</i>
-    necesario para interaccionar con bases de datos <i>PostgreSQL</i>: <a href="https://pypi.python.org/pypi/psycopg2" style="color: #feb72b" target="_blank"><i>psycopg2</i></a>.
+    necesario para interaccionar con bases de datos <i>PostgreSQL</i>: <a href="https://pypi.python.org/pypi/psycopg2" class="post_link" target="_blank"><i>psycopg2</i></a>.
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>pip install Django==1.8</code></li>
     <li><code>pip install psycopg2</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Inicialización del proyecto <i>Django</i>:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>django-admin startproject multitenancy</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Instalación de la aplicación <i>Django Tenant Schemas</i>:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>pip install django-tenant-schemas</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
-    En su <a href="http://django-tenant-schemas.readthedocs.org/en/latest/install.html" style="color: #feb72b" target="_blank">web</a>
+<p class="post_p">
+    En su <a href="http://django-tenant-schemas.readthedocs.org/en/latest/install.html" class="post_link" target="_blank">web</a>
     explica paso a paso las lineas que debemos añadir a nuestro fichero de configuración de <i>Django</i> (<i>settings.py</i>).
     De toda la configuración de esta aplicación cabe destacar las variables <i>SHARED_APPS</i>, <i>TENANT_APPS</i> y <i>TENANT_MODEL</i>.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/b6b5f4908f2064698e73.js"></div>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/b6b5f4908f2064698e73.js"></div>
+<ul class="post_list">
     <li>
-        <p class="text-md text-gray-900 leading-relaxed mt-4">
-            En <i>SHARED_APPS</i> se deben especificar las aplicaciones comunes para todos los
-            clientes, es decir, las aplicaciones cuyas tablas se crearán en el esquema <i>public</i> de la base de datos.
-        </p>
+        En <i>SHARED_APPS</i> se deben especificar las aplicaciones comunes para todos los
+        clientes, es decir, las aplicaciones cuyas tablas se crearán en el esquema <i>public</i> de la base de datos.
     </li>
     <li>
-        <p class="text-md text-gray-900 leading-relaxed mt-4">
-            En <i>TENANT_APPS</i> se especifican las aplicaciones propias de cada tenant, es decir,
-            de las que cada cliente tiene una instancia propia.
-        </p>
+        En <i>TENANT_APPS</i> se especifican las aplicaciones propias de cada tenant, es decir,
+        de las que cada cliente tiene una instancia propia.
     </li>
     <li>
-        <p class="text-md text-gray-900 leading-relaxed mt-4">
-            <i>TENANT_MODEL</i> es el modelo asociado a las instancias tenant, cuando se realize la creación
-            de una instancia de este modelo se creará automáticamente el esquema en base de datos y sus respectivas tablas.
-        </p>
+        <i>TENANT_MODEL</i> es el modelo asociado a las instancias tenant, cuando se realize la creación
+        de una instancia de este modelo se creará automáticamente el esquema en base de datos y sus respectivas tablas.
     </li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     En este ejemplo crearé una aplicación asociada al esquema <i>public</i> de la base de datos
     que se encargará de gestionar la creación de tenants y otra propia para cada tenant que consistirá
-    en una agenda de contactos con su propia <a href="https://es.wikipedia.org/wiki/Representational_State_Transfer" style="color: #feb72b" target="_blank"><i>API REST</i></a>.
+    en una agenda de contactos con su propia <a href="https://es.wikipedia.org/wiki/Representational_State_Transfer" class="post_link" target="_blank"><i>API REST</i></a>.
 </p>
-<h4 class="mt-6 mb-2">1.- Creación de la aplicación para la gestión de tenants</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Creación de la aplicación para la gestión de tenants</h4>
+<p class="post_p">
     Creación de la aplicación <i>customers</i>, la cual gestionará la creación de tenants:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>python manage.py startapp customers</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Codificación del modelo (en <i>customers/models.py</i>) que asociaremos a la variable <i>TENANT_MODEL</i> del fichero <i>settings.py</i>.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/a0ecd888efc70283a97e.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/a0ecd888efc70283a97e.js"></div>
+<p class="post_p">
     Después hay que añadir esta aplicación a la variable <i>SHARED_APPS</i> del archivo <i>settings.py</i> puesto
     que se trata de una aplicación común para todos los tenants. <br>
     Creación de las tablas de la aplicación <i>customers</i> en el esquema <i>public</i> de la base de datos.
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>python manage.py makemigrations customers</code></li>
     <li><code>python manage.py migrate_schemas</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Creación de una instancia <i>Client</i> asociada al esquema <i>public</i> de la base de datos:
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/df58f5f935e98c508050.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/df58f5f935e98c508050.js"></div>
+<p class="post_p">
     El atributo <i>domain_url</i> es un atributo heredado de la clase <i>TenantMixin</i> e indica
     la URL de acceso al tenant. Para poder utilizar subdominios en local utilizaremos el programa
     <i>dnsmasq</i> y lo configuraremos para que cuando se acceda a una URL que contenga "saas.com"
     haga una redirección a nuestra máquina local.
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>sudo apt-get install dnsmasq</code></li>
     <li><code>sudo nano /etc/dnsmasq.conf --> Añadir --> address=/saas.com/127.0.0.1</code></li>
     <li><code>sudo service dnsmasq restart</code></li>
 </ul>
-<h4 class="mt-6 mb-2">2.- Creación de la aplicación para la agenda propia de cada cliente</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
-    Para la creación de las <i>API REST</i> utilizaremos la aplicación <a href="http://www.django-rest-framework.org/" style="color: #feb72b" target="_blank"><i>Django Rest Framework</i></a>.
+<h4 class="post_section_title text-2xl text-bold">Creación de la aplicación para la agenda propia de cada cliente</h4>
+<p class="post_p">
+    Para la creación de las <i>API REST</i> utilizaremos la aplicación <a href="http://www.django-rest-framework.org/" class="post_link" target="_blank"><i>Django Rest Framework</i></a>.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Instalación de <i>Django Rest Framework</i>:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>pip install djangorestframework</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Creación de la aplicación agenda:
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>python manage.py startapp contacts</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Implementación del modelo <i>Contact</i> en el fichero <i>contacts/models.py</i>.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/b801631ee223c39e3e94.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/b801631ee223c39e3e94.js"></div>
+<p class="post_p">
     Creación de la vista de la <i>API REST</i>.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/3bcaef3bbe3eb4c5dd33.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/3bcaef3bbe3eb4c5dd33.js"></div>
+<p class="post_p">
     Añadimos el nombre de la aplicación (<i>contacts</i>) a la variable <i>TENANT_APPS</i>
     del archivo <i>settings.py</i> puesto que se trata de una aplicación propia para cada tenant. <br>
     Creación de las tablas en la base de datos asociadas a la aplicación <i>contacts</i>.
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>python manage.py makemigrations customers</code></li>
     <li><code>python manage.py migrate_schemas</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Finalmente ya podemos crear tenants propios para los clientes de la siguiente manera:
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/572aff02516670344319.js"></div>
+<div class="post_gist" gist="https://gist.github.com/bertini36/572aff02516670344319.js"></div>
 
-<div class="mx-auto md:px-40  mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full" src="{% static 'img/posts/multitenant_architecture/crear_tenant.png' %}" alt="Crear tenant">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <img class="post_image" src="{% static 'img/posts/multitenant_architecture/crear_tenant.png' %}" alt="Crear tenant">
+        <figcaption class="post_image_figcaption">
             Creación de un esquema
         </figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Cabe recalcar que el nombre de un tenant debe ser único. De no se así se sobrescribe el esquema con
     el mismo nombre. Es aconsejable la utilización de un <i>hash</i> para crear el nombre del tenant.
     También podemos acceder a la <i>API REST</i> de un tenant determinado (tenant2.saas.com):
 </p>
-<div class="mx-auto mb-6 mt-6">
+<div class="post_image_div">
     <figure>
-        <img class="w-full h-full" src="{% static 'img/posts/multitenant_architecture/restframework.png' %}" alt="API REST tenant" style="width: 80%">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <img class="post_image" src="{% static 'img/posts/multitenant_architecture/restframework.png' %}" alt="API REST tenant" style="width: 80%">
+        <figcaption class="post_image_figcaption">
             <i>API REST</i> de un tenant concreto
         </figcaption>
     </figure>
 </div>
-<div class="mx-auto md:px-40  mb-6 mt-6">
+<div class="post_image_div md:px-40">
     <figure>
-        <img class="w-full h-full" src="{% static 'img/posts/multitenant_architecture/pgadmin.png' %}" alt="pgAdmin">
-        <figcaption class="text-center text-gray-900 leading-relaxed text-sm">
+        <img class="post_image" src="{% static 'img/posts/multitenant_architecture/pgadmin.png' %}" alt="pgAdmin">
+        <figcaption class="post_image_figcaption">
             Visualización de la base de datos mediante <i>pgAdmin</i>
         </figcaption>
     </figure>
 </div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Como se ve en la imagen nuestra base de datos dispone de 3 esquemas: el esquema <i>public</i> y
     2 esquemas de clientes. Si accedemos a las tablas de cada esquema veremos que el esquema <i>public</i>
     tiene las tablas asociadas a las aplicaciones especificadas en la variable <i>SHARED_APPS</i> del
     fichero <i>settings.py</i>, mientras que los otros dos tienen las tablas asociadas a las aplicaciones
     especificadas en la variable <i>TENANT_APPS</i>.
 </p>
-<h4 class="mt-6 mb-2">Utilidades para los tenants</h4>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<h4 class="post_section_title text-2xl text-bold">Utilidades para los tenants</h4>
+<p class="post_p">
     Otra aspecto útil es el de conectarse a un tenant determinado desde <i>Python</i>. Para ello se hace
     uso de la librería <i>connection</i> de <i>Django</i>.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/05f4129ce3fc549450bd.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/05f4129ce3fc549450bd.js"></div>
+<p class="post_p">
     Además otra de las ventajas de los esquemas es su facilidad para importar y exportar uno concreto,
     de forma que no es necesario hacer dumps o restores de la base de datos al completo.
 </p>
-<ul class="list-disc px-6 text-md text-gray-900 leading-relaxed mt-4">
+<ul class="post_list">
     <li><code>pg_dump -f tenant.tar -h host -p port -U user --format=t --schema=schema_name db_name</code></li>
     <li><code>pg_restore tenant.tar -d db_name -h host -p port -U user</code></li>
 </ul>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Uno de los problemas de <i>Django Tenant Schemas</i> es su secuencialidad a la hora de realizar
     la migración de los esquemas. Si la plataforma dispone de una cantidad elevada de tenants el tiempo
     de migración se eleva considerablemente. <br>
     Una solución a este problema es paralelizar la migración de los tenants. Para ello podemos crear
-    un comando que utilizando los <a href="http://docs.celeryproject.org/en/2.3/reference/celery.task.sets.html" style="color: #feb72b" target="_blank">task sets</a>
-    de <a href="http://www.celeryproject.org/" style="color: #feb72b" target="_blank">Celery</a> ejecute concurrentemente
+    un comando que utilizando los <a href="http://docs.celeryproject.org/en/2.3/reference/celery.task.sets.html" class="post_link" target="_blank">task sets</a>
+    de <a href="http://www.celeryproject.org/" class="post_link" target="_blank">Celery</a> ejecute concurrentemente
     la migración de diversos tenants.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
-    Podéis consultar y descargar el código fuente del proyecto <a href="https://github.com/bertini36/multitenancy" style="color: #feb72b" target="_blank">aquí</a>.
+<p class="post_p">
+    Podéis consultar y descargar el código fuente del proyecto <a href="https://github.com/bertini36/multitenancy" class="post_link" target="_blank">aquí</a>.
 </p>
 
-<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">31/12/2015</h5>
+<h5 class="post_date">31/12/2015</h5>
