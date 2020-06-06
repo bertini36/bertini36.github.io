@@ -43,7 +43,7 @@ button {
 }
 
 .post_list {
-    @apply list-disc px-6 text-md text-gray-900 leading-relaxed mt-4;
+    @apply list-disc px-6 text-gray-900 leading-relaxed mt-4;
 }
 
 .post_date {
