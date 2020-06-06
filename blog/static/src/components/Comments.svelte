@@ -87,7 +87,7 @@
 
         <div class="bg-white border border-blue-500 text-blue-500 px-4 py-3 rounded relative my-5">
             <i class="fa fa-info-circle text-blue-500"></i>
-            <span class="block sm:inline">Be the first to write a comment!</span>
+            <span class="block sm:inline">&nbsp;&nbsp;&nbsp;Be the first to write a comment!</span>
         </div>
 
     {/if}
