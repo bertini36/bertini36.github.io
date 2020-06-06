@@ -73,28 +73,20 @@
     </a>
     <div class="flex-grow"></div>
     <div class="y-0 h-full items-center relative mx-auto z-20 flex">
-        <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight"
+        <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight hover:text-yellow"
            class:border-b-2="{section === '#posts'}" href="#posts">
             <div class="flex flex-col items-center content-center text-base">
                 Posts
             </div>
         </a>
-        <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight"
+        <a class="transition-fast relative text-center h-full p-6 cursor-pointer flex mx-auto items-center text-white hover:bg-white-transLight hover:text-yellow"
            class:border-b-2="{section === '#contact'}" href="#contact">
             <div class="flex flex-col items-center content-center text-base">
                 Contact
             </div>
         </a>
     </div>
-    <a class="px-4 mr-5 py-5 text-white hover:bg-white-transLight h-full" href="{blog_github_url}" target="_blank">
+    <a class="px-4 mr-5 py-5 text-white hover:bg-white-transLight h-full hover:text-yellow" href="{blog_github_url}" target="_blank">
         <i class="fa fa-github text-xl"></i>
     </a>
 </nav>
-
-<style>
-
-    a:hover, a:focus, a:active {
-        color: #feb72b;
-    }
-
-</style>
