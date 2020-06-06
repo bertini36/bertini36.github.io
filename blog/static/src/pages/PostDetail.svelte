@@ -48,7 +48,7 @@
                 {$selected_post.technology}
             </h3>
 
-            <div class="post_image_div px-56">
+            <div class="post_image_div md:px-56">
                 <img class="post_image" src="static/{$selected_post.main_photo_path}" alt="{$selected_post.name}">
             </div>
 
