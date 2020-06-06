@@ -10,7 +10,7 @@
 <style>
 
     header {
-        background: url(../img/header_bg.png) no-repeat center center fixed;
+        background: url(../img/header_bg.jpg) no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
