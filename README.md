@@ -4,9 +4,8 @@
 # Blog
 
 In this blog I used to write posts about different technologies that I have 
-found interesting. Also I usually use it to test new technologies. My last 
-updates of it were to update the frontend using Svelte and to deploy using 
-Terraform.
+found interesting. This code probably is not the best solution for a simple 
+blog but keep in mind that I use this project to learn and test new technologies!
 
 ## Project structure
 
