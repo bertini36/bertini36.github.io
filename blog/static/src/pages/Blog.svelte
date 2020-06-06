@@ -2,6 +2,7 @@
 
     import Header from "../components/Header.svelte";
     import PostList from "../components/PostList.svelte";
+    import ContactForm from "../components/ContactForm.svelte";
     import Footer from "../components/Footer.svelte";
 
 </script>
@@ -11,6 +12,8 @@
     <Header/>
 
     <PostList/>
+
+    <ContactForm/>
 
     <Footer/>
 

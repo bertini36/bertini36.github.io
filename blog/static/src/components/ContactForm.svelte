@@ -4,8 +4,6 @@
     import * as utils from "../utils.js"
     import {RECAPTCHA_SITE_KEY} from "../constants.js";
     import * as requests from "../requests.js";
-    import TextField from "smelte/src/components/TextField";
-    import Button from "smelte/src/components/Button";
 
     const message_data = {
         name: "",
@@ -74,17 +72,14 @@
 
 <section id="contact" class="flex h-screen">
     <div class="m-auto">
-        <h2 class="text-3xl text-center text-white">
+        <h2 class="section_header_text text-white">
             Contact
         </h2>
         <h3 class="text-xl text-center text-white font-hairline mb-10">
             Send me a message for any questions
         </h3>
-        <TextField label="Name" bind:value={message_data.name} error={errors.name}/>
-        <TextField label="Email" bind:value={message_data.email} error={errors.email}/>
         <div class="g-recaptcha pb-4" data-sitekey="{RECAPTCHA_SITE_KEY}"></div>
-        <TextField label="Message text" textarea rows="3" bind:value={message_data.text} error={errors.text}/>
-        <Button color="primary" dark block on:click={send_message}>Send</Button>
+        <button on:click={send_message} class="w-full hover:bg-light_yellow mt-8">Send</button>
     </div>
 </section>
 
