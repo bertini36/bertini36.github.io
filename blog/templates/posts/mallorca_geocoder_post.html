@@ -1,6 +1,6 @@
 {% load static %}
 
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Actualmente las aplicaciones basan mucha de su funcionalidad en la información geográfica. Las redes
     sociales: Facebook, Twitter, Instagram, ... utilizan información de este tipo para geoposicionar
     a sus usuarios. <br>
@@ -8,47 +8,47 @@
     mucha utilidad para la realización de estudios estadísticos con el objetivo de obtener
     información útil sobre los usuarios.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Esta información geográfica suele representarse en mapas. Para ello contamos con librerías como
-    <a href="https://developers.google.com/maps/documentation/javascript/" style="color: #feb72b" target="_blank">Google maps</a>
-    o <a href="https://www.openstreetmap.org" style="color: #feb72b" target="_blank">OpenStreetMaps</a>. En general estas librerías,
+    <a href="https://developers.google.com/maps/documentation/javascript/" class="post_link" target="_blank">Google maps</a>
+    o <a href="https://www.openstreetmap.org" class="post_link" target="_blank">OpenStreetMaps</a>. En general estas librerías,
     dado el nombre de una zona (país, ciudad, municipio, ...) te proporcionan su ubicación. Este proceso se conoce como <a href="https://developers.google.com/maps/documentation/geocoding/intro" target="_blank">geocoding</a>.
     En mi caso, el problema que se me planteó fue el contrario: dado un punto geográfico necesitaba
     su información. Este proceso se conoce como
-    <a href="https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding" style="color: #feb72b" target="_blank">reverse geocoding</a>.
+    <a href="https://developers.google.com/maps/documentation/geocoding/intro#ReverseGeocoding" class="post_link" target="_blank">reverse geocoding</a>.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     Dado un trazado GPS, es decir, una ruta por la isla de Mallorca; necesitaba saber qué municipios
     de la isla recorría. El problema lo podemos reducir a, dado un punto geográfico, obtener el municipio
     al que pertenece. <br>
     El geocoder de Google ya dispone de esta funcionalidad y con este simple código en Javascript
     ya podemos obtener el municipio de un punto.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/7c6907f52fb16a7a495f.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/7c6907f52fb16a7a495f.js"></div>
+<p class="post_p">
     Pero había un problema. Las rutas GPS disponen, cada una,  de una cantidad de puntos muy elevada
     y Google limita el número de peticiones. Por esta razón decidí crear mi propio geocoder.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<p class="post_p">
     La idea era realizar un geocoder que no requiriera internet para obtener el municipio de un punto.
-    En la web del <a href="https://www.cnig.es/" style="color: #feb72b" target="_blank">Centro Nacional de Información Geográfica</a>
+    En la web del <a href="https://www.cnig.es/" class="post_link" target="_blank">Centro Nacional de Información Geográfica</a>
     disponen de archivos que definen las líneas fronterizas de los municipios de todas las províncias de España.
     Así que descargué las líneas municipales de Mallorca y las transformé a un formato más común:
-    <a href="https://es.wikipedia.org/wiki/GPX" style="color: #feb72b" target="_blank">GPX</a>.
+    <a href="https://es.wikipedia.org/wiki/GPX" class="post_link" target="_blank">GPX</a>.
     Con los polígonos municipales definidos lo único que tuve que hacer fue un programa que comprobara
     la pertenencia de un punto a cada uno de los polígonos.
 </p>
-<div class="mb-6 mt-6" gist="https://gist.github.com/bertini36/6ea924b7585ffb25f90e.js"></div>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
+<div class="post_gist" gist="https://gist.github.com/bertini36/6ea924b7585ffb25f90e.js"></div>
+<p class="post_p">
     El algoritmo, para comprobar la pertenencia de un punto a un polígono, se basa en el trazado de rayos.
     Consiste en trazar una recta y contar el número de intersecciones que se producen con el polígono.
     Si el número de intersecciones es impar quiere decir que el punto se encuentra en el interior del polígono.
     En contraposición, si el número de intersecciones es par, el punto se encuentra fuera del polígono.
 </p>
-<p class="text-md text-gray-900 leading-relaxed mt-4">
-    En el repositorio de <a href="https://github.com/bertini36/geocoderMallorca" style="color: #feb72b" target="_blank">Github</a>
+<p class="post_p">
+    En el repositorio de <a href="https://github.com/bertini36/geocoderMallorca" class="post_link" target="_blank">Github</a>
     tenéis el código completo junto con los archivos GPX que definen las fronteras de cada municipio de Mallorca.
 </p>
 
-<h5 class="mt-10 mb-10 text-center text-bold text-base" style="color: #feb72b">Fecha: 18/10/2015</h5>
+<h5 class="post_date">Fecha: 18/10/2015</h5>
 
