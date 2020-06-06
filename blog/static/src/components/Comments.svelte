@@ -5,7 +5,6 @@
     import {selected_post} from "../stores.js";
     import * as requests from "../requests.js";
 
-    const user_avatar_url = "static/img/user.png";
     const publish_comment_url = "/send/message/";
     let comments = [];
     let comment_data = {
