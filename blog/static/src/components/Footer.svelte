@@ -2,7 +2,7 @@
 
     const instagram_url = "https://instagram.com/bertini36/";
     const twitter_url = "https://twitter.com/bertini_36/";
-    const linkedin_url = "https://linkedin.com/in/alberto-pou-quirós-1b7b99b1";
+    const linkedin_url = "https://linkedin.com/in/alberto-pou-quirós-1b7b99b1/";
     const github_url = "https://github.com/bertini36";
 
 </script>
