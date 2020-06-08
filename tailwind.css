@@ -91,3 +91,35 @@ h1 {
 a {
   color: inherit;
 }
+
+.content .post_code {
+  @apply my-6;
+}
+
+.content .post_p {
+  @apply text-gray-900 leading-relaxed mt-4;
+}
+
+.content .post_list {
+  @apply list-disc px-6 text-gray-900 leading-relaxed mt-4;
+}
+
+.content .post_section_title {
+  @apply mt-8 mb-2 underline;
+}
+
+.content .post_link {
+  @apply text-red-500;
+}
+
+.content .post_image_div {
+  @apply mx-auto mb-6 mt-6;
+}
+
+.content .post_image {
+  @apply w-full h-full;
+}
+
+.content .post_image_figcaption {
+  @apply text-center text-gray-900 leading-relaxed text-sm;
+}
