@@ -123,3 +123,21 @@ a {
 .content .post_image_figcaption {
   @apply text-center text-gray-900 leading-relaxed text-sm;
 }
+
+.content pre {
+  font-family: menlo, inconsolata, monospace;
+  font-size: calc(1em - 2px);
+  padding: 0.5rem 1rem;
+  overflow-x: scroll;
+  background-color: #454954;
+  color: #FFFFFF;
+}
+
+.content code {
+  font-family: menlo, inconsolata, monospace;
+  font-size: calc(1em - 2px);
+  background-color: #454954;
+  color: #FFFFFF;
+  padding: 0.2em 0.4em;
+  border-radius: 2px;
+}
