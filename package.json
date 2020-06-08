@@ -5,17 +5,19 @@
   "scripts": {
     "dev": "sapper dev",
     "build": "npm run build:tailwind && sapper build --legacy",
-    "export": "npm run build:tailwindcss && sapper export --legacy",
+    "export": "npm run build:tailwind && sapper export --legacy",
     "start": "node __sapper__/build",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "test": "run-p --race dev cy:run",
     "dev:tailwind": "postcss static/tailwind.css -o static/global.css -w",
     "build:tailwind": "NODE_ENV=production postcss static/tailwind.css -o static/global.css",
+    "clean": "rm -rf ./__sapper__",
     "deploy": "npm run clean && npm run export && node ./scripts/deploy.js"
   },
   "dependencies": {
     "compression": "^1.7.1",
+    "gh-pages": "^3.0.0",
     "moment": "^2.26.0",
     "polka": "next",
     "sirv": "^0.4.0",
