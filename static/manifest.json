@@ -1,0 +1,15 @@
+{
+	"background_color": "#ffffff",
+	"theme_color": "#333333",
+	"name": "Alberto Pou Blog",
+	"short_name": "Alberto Pou Blog",
+	"display": "minimal-ui",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "logo.png",
+			"sizes": "40x50",
+			"type": "image/png"
+		}
+	]
+}
