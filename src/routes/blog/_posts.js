@@ -89,22 +89,18 @@ const posts = [
 					can configure some application behaviours about the data preprocessing and about the model.
 				</p>
 				<h4 class="post_section_title text-2xl text-black">Example of obtained results</h4>
-				<div class="post_image_div md:px-40">
-					<figure>
-						<img class="post_image" src="profiling-on-social-networks/profiler1.png" alt="Results">
-						<figcaption class="post_image_figcaption">
-							Group 1
-						</figcaption>
-					</figure>
-				</div>
-				<div class="post_image_div md:px-40">
-					<figure>
-						<img class="post_image" src="profiling-on-social-networks/profiler2.png" alt="Results">
-						<figcaption class="post_image_figcaption">
-							Group 4
-						</figcaption>
-					</figure>
-				</div>
+				<figure class="post_figure flex justify-center">
+					<img class="w-3/4" src="profiling-on-social-networks/profiler1.png" alt="Results">
+				</figure>
+				<figcaption class="post_image_figcaption">
+					Group 1
+				</figcaption>
+				<figure class="post_figure flex justify-center">
+					<img class="w-3/4" src="profiling-on-social-networks/profiler2.png" alt="Results">
+				</figure>
+				<figcaption class="post_image_figcaption">
+					Group 4
+				</figcaption>
 				<p class="post_p mb-10">
 					Obtained results using tweets are not as good as obtained using posts or article news. This is because tweets
 					are short text documents. This reduced length causes a much smaller vocabulary and therefore a difficulty
@@ -142,11 +138,9 @@ const posts = [
 						<strong>Numerical differentiation.</strong>
 						This method uses derivative definition to approximate using samples of the original function. In this way
 						we can approximate the gradient ∇f as:
-						<div class="post_image_div md:px-64">
-							<figure>
-								<img class="post_image" src="automatic-differentiation/derivative_deffinition.png" alt="Derivative deffinition">
-							</figure>
-						</div>
+						<figure class="post_figure flex justify-center">
+							<img class="w-1/2" src="automatic-differentiation/derivative_deffinition.png" alt="Derivative deffinition">
+						</figure>
 						where e<small>i</small> is i<small>th</small> unitary vector and h>0 is the step size for the approximation.
 					</li>
 				</ul>

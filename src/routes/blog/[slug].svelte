@@ -46,12 +46,8 @@
 		@apply text-red-500;
 	}
 
-	.content :global(.post_image_div) {
+	.content :global(.post_figure) {
 		@apply mx-auto mb-6 mt-6;
-	}
-
-	.content :global(.post_image) {
-		@apply w-full h-full;
 	}
 
 	.content :global(.post_image_figcaption) {
@@ -81,7 +77,7 @@
 	<title>{post.title}</title>
 </svelte:head>
 
-<h1>{post.title}</h1>
+<h1 class="text-4xl">{post.title}</h1>
 
 <div class='content'>
 	{@html post.html}

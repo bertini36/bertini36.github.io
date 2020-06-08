@@ -13,11 +13,15 @@
 <div class="text-center">
     Powered by
     <a class="hover:text-red-500 hover:underline" href="https://svelte.dev/"
-       rel="noreferrer" target="_blank">#svelte</a>
-    and
+       rel="noreferrer" target="_blank">#svelte</a>,
     <a class="hover:text-red-500 hover:underline"
        href="https://sapper.svelte.dev/" rel="noreferrer" target="_blank">
         #sapper
+    </a>
+    and
+    <a class="hover:text-red-500 hover:underline"
+       href="https://tailwindcss.com/" rel="noreferrer" target="_blank">
+        #tailwind
     </a>
 </div>
 
@@ -30,12 +34,12 @@
             <div class="text-gray-900 font-bold text-2xl mb-2">Who I am?</div>
             <p class="text-gray-700 text-xl mb-5">
                 Hi, I'm Alberto. I live in Mallorca, a small island in the Mediterranean sea.
-                I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.roiback.com/">Roiback</a>.
+                I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.roiback.com/" target="_blank">Roiback</a>.
             </p>
             <p class="text-gray-700 text-xl mb-5">
                 As a software engineer I focus mostly on backend. Specifically last years I've been working with Python
-                in tasks from create new functionalities to refactor and test legacy ones. Also I'm interested in
-                machine learning models but just as a hobby.
+                in tasks from create new functionalities to refactor and test legacy ones. Also I'm interested in other stuff
+                as machine learning, data mining, algorithms and async Python frameworks.
             </p>
             <p class="text-gray-700 text-xl mb-5">
                 Last months some modern frontend technologies got my attention and for this reason I decided to
