@@ -112,12 +112,8 @@ a {
   @apply text-red-500;
 }
 
-.content .post_image_div {
-  @apply mx-auto mb-6 mt-6;
-}
-
-.content .post_image {
-  @apply w-full h-full;
+.content .post_figure {
+  @apply mb-6 mt-6;
 }
 
 .content .post_image_figcaption {
