@@ -26,6 +26,38 @@
 		so we have to use the :global(...) modifier to target
 		all elements inside .content
 	*/
+	.content :global(.post_code) {
+		@apply my-6;
+	}
+
+	.content :global(.post_p) {
+		@apply text-gray-900 leading-relaxed mt-4;
+	}
+
+	.content :global(.post_list) {
+		@apply list-disc px-6 text-gray-900 leading-relaxed mt-4;
+	}
+
+	.content :global(.post_section_title) {
+		@apply mt-8 mb-2 underline;
+	}
+
+	.content :global(.post_link) {
+		@apply text-red-500;
+	}
+
+	.content :global(.post_image_div) {
+		@apply mx-auto mb-6 mt-6;
+	}
+
+	.content :global(.post_image) {
+		@apply w-full h-full;
+	}
+
+	.content :global(.post_image_figcaption) {
+		@apply text-center text-gray-900 leading-relaxed text-sm;
+	}
+
 	.content :global(pre) {
 		font-family: menlo, inconsolata, monospace;
 		font-size: calc(1em - 2px);

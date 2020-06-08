@@ -14508,6 +14508,24 @@ a {
   font-size: 0.875rem;
 }
 
+.content pre {
+  font-family: menlo, inconsolata, monospace;
+  font-size: calc(1em - 2px);
+  padding: 0.5rem 1rem;
+  overflow-x: scroll;
+  background-color: #454954;
+  color: #FFFFFF;
+}
+
+.content code {
+  font-family: menlo, inconsolata, monospace;
+  font-size: calc(1em - 2px);
+  background-color: #454954;
+  color: #FFFFFF;
+  padding: 0.2em 0.4em;
+  border-radius: 2px;
+}
+
 @media (min-width: 640px) {
   .sm\:space-y-0 > :not(template) ~ :not(template) {
     --space-y-reverse: 0;
