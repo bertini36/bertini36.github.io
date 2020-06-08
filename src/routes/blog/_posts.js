@@ -91,7 +91,7 @@ const posts = [
 				<h4 class="post_section_title text-2xl text-black">Example of obtained results</h4>
 				<div class="post_image_div md:px-40">
 					<figure>
-						<img class="post_image" src="profiling-on-social-networks/profiler1.png" alt="Results"/>
+						<img class="post_image" src="profiling-on-social-networks/profiler1.png" alt="Results">
 						<figcaption class="post_image_figcaption">
 							Group 1
 						</figcaption>
@@ -99,7 +99,7 @@ const posts = [
 				</div>
 				<div class="post_image_div md:px-40">
 					<figure>from javascript
-						<img class="post_image" src="profiling-on-social-networks/profiler2.png" alt="Results"/>
+						<img class="post_image" src="profiling-on-social-networks/profiler2.png" alt="Results">
 						<figcaption class="post_image_figcaption">
 							Group 4
 						</figcaption>
@@ -145,7 +145,7 @@ const posts = [
 						<figure>
 							<img class="post_image"
 								 src="automatic-differentiation/derivative_deffinition.png"
-								 alt="Derivative deffinition"/>
+								 alt="Derivative deffinition">
 						</figure>
 					</div>
 					where e<small>i</small> is i<small>th</small> unitary vector and h>0 is the step size for the approximation.
@@ -171,7 +171,7 @@ const posts = [
 				<figure>
 					<img class="post_image"
 						 src="automatic-differentiation/derivative_strategies.png"
-						 alt="Derivative strategies"/>
+						 alt="Derivative strategies">
 					<figcaption class="post_image_figcaption">
 						Methodologies for calculating derivatives.
 					</figcaption>
@@ -190,7 +190,7 @@ const posts = [
 				<figure>
 					<img class="post_image"
 						 src="automatic-differentiation/forward_AD.png"
-						 alt="Automatic differentiation forward mode"/>
+						 alt="Automatic differentiation forward mode">
 					<figcaption class="post_image_figcaption">
 						AD forward mode schema.
 					</figcaption>
@@ -200,7 +200,7 @@ const posts = [
 				<figure>
 					<img class="post_image"
 						 src="automatic-differentiation/backward_AD.png"
-						 alt="Automatic differentiation reverse mode"/>
+						 alt="Automatic differentiation reverse mode">
 					<figcaption class="post_image_figcaption">
 						AD reverse mode schema.
 					</figcaption>
