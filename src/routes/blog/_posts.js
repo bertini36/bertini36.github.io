@@ -90,13 +90,13 @@ const posts = [
 				</p>
 				<h4 class="post_section_title text-2xl text-black">Example of obtained results</h4>
 				<figure class="post_figure flex justify-center">
-					<img class="w-3/4" src="profiling-on-social-networks/profiler1.png" alt="Results">
+					<img class="md:w-3/4" src="profiling-on-social-networks/profiler1.png" alt="Results">
 				</figure>
 				<figcaption class="post_image_figcaption">
 					Group 1
 				</figcaption>
 				<figure class="post_figure flex justify-center">
-					<img class="w-3/4" src="profiling-on-social-networks/profiler2.png" alt="Results">
+					<img class="md:w-3/4" src="profiling-on-social-networks/profiler2.png" alt="Results">
 				</figure>
 				<figcaption class="post_image_figcaption">
 					Group 4
@@ -139,7 +139,7 @@ const posts = [
 						This method uses derivative definition to approximate using samples of the original function. In this way
 						we can approximate the gradient ∇f as:
 						<figure class="post_figure flex justify-center">
-							<img class="w-1/2" src="automatic-differentiation/derivative_deffinition.png" alt="Derivative deffinition">
+							<img class="md:w-1/2" src="automatic-differentiation/derivative_deffinition.png" alt="Derivative deffinition">
 						</figure>
 						where e<small>i</small> is i<small>th</small> unitary vector and h>0 is the step size for the approximation.
 					</li>
