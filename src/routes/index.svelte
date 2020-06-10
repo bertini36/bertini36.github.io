@@ -26,7 +26,7 @@
 </div>
 
 <div class="max-w-sm w-full lg:max-w-full lg:flex mt-10 lg:mt-16 md:max-w-full">
-    <div class="h-48 md:h-auto md:mw-auto lg:w-64 hidden lg:block flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden ">
+    <div class="h-48 md:h-auto md:mw-auto lg:w-1/3 hidden lg:block flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden ">
         <img class="w-full h-full" src="profile.jpg" alt="">
     </div>
     <div class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal md:flex md:content-center md:flex-wrap">
