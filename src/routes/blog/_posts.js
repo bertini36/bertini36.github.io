@@ -237,8 +237,8 @@ const posts = [
 			</p>
 			<p class="post_p">
 				The model is defined as code in the following way. In Tensorflow parameters to be optimized of a function are
-				defined as variables (lines 29 and 30). Later a cost function is defined based on these parameters,
-				<a href="https://en.wikipedia.org/wiki/Mean_squared_error" class="post_link" target="_blank">Mean Squared Error</a> (line 36). Then optimization
+				defined as variables. Later a cost function is defined based on these parameters,
+				<a href="https://en.wikipedia.org/wiki/Mean_squared_error" class="post_link" target="_blank">Mean Squared Error</a>. Then optimization
 				algorithm is specified, in this case <a href="https://en.wikipedia.org/wiki/Gradient_descent" class="post_link" target="_blank">Gradient Descent</a>.
 				And finally we write the code to train the model (last lines). This loop, in each iteration, get a sample from
 				the dataset and derive the cost function to obtain the direction (gradient vector) of the local minimum, in
@@ -324,8 +324,8 @@ plt.show()</code></pre>
 				Optimization results of model parameters of a lineal regression using Tensorflow.
 			</figcaption>
 			<p class="post_p">
-				Using Autograd all is more visible than in Tensorflow. A cost function is defined with the model parameters (lines
-				25-31) and then get gradients in each iteration to update weight and bias parameters (lines 37-40).
+				Using Autograd all is more visible than in Tensorflow. A cost function is defined with the model parameters
+				and then get gradients in each iteration to update weight and bias parameters.
 			</p>
 			<div class="post_code">
 				<pre><code>import autograd.numpy as np
@@ -463,14 +463,14 @@ plt.show()</code></pre>
 				code. For this, the program has to be decomposed in a big number of threads which will be executed concurrently.
 				In this example, each thread will be responsible for calculating just an element of the resulting matrix. Using
 				CUDA it is required to define a block structure (threads group) delimiting each thread data domain using its
-				threadId and its blockId (lines 56 and 57). These threads will be executed in one kernel, in other words,
-				a GPU program (lines 55-62: kernel definition, 143: kernel call).
+				threadId and its blockId. These threads will be executed in one kernel, in other words, a GPU program.
 			</p>
 			<div class="post_code">
 				<pre><code>/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* MULTI-NODE AND PARALLEL MATRIX-MATRIX PRODUCT WITH MPI AND CUDA           */
 /*                                                                           */
 /* File:         mmpmpicuda.cu                                               */
+/* Author:       Alberto Pou Quirós (Github: bertini36)                      */ 
 /* Description:  This program performs a matrix product (A * B = C)          */
 /*               distributing the computation between multiple nodes         */
 /*               with MPI technology and parallelizing the computation in    */
@@ -502,11 +502,11 @@ plt.show()</code></pre>
 /*                                                                           */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <sys/time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <mpi.h>
+#include &lt;sys/time.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;mpi.h&gt;
 
 #define N 1024
 
@@ -524,7 +524,7 @@ __global__ void matrixProduct(double *matrix_a, double *matrix_b, double *matrix
     int row = threadIdx.y + blockDim.y * blockIdx.y;
     int col = threadIdx.x + blockDim.x * blockIdx.x; 
     matrix_c[row * width + col] = 0;
-    for (int k=0; k<width; k++) {
+    for (int k=0; k&lt;width; k++) {
         matrix_c[row * width + col] += matrix_a[(row * width) + (my_rank * nrows * width) + k] * matrix_b[k * width + col];
     }
 }
@@ -532,8 +532,8 @@ __global__ void matrixProduct(double *matrix_a, double *matrix_b, double *matrix
 void initializeMatrices(double matrix_a[N][N], double matrix_b[N][N]) {
     int i, j;
     srand(time(NULL));
-    for (i=0; i<N; i++) {
-        for (j=0; j<N; j++) {
+    for (i=0; i&lt;N; i++) {
+        for (j=0; j&lt;N; j++) {
             matrix_a[i][j] = rand();
             matrix_b[i][j] = rand();
         }
@@ -544,20 +544,20 @@ void showMatrices(double matrix_a[N][N], double matrix_b[N][N], double matrix_c[
     int i, j;
     srand(time(NULL));
     printf("***** MATRIX A ***** \\n");
-    for (i=0; i<N; i++) {
-        for (j=0; j<N; j++) {
+    for (i=0; i&lt;N; i++) {
+        for (j=0; j&lt;N; j++) {
             (j % N == N-1) ? printf("%.1f \\n", matrix_a[i][j]) : printf("%.1f,", matrix_a[i][j]);
         }
     }
     printf("***** MATRIX B ***** \\n");
-    for (i=0; i<N; i++) {
-        for (j=0; j<N; j++) {
+    for (i=0; i&lt;N; i++) {
+        for (j=0; j&lt;N; j++) {
             (j % N == N-1) ? printf("%.1f \\n", matrix_b[i][j]) : printf("%.1f,", matrix_b[i][j]);
         }
     }
     printf("***** RESULT MATRIX ***** \\n");
-    for (int i=0; i<N; i++) {
-        for (int j=0; j<N; j++) {
+    for (int i=0; i&lt;N; i++) {
+        for (int j=0; j&lt;N; j++) {
             (j % N == N-1) ? printf("%f \\n", matrix_c[i][j]) : printf("%f,", matrix_c[i][j]);
         }
     }
@@ -608,7 +608,7 @@ int main(int argc, char *argv[]) {
     if (my_rank == 0) { gettimeofday(&start_time, NULL); }
 
     // Kernel launch
-    matrixProduct<<<dimGrid, dimBlock>>>(d_a, d_b, d_c, N, nrows, my_rank);
+    matrixProduct&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(d_a, d_b, d_c, N, nrows, my_rank);
     checkCuda(cudaDeviceSynchronize());
     checkCuda(cudaGetLastError());
 

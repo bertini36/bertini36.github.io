@@ -63,6 +63,16 @@
 		color: #FFFFFF;
 	}
 
+	.content pre :global(span:before) {
+	  	counter-increment: line;
+	  	content: counter(line);
+		display: inline-block;
+	  	border-right: 1px solid #ddd;
+	  	padding: 0 .5em;
+	  	margin-right: .5em;
+	  	color: white;
+	}
+
 	.content :global(code) {
 		font-family: menlo, inconsolata, monospace;
 		font-size: calc(1em - 2px);
