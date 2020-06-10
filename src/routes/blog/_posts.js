@@ -405,6 +405,251 @@ plt.show()</code></pre>
 		`
 	},
 
+	{
+		title: 'Distributed matrix product',
+		slug: 'distributed-matrix-product',
+		tags: ["#CUDA", "#MPI", "#C", "#maths"],
+		date: "2017-02-02",
+		html: `
+			<p class="post_p">
+				Nowadays one of the main problems of any algorithm is its facility to scale it, in other words, its facility to
+				be executed over multiple cores (parallelization) or nodes (distribution). The amount of data that is available
+				today has led the world of computing to develop technologies with which to parallelize and distribute processes
+				are done more easily and automatically. Actually, each computationally expensive algorithm works in its
+				distributed version. In this way tasks as finding prime numbers, complex simulations or statistical prediction
+				models, which would spend years to get results, can obtain it in a few hours thanks to the joint work of many
+				computers.
+			</p>
+			<p class="post_p">
+				Precisely this is what supercomputing centers like <a href="https://www.bsc.es/" class="post_link" target="_blank">BSC</a> are
+				engaged. BSC has a supercomputer, called Marenostrum III, which avoids to its users to run computationally
+				expensive algorithms or algorithms that require a huge amount of data in a distributed way. Specifically,
+				Marenostrum III has 3108 nodes each with 2 processors of 8 cores (over 49.728 cores).
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img src="distributed-matrix-product/marenostrum.jpg"
+					 alt="Marenostrum III supercomputer">
+			</figure>
+			<figcaption class="post_image_figcaption">Marenostrum III</figcaption>
+			<p class="post_p">
+				In this post I'm going to show, with a simple example, how to distribute a matrix product over several nodes and
+				how to parallelize at each node. Matrix product is a mathematical operation that, when it is taken to the extreme
+				using very large matrices it is become in a very computationally expensive operation.
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img src="distributed-matrix-product/matrix_product.png"
+					 alt="Matrix product">
+			</figure>
+			<figcaption class="post_image_figcaption">Matrix product</figcaption>
+			<p class="post_p">
+				Since each element of the resulting matrix does not depend on any other element of it we can distribute without
+				any restriction. For this example I could use 4 nodes, so I decided that each node would be responsible for
+				calculating a quarter of the resulting matrix. A and B matrices will be sent to each node to avoid them to
+				do its computations. For the distribution I'm using <a href="https://www.open-mpi.org/" class="post_link" target="_blank">MPI</a>
+				(Message Passing Interface) technology. Using functions of this library data can be shared over the nodes
+				(lines 123 and 124) and to specify, using process id, which part of the result matrix each node has to calculate
+				(lines 116, 117 and 118).
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img src="distributed-matrix-product/distributed_matrix_product.png"
+					 alt="Distributed matrix product">
+			</figure>
+			<figcaption class="post_image_figcaption">Matrix product distribution and parallelization</figcaption>
+			<p class="post_p">
+				Nowadays, for parallel computation, the power of GPUs is being used. In our case each node of Marenostrum III has a
+				Nvidia K80 graphic card. This graphic cards can be used for parallel computation using Nvidia
+				<a href="https://en.wikipedia.org/wiki/CUDA" class="post_link" target="_blank">CUDA</a> (Compute Unified Device Architecture)
+				platform. GPUs are essentially a big number of simple processors that can be used to speed up some parts of the
+				code. For this, the program has to be decomposed in a big number of threads which will be executed concurrently.
+				In this example, each thread will be responsible for calculating just an element of the resulting matrix. Using
+				CUDA it is required to define a block structure (threads group) delimiting each thread data domain using its
+				threadId and its blockId (lines 56 and 57). These threads will be executed in one kernel, in other words,
+				a GPU program (lines 55-62: kernel definition, 143: kernel call).
+			</p>
+			<div class="post_code">
+				<pre><code>/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* MULTI-NODE AND PARALLEL MATRIX-MATRIX PRODUCT WITH MPI AND CUDA           */
+/*                                                                           */
+/* File:         mmpmpicuda.cu                                               */
+/* Description:  This program performs a matrix product (A * B = C)          */
+/*               distributing the computation between multiple nodes         */
+/*               with MPI technology and parallelizing the computation in    */
+/*               every node with Nvidia CUDA technology                      */
+/* Compilation:  nvcc -I/opt/mpi/bullxmpi/1.2.9.1/include                    */  
+/*               -L/opt/mpi/bullxmpi/1.2.9.1/lib -lmpi -ldl -lm -lnuma       */
+/*               -lrt -lnsl -lutil -lm -ldl mmpmpicuda.cu -o mmpmpicuda      */
+/* Strategy:                                                                 */
+/*                  Example 16x16 matrices with 4 nodes:                     */
+/*                   _________________16________________                     */
+/*                   |                                 |                     */
+/*                   |               NODE 1            | 4                   */
+/*                   |_________________________________|                     */
+/*                   |                                 |                     */
+/*                   |               NODE 2            | 4                   */
+/*              C =  |_________________________________|    16               */ 
+/*                   |                                 |                     */
+/*                   |               NODE 3            | 4                   */
+/*                   |_________________________________|                     */
+/*                   |                                 |                     */ 
+/*                   |               NODE 4            | 4                   */
+/*                   |_________________________________|                     */
+/*                                                                           */
+/*                  Node 1 computes 4 rows of result matrix:                 */
+/*                   __________________________________                      */
+/*                   |                                 |                     */
+/*                   |         4x16 CUDA block         |                     */
+/*                   |_________________________________|                     */
+/*                                                                           */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+#include <sys/time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <mpi.h>
+
+#define N 1024
+
+#define err(format, ...) do { fprintf(stderr, format, ##__VA_ARGS__); exit(1); } while (0)
+
+struct timeval start_time, end_time;
+
+inline void checkCuda(cudaError_t e) {
+    if (e != cudaSuccess) {
+        err("CUDA Error %d: %s\\n", e, cudaGetErrorString(e));
+    }
+}
+
+__global__ void matrixProduct(double *matrix_a, double *matrix_b, double *matrix_c, int width, int nrows, int my_rank) {
+    int row = threadIdx.y + blockDim.y * blockIdx.y;
+    int col = threadIdx.x + blockDim.x * blockIdx.x; 
+    matrix_c[row * width + col] = 0;
+    for (int k=0; k<width; k++) {
+        matrix_c[row * width + col] += matrix_a[(row * width) + (my_rank * nrows * width) + k] * matrix_b[k * width + col];
+    }
+}
+
+void initializeMatrices(double matrix_a[N][N], double matrix_b[N][N]) {
+    int i, j;
+    srand(time(NULL));
+    for (i=0; i<N; i++) {
+        for (j=0; j<N; j++) {
+            matrix_a[i][j] = rand();
+            matrix_b[i][j] = rand();
+        }
+    }
+}
+
+void showMatrices(double matrix_a[N][N], double matrix_b[N][N], double matrix_c[N][N]) {
+    int i, j;
+    srand(time(NULL));
+    printf("***** MATRIX A ***** \\n");
+    for (i=0; i<N; i++) {
+        for (j=0; j<N; j++) {
+            (j % N == N-1) ? printf("%.1f \\n", matrix_a[i][j]) : printf("%.1f,", matrix_a[i][j]);
+        }
+    }
+    printf("***** MATRIX B ***** \\n");
+    for (i=0; i<N; i++) {
+        for (j=0; j<N; j++) {
+            (j % N == N-1) ? printf("%.1f \\n", matrix_b[i][j]) : printf("%.1f,", matrix_b[i][j]);
+        }
+    }
+    printf("***** RESULT MATRIX ***** \\n");
+    for (int i=0; i<N; i++) {
+        for (int j=0; j<N; j++) {
+            (j % N == N-1) ? printf("%f \\n", matrix_c[i][j]) : printf("%f,", matrix_c[i][j]);
+        }
+    }
+}
+
+int main(int argc, char *argv[]) {
+
+    double A[N][N], B[N][N], C[N][N];
+    double *d_a, *d_b, *d_c;
+    int my_rank, comm_sz, from, to, nrows;
+  
+    // MPI initialization
+    MPI_Init (&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);    // Process id 
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);    // Number of processors 
+
+    if (N % comm_sz != 0) {
+        if (my_rank == 0) printf("Matrix size not divisible by number of processors \\n");
+        MPI_Finalize();
+        exit(-1);
+    }
+
+    // Calculate interval lines to compute per node
+    from = my_rank * N / comm_sz;
+    to = (my_rank + 1) * N / comm_sz;
+    nrows = to - from;
+
+    if (my_rank == 0) { initializeMatrices(A, B); }
+
+    // Send A y B to every node
+    MPI_Bcast(A, N*N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(B, N*N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // Allocate memory in the device
+    checkCuda(cudaMalloc((void **) &d_a, N*N*sizeof(double)));
+    checkCuda(cudaMalloc((void **) &d_b, N*N*sizeof(double)));
+    checkCuda(cudaMalloc((void **) &d_c, (N*N/comm_sz)*sizeof(double)));
+
+    // Copy the information in the device
+    checkCuda(cudaMemcpy(d_a, A, N*N*sizeof(double), cudaMemcpyHostToDevice));
+    checkCuda(cudaMemcpy(d_b, B, N*N*sizeof(double), cudaMemcpyHostToDevice));
+
+    // CUDA threads structure definition
+    dim3 dimGrid(1);
+    dim3 dimBlock(N, nrows);    
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (my_rank == 0) { gettimeofday(&start_time, NULL); }
+
+    // Kernel launch
+    matrixProduct<<<dimGrid, dimBlock>>>(d_a, d_b, d_c, N, nrows, my_rank);
+    checkCuda(cudaDeviceSynchronize());
+    checkCuda(cudaGetLastError());
+
+    // Calculate compute time
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (my_rank == 0) { 
+        gettimeofday(&end_time, NULL);
+        printf("Compute time: %.1f ms \\n", (float) (end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_usec - start_time.tv_usec) / 1000);
+     }
+
+    // Get results from device
+    checkCuda(cudaMemcpy(C[from], d_c, (nrows)*N*sizeof(double), cudaMemcpyDeviceToHost));
+
+    // Unify results from nodes
+    MPI_Gather(C[from], N*N/comm_sz, MPI_DOUBLE, C, N*N/comm_sz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // if (my_rank == 0)  { showMatrices(A, B, C); }
+
+    checkCuda(cudaFree(d_a));
+    checkCuda(cudaFree(d_b));
+    checkCuda(cudaFree(d_c));
+    
+    MPI_Finalize();
+    return 0;
+
+}</code></pre>
+			</div>
+			<p class="post_p">
+				One of the main problems of CUDA is that to get the most out of it you have to know the technical specifications
+				of the GPU on which it will run the code. Block size (number of threads) or the use of the memory hierarchy
+				of the graphic card are aspects that the coder has to take into account when programming with this technology.
+			</p>
+			<p class="post_p">
+				At this <a href="https://github.com/bertini36/distributedMatrixProduct" class="post_link" target="_blank">Github repository</a>
+				you will find two versions of matrix product, one just using MPI technology and another just with CUDA. Also,
+				at config folder, there are a script to know graphic card specifications and a possible CUDA configuration
+				for that card.
+			</p>
+		`
+	}
+
 ];
 
 posts.forEach(post => {
