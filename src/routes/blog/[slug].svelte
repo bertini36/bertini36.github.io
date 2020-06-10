@@ -79,6 +79,6 @@
 
 <h1 class="text-4xl">{post.title}</h1>
 
-<div class='content'>
+<div class='content mb-10'>
 	{@html post.html}
 </div>
