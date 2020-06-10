@@ -1,7 +1,7 @@
 <script>
 	export let segment;
 	const logo_img_url = "/static/logo.png";
-	const blog_github_url = "https://github.com/bertini36/blog";
+	const blog_github_url = "https://github.com/bertini36/blogv2";
 </script>
 
 <style>
