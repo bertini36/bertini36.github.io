@@ -37,12 +37,12 @@
                 I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.roiback.com/" target="_blank">Roiback</a>.
             </p>
             <p class="text-gray-700 text-xl mb-5">
-                As a software engineer I focus mostly on backend. Specifically last years I've been working with Python
-                in tasks from create new functionalities to refactor and test legacy ones. Also I'm interested in other stuff
-                as machine learning, data mining, algorithms and async Python frameworks.
+                As a software engineer I focus mostly on the backend. Specifically these last years I've been working with Python
+                on tasks ranging from creating new functionalities to refactoring and testing legacy ones. Also I'm interested in other stuff
+                such as machine learning, data mining, algorithms and async Python frameworks.
             </p>
             <p class="text-gray-700 text-xl mb-5">
-                Last months some modern frontend technologies got my attention and for this reason I decided to
+                These last months some modern frontend technologies grabbed my attention and for this reason I decided to
                 recode my blog using Svelte, Sapper and Tailwind.
             </p>
             <div class="text-center">
