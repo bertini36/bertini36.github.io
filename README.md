@@ -12,7 +12,7 @@ Powered by [#svelte](https://github.com/sveltejs/svelte),
 ### Download the code
 
 ```bash
-git clone https://github.com/bertini36/myblog
+git clone https://github.com/bertini36/bertini36.github.io
 ```
 
 ### Running the project
@@ -20,7 +20,7 @@ git clone https://github.com/bertini36/myblog
 When you get the code, you can install dependencies and run the project in development mode with:
 
 ```bash
-cd my-app
+cd bertini36.github.io
 npm install
 npm run dev
 ```

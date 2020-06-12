@@ -736,7 +736,7 @@ int main(int argc, char *argv[]) {
 				use x to reference observed variables and θ to reference latent variables.
 			</p>
 			<figure class="post_figure flex justify-center">
-				<img class="post_image w-1/6"
+				<img class="post_image md:w-1/6 sm:w-1/2"
 					 src="variational-inference-1/bayes_rule.png"
 					 alt="Bayes rule">
 			</figure>
@@ -850,7 +850,7 @@ int main(int argc, char *argv[]) {
 				In the bayesian field, a model represents a joint probability over all random variables of the problem.
 			</p>
 			<figure class="post_figure flex justify-center">
-				<img class="post_image w-1/5"
+				<img class="post_image md:w-1/5 sm:w-4/5"
 					 src="variational-inference-1/joint_dist.png"
 					 alt="Joint distribution">
 			</figure>
@@ -861,7 +861,7 @@ int main(int argc, char *argv[]) {
 				relations between those variables. For example, joint distribution probabilistic graphical model is:
 			</p>
 			<figure class="post_figure flex justify-center">
-				<img class="post_image w-1/4"
+				<img class="post_image md:w-1/4 sm:w-64"
 					 src="variational-inference-1/joint_dist2.png"
 					 alt="Joint distribution">
 			</figure>
@@ -946,7 +946,7 @@ int main(int argc, char *argv[]) {
 				If we adapt this form to the VI problem and we apply logarithms properties we have:
 			</p>
 			<figure class="post_figure flex justify-center">
-				<img class="post_image w-1/3"
+				<img class="post_image md:w-1/3 sm:4/5"
 					 src="variational-inference-1/kl_rule.png"
 					 alt="Kullback-Leibler definition">
 			</figure>
@@ -983,7 +983,7 @@ int main(int argc, char *argv[]) {
 				these distributions has its own parameters &lambda;<sub>i</sub> which could be optimized individually.
 			</p>
 			<figure class="post_figure flex justify-center">
-				<img class="post_image w-1/5"
+				<img class="post_image md:w-1/5 sm:w-4/5"
 					 src="variational-inference-1/mean_field.png"
 					 alt="Mean-Field assumption">
 			</figure>
