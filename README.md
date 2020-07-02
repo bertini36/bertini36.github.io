@@ -34,13 +34,38 @@ npm run dev:tailwind
 Open up [localhost:3000](http://localhost:3000) and start clicking around
 and when you update the code you will see the changes directly in your browser.
 
-### Deploy on Github
+### Installing lambdas dependencies
+```bash
+cd lambdas/
+npm install 
+sls plugin install -n serverless-python-requirements
+sls plugin install -n serverless-wsgi
+```
+
+
+## Deploy
+
+### Github deploy
 Check configurations at `scripts/deploy.js` and then
 ```bash
 npm run deploy
 ```
 This script builds `develop` branch and allocates results on `master` branch. 
+Finally just configure the custom domain on Github pages.
 
-Finally just configure Github pages.
+### Lambdas deploy
+
+First time you need to install dependencies
+```bash
+cd lambdas/
+npm install 
+sls plugin install -n serverless-python-requirements
+sls plugin install -n serverless-wsgi
+```
+
+And then deploy lambdas at AWS
+```bash
+sls deploy
+```
 
 <p align="center">&mdash; Built with :heart: from Mallorca &mdash;</p>
