@@ -1,4 +1,6 @@
 <script context="module">
+	import Comments from "../../components/Comments.svelte";
+
 	export async function preload({ params, query }) {
 		// the `slug` parameter is available because
 		// this file is called [slug].svelte
@@ -81,4 +83,5 @@
 
 <div class='content mb-10'>
 	{@html post.html}
+	<Comments slug="{post.slug}"/>
 </div>
