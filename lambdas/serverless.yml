@@ -33,7 +33,7 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
       Resource:
-        - { "Fn::GetAtt": ["CommentsDynamoDBTable", "Arn" ] }
+        - { "Fn::GetAtt": ['CommentsDynamoDBTable', 'Arn' ] }
   environment:
     COMMENTS_TABLE: ${self:custom.commentsTableName}
 
@@ -41,11 +41,17 @@ functions:
   getComments:
     handler: wsgi_handler.handler
     events:
-      - http: 'GET /comments/{proxy+}'
+      - http:
+          path: comments/{proxy+}
+          method: get
+          cors: true
   addComment:
     handler: wsgi_handler.handler
     events:
-      - http: 'POST /comments/{proxy+}'
+      - http:
+          path: comments/{proxy+}
+          method: post
+          cors: true
 
 resources:
   Resources:
