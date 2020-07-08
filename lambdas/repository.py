@@ -1,10 +1,10 @@
 import os
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import List
 
 import boto3
 from botocore.exceptions import ClientError
-
 from exceptions import DatabaseError, InvalidDataError
 
 
@@ -28,13 +28,19 @@ class DynamoCommentsRepository(CommentsRepository):
     def get_comments(self, post_slug: str) -> List[dict]:
         try:
             response = self.table.get_item(Key={'postSlug': post_slug})
-            return response['Item']['comments'] if 'Item' in response else None
+            comments = (
+                response['Item']['comments'] if 'Item' in response else None
+            )
+            if comments:
+                comments = self._sort_comments(comments)
+            return comments
         except ClientError:
             raise DatabaseError('Database error')
 
     def add_comment(self, post_slug: str, comment_data: dict):
         try:
             self._validate_comment_data(comment_data)
+            comment_data['date'] = str(datetime.now())
             post_data = {
                 'postSlug': post_slug,
                 'comments': self.get_comments(post_slug) or []
@@ -43,6 +49,16 @@ class DynamoCommentsRepository(CommentsRepository):
             self.table.put_item(Item=post_data)
         except ClientError:
             raise DatabaseError('Database error')
+
+    @staticmethod
+    def _sort_comments(comments: List[dict]) -> List[dict]:
+        return sorted(
+            comments,
+            key=lambda comment: datetime.strptime(
+                comment['date'],
+                '%Y-%m-%d %H:%M:%S.%f'
+            )
+        )
 
     @staticmethod
     def _validate_comment_data(comment_data: dict):
