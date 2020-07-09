@@ -17,11 +17,14 @@
     <a class="hover:text-red-500 hover:underline"
        href="https://sapper.svelte.dev/" rel="noreferrer" target="_blank">
         #sapper
-    </a>
-    and
+    </a>,
     <a class="hover:text-red-500 hover:underline"
        href="https://tailwindcss.com/" rel="noreferrer" target="_blank">
         #tailwind
+    </a> and
+    <a class="hover:text-red-500 hover:underline"
+       href="https://www.serverless.com/" rel="noreferrer" target="_blank">
+        #serverless
     </a>
 </div>
 
