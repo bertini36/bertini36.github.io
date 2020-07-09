@@ -13,7 +13,8 @@
 <div class="text-center">
     Powered by
     <a class="hover:text-red-500 hover:underline" href="https://svelte.dev/"
-       rel="noreferrer" target="_blank">#svelte</a>,
+       rel="noreferrer" target="_blank">#svelte
+    </a>,
     <a class="hover:text-red-500 hover:underline"
        href="https://sapper.svelte.dev/" rel="noreferrer" target="_blank">
         #sapper
@@ -46,7 +47,7 @@
             </p>
             <p class="text-gray-700 text-xl mb-5">
                 These last months some modern frontend technologies grabbed my attention and for this reason I decided to
-                recode my blog using Svelte, Sapper and Tailwind.
+                recode my blog using Svelte, Sapper, Tailwind and Serverless.
             </p>
             <div class="text-center">
                 <a href="{instagram_url}" target="_blank" class="mr-4">
