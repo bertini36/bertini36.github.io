@@ -4,8 +4,9 @@ In this blog I used to write posts about different technologies that I have
 found interesting.
 
 Powered by [#svelte](https://github.com/sveltejs/svelte),
- [#sapper](https://github.com/sveltejs/sapper) and 
- [#tailwind](https://github.com/tailwindcss/tailwindcss).
+ [#sapper](https://github.com/sveltejs/sapper),
+ [#tailwind](https://github.com/tailwindcss/tailwindcss) and
+ [#serverless](https://www.serverless.com/).
 
 ## Getting started
 
