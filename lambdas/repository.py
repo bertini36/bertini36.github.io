@@ -8,6 +8,14 @@ from botocore.exceptions import ClientError
 from exceptions import DatabaseError, InvalidDataError
 
 
+registered_post_slugs = (
+    'profiling-on-social-networks',
+    'automatic-differentiation',
+    'distributed-matrix-product',
+    'variational-inference-1'
+)
+
+
 class CommentsRepository(ABC):
 
     @abstractmethod
@@ -39,7 +47,7 @@ class DynamoCommentsRepository(CommentsRepository):
 
     def add_comment(self, post_slug: str, comment_data: dict):
         try:
-            self._validate_comment_data(comment_data)
+            self._validate_comment_data(post_slug, comment_data)
             comment_data['date'] = str(datetime.now())
             post_data = {
                 'postSlug': post_slug,
@@ -61,7 +69,9 @@ class DynamoCommentsRepository(CommentsRepository):
         )
 
     @staticmethod
-    def _validate_comment_data(comment_data: dict):
+    def _validate_comment_data(post_slug: str, comment_data: dict):
+        if post_slug not in registered_post_slugs:
+            raise InvalidDataError('This post is not registered')
         required_keys = {'name', 'email', 'text'}
         if set(comment_data.keys()) != required_keys:
             raise InvalidDataError('Comment data is not valid')
