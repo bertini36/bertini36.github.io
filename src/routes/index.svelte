@@ -42,7 +42,7 @@
             </p>
             <p class="text-gray-700 text-xl mb-5">
                 As a software engineer I focus mostly on the backend. Specifically these last years I've been working with Python
-                on tasks ranging from creating new functionalities to refactoring and testing legacy ones. Also I'm interested in other stuff
+                and Django on tasks ranging from creating new functionalities to refactoring and testing legacy ones. Also I'm interested in other stuff
                 such as machine learning, data mining, algorithms and async Python frameworks.
             </p>
             <p class="text-gray-700 text-xl mb-5">
