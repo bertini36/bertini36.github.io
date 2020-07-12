@@ -100,7 +100,8 @@ const posts = [
 		</ul>
 		<p class="post_p">
 			Now I'm going to show
-			you how I made the comments engine using <a href="https://www.serverless.com/" class="post_link" target="_blank">Serverless</a> and Svelte.
+			you how I made the comments engine using <a href="https://www.serverless.com/" class="post_link" target="_blank">Serverless</a> and Svelte
+			as an example of use of these frameworks.
 		</p>
 		<h4 class="post_section_title text-2xl text-bold">Persistent storage for comments</h4>
 		<p class="post_p">
@@ -163,11 +164,13 @@ def add_comment(post_slug):
 			<a href="https://github.com/bertini36/bertini36.github.io/tree/develop/lambdas" class="post_link" target="_blank">code</a>.
 		</p>
 		<p class="post_p">
-			Now we need a Svelte component that get comments and publish new ones using the endpoints created with Serverless. In the following
+			Now we need a Svelte component that gets the comments of a post and publish new ones using the endpoints created with Serverless. In the following
 			code you can revise the component part required to get and show the comments of a post (.svelte file).
 		</p>
 		<div class="post_code">
 			<pre><code>&lt;script&gt;
+   export let slug;
+   const comments_url = \`dummy.com/prod/comments/${slug}\`;
    let comments = getComments();
 	
    async function getComments() {
