@@ -9,6 +9,7 @@ from exceptions import DatabaseError, InvalidDataError
 
 
 registered_post_slugs = (
+    'recoding-my-blog',
     'profiling-on-social-networks',
     'automatic-differentiation',
     'distributed-matrix-product',
