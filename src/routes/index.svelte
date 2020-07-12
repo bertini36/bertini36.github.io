@@ -47,7 +47,7 @@
             </p>
             <p class="text-gray-700 text-xl mb-5">
                 These last months some modern frontend technologies grabbed my attention and for this reason I decided to
-                recode my blog using Svelte, Sapper, Tailwind and Serverless.
+                recode my blog using Svelte, Sapper and Tailwind.
             </p>
             <div class="text-center">
                 <a href="{instagram_url}" target="_blank" class="mr-4">
