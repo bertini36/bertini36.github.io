@@ -1,7 +1,7 @@
 const ghpages = require('gh-pages');
-// const fs = require('fs');
+const fs = require('fs');
 
-// fs.writeFile('dist/CNAME', 'albertopou.dev', function(err) {});
+fs.writeFile('dist/CNAME', 'albertopou.dev', function(err) {});
 ghpages.publish(
     '__sapper__/export',
     {
