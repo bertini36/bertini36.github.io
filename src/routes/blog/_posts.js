@@ -170,7 +170,7 @@ def add_comment(post_slug):
 		<div class="post_code">
 			<pre><code>&lt;script&gt;
    export let slug;
-   const comments_url = \`dummy.com/prod/comments/${slug}\`;
+   const comments_url = \`dummy.com/prod/comments/\$\{slug\}\`;
    let comments = getComments();
 	
    async function getComments() {
