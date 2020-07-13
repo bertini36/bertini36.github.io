@@ -13,7 +13,9 @@ registered_post_slugs = (
     'profiling-on-social-networks',
     'automatic-differentiation',
     'distributed-matrix-product',
-    'variational-inference-1'
+    'variational-inference-1',
+    'variational-inference-2',
+    'variational-inference-3'
 )
 
 

@@ -14,203 +14,203 @@ const posts = [
 		tags: ["#svelte", "#sapper", "#serverless", "#python", "#javascript"],
 		date: "2020-07-12",
 		html: `
-		<p class="post_p">
-			During quarantine I had more free time than usual so I decided it was time
-			to modernize my <a href="https://albertopou.dev/" class="post_link" target="_blank">blog</a>.
-			I coded the first version 5 years ago choosing technologies
-			simply because I knew them. That resulted in a <a href="https://www.djangoproject.com/" class="post_link" target="_blank">Django</a>
-			 app with a <a href="https://www.postgresql.org/" class="post_link" target="_blank">Postgres</a> database 
-			 and an outdated design using <a href="https://getbootstrap.com/" class="post_link" target="_blank">Bootstrap</a>.  
-			After the years I used to use my blog to test new technologies so I had versions 
-			of my blog using <a href="https://jquery.com/" class="post_link" target="_blank">JQuery</a>,
-			<a href="https://vuejs.org/" class="post_link" target="_blank">Vue</a>, Django, Django 2.0 
-			using a DDD approach, ... and it was deployed on <a href="https://www.digitalocean.com/" class="post_link" target="_blank">Digital Ocean</a>,
-			<a href="https://aws.amazon.com/" class="post_link" target="_blank">AWS</a>,
-			<a href="https://www.heroku.com/" class="post_link" target="_blank">Heroku</a>, 
-			Heroku using <a href="https://www.terraform.io/" class="post_link" target="_blank">Terraform</a>, ... 
-			Anyone who saw the code could say that a blog should never be so over-engineer, and I agree. For this 
-			reason I decided to check which technologies were being used nowadays to make simple blogs.  
-		</p>
-		<p class="post_p">
-			My goal was to make a simple, fast and modern blog which allows me to write posts easily, 
-			deploy them on <a href="https://pages.github.com/" class="post_link" target="_blank">Github Pages</a> 
-			and, of course, spend as little time as possible on maintenance. After check several technologies 
-			a co-worker told me about <a href="https://svelte.dev/" class="post_link" target="_blank">Svelte</a>
-			and I loved it. Svelte and its server-rendering backend <a href="https://sapper.svelte.dev/" class="post_link" target="_blank">Sapper</a>
-			were what I was looking for and there were a lot of examples of blogs made with these technologies.  
-			After that I just required a new design. I was tired about Bootstrap designs so I was looking 
-			for something new, and then I found <a href="https://tailwindcss.com/" class="post_link" target="_blank">Tailwind</a>. 
-			Tailwind had all that I needed. A framework which, after memorize some easy classes, allows you not to write CSS. Maybe for 
-			you this is not a plus feature but for me, a backend coder, it was perfect. 
-		</p>
-		<h4 class="post_section_title text-2xl text-bold">The good parts of this architecture</h4>
-		<p class="post_p">
-			After this introduction I want to list the advantages that I found making my 
-			blog with Svelte, Sapper and Tailwind. Remember that this benefits I found exist in 
-			the case of study of a simple blog. 
-		</p>
-		<ul class="post_list">
-			<li>
-				<strong>Easy installation</strong>. Sapper has a great initial template and several pre-configured commands
-				which allows you to focus on the important parts of your project. 
-			</li>
-			<li>
-				<strong>Great development environment</strong>. Live reload! When you modify some file, the navigator
-				reloads the page automatically. Maybe I'm overestimating this feature but I work everyday in an outdated
-				frontend and this feature drove me crazy!
-			</li>
-			<li>
-				<strong>Static page</strong>. Sapper allows you to export your project as a static site. 
-				Then it can be hosted and served as static files, which allows it to be deployed on hosting
-				environments such as Github Pages. To serve the page as static files also improves
-				the speed notoriously, obtaining better results in web positioning. You can use apps as 
-				<a href="https://developers.google.com/web/tools/lighthouse" class="post_link" target="_blank">Lighthouse</a> to check this.
-			</li>
-			<li>
-				<strong>Elegant syntax</strong>. I worked with different frontend technologies such as JQuery, 
-				<a href="https://knockoutjs.com/" class="post_link" target="_blank">Knockout</a>, 
-				 <a href="https://angular.io/" class="post_link" target="_blank">Angular</a> or Vue 
-				and Svelte syntax looks perfect for me. It's easy to understand, simple and elegant. In the following section you'll 
-				be able to check it in a easy example I'll show you.  
-			</li>
-			<li>
-				<strong>Component structure</strong>. One thing normally I don't like in a frontend based project is 
-				the way how developers structure the code. Last years I was working in projects where component HTML, Javascript and
-				specific CSS were in different folders and then developers loose to much time searching the 
-				Javascript or de CSS associated to a particular template. Svelte joins all in one file (.svelte) and
-				in my opinion is a great solution to improve the components reusability.
-			</li>
-			<li>
-				<strong>Speed</strong>. Svelte is based on reactivity. To understand easily which reasons 
-				allows Svelte to get such good results in terms of speed compared to other frameworks you can watch this 
-				<a href="https://www.youtube.com/watch?v=gJ2P6hGwcgo" class="post_link" target="_blank">great conference</a>
-				of its creator Rich Harris.
-			</li>
-			<li>
-				<strong>No CSS</strong>. With Tailwind you don't need to write CSS code. With its pre-defined classes
-				you can make pretty much anything.
-			</li>
-			<li>
-				<strong>Easy personalization</strong>. At Tailwind config file you can configure stuff as main 
-				colors, default spacing, text font, ... and using @apply CSS sentence you can create your own classes easily.
-			</li>
-			<li>
-				<strong>0 costs</strong>. With this architecture I was able to have my blog with 0 costs (I just have to pay the domain). 
-			</li>
-		</ul>
-		<p class="post_p">
-			Now I'm going to show
-			you how I made the comments engine using <a href="https://www.serverless.com/" class="post_link" target="_blank">Serverless</a> and Svelte
-			as an example of use of these frameworks.
-		</p>
-		<h4 class="post_section_title text-2xl text-bold">Persistent storage for comments</h4>
-		<p class="post_p">
-			A comments engine requires a persistent storage so I needed to add something else to the blog in order to allow users to write comments.
-			Serverless is a framework that makes easier to mount a serverless infrastructure with AWS. In this case I decided
-			to use <a href="https://aws.amazon.com/dynamodb/" class="post_link" target="_blank">Dynamo DB</a>
-			to store post user comments and <a href="https://aws.amazon.com/lambda/" class="post_link" target="_blank">Lambda</a> to get and publish comments.
-			This functions are not all time waiting for requests in a server (for this reason is so cheap).
-			AWS Lambda deploys them very fast just when they are invoked by different events such as queue events, S3 changes, HTTP requests, .... 
-			In this case the event was going to 
-			be an HTTP request to the <a href="https://aws.amazon.com/api-gateway/" class="post_link" target="_blank">AWS API Gateway</a>.
-		</p>
-		<p class="post_p">
-			All this could seem very complex but with a framework as Serverless is done with a simple config file. 
-			<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/serverless.yml" class="post_link" target="_blank">Here</a>
-			you have the config file I wrote to have 2 lambda functions (at 2 different endpoints), one for 
-			get post comments and another to publish new ones. At this config file you can configure several things, from
-			language used and access management till requests rate limits and database resources. In this case the configuration is very simple, 
-			the 2 lambda functions are 2 views of a simple <a href="https://flask.palletsprojects.com/en/1.1.x/" class="post_link" target="_blank">Flask</a> application. 
-			This views just get the comments or stores a new one in the database (in this case Dynamo DB, you can check the databse repository 
-			<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/repository.py" class="post_link" target="_blank">here</a>).
-		</p>
-		<div class="post_code">
-			<pre><code>from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
-
-from exceptions import RepositoryException
-from repository import comments_repository
-
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-
-@app.route('/comments/<string:post_slug>', methods=['GET'])
-@cross_origin()
-def get_comments(post_slug):
-    try:
-        comments = comments_repository.get_comments(post_slug)
-        if comments:
-            return jsonify(comments), 200
-        return jsonify({'error': 'Comments not found'}), 404
-    except RepositoryException as e:
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/comments/<string:post_slug>', methods=['POST'])
-@cross_origin()
-def add_comment(post_slug):
-    try:
-        comments_repository.add_comment(post_slug, request.get_json())
-        return jsonify({}), 200
-    except RepositoryException as e:
-        return jsonify({'error': str(e)}), 500
-
-			</code></pre>
-		</div>
-		<p class="post_p">
-			If you need you can check the rest of the 
-			<a href="https://github.com/bertini36/bertini36.github.io/tree/develop/lambdas" class="post_link" target="_blank">code</a>.
-		</p>
-		<p class="post_p">
-			Now we need a Svelte component that gets the comments of a post and publish new ones using the endpoints created with Serverless. In the following
-			code you can revise the component part required to get and show the comments of a post (.svelte file).
-		</p>
-		<div class="post_code">
-			<pre><code>&lt;script&gt;
-   export let slug;
-   const comments_url = \`dummy.com/prod/comments/\$\{slug\}\`;
-   let comments = getComments();
+			<p class="post_p">
+				During quarantine I had more free time than usual so I decided it was time
+				to modernize my <a href="https://albertopou.dev/" class="post_link" target="_blank">blog</a>.
+				I coded the first version 5 years ago choosing technologies
+				simply because I knew them. That resulted in a <a href="https://www.djangoproject.com/" class="post_link" target="_blank">Django</a>
+				 app with a <a href="https://www.postgresql.org/" class="post_link" target="_blank">Postgres</a> database 
+				 and an outdated design using <a href="https://getbootstrap.com/" class="post_link" target="_blank">Bootstrap</a>.  
+				After the years I used to use my blog to test new technologies so I had versions 
+				of my blog using <a href="https://jquery.com/" class="post_link" target="_blank">JQuery</a>,
+				<a href="https://vuejs.org/" class="post_link" target="_blank">Vue</a>, Django, Django 2.0 
+				using a DDD approach, ... and it was deployed on <a href="https://www.digitalocean.com/" class="post_link" target="_blank">Digital Ocean</a>,
+				<a href="https://aws.amazon.com/" class="post_link" target="_blank">AWS</a>,
+				<a href="https://www.heroku.com/" class="post_link" target="_blank">Heroku</a>, 
+				Heroku using <a href="https://www.terraform.io/" class="post_link" target="_blank">Terraform</a>, ... 
+				Anyone who saw the code could say that a blog should never be so over-engineer, and I agree. For this 
+				reason I decided to check which technologies were being used nowadays to make simple blogs.  
+			</p>
+			<p class="post_p">
+				My goal was to make a simple, fast and modern blog which allows me to write posts easily, 
+				deploy them on <a href="https://pages.github.com/" class="post_link" target="_blank">Github Pages</a> 
+				and, of course, spend as little time as possible on maintenance. After check several technologies 
+				a co-worker told me about <a href="https://svelte.dev/" class="post_link" target="_blank">Svelte</a>
+				and I loved it. Svelte and its server-rendering backend <a href="https://sapper.svelte.dev/" class="post_link" target="_blank">Sapper</a>
+				were what I was looking for and there were a lot of examples of blogs made with these technologies.  
+				After that I just required a new design. I was tired about Bootstrap designs so I was looking 
+				for something new, and then I found <a href="https://tailwindcss.com/" class="post_link" target="_blank">Tailwind</a>. 
+				Tailwind had all that I needed. A framework which, after memorize some easy classes, allows you not to write CSS. Maybe for 
+				you this is not a plus feature but for me, a backend coder, it was perfect. 
+			</p>
+			<h4 class="post_section_title text-2xl text-bold">The good parts of this architecture</h4>
+			<p class="post_p">
+				After this introduction I want to list the advantages that I found making my 
+				blog with Svelte, Sapper and Tailwind. Remember that this benefits I found exist in 
+				the case of study of a simple blog. 
+			</p>
+			<ul class="post_list">
+				<li>
+					<strong>Easy installation</strong>. Sapper has a great initial template and several pre-configured commands
+					which allows you to focus on the important parts of your project. 
+				</li>
+				<li>
+					<strong>Great development environment</strong>. Live reload! When you modify some file, the navigator
+					reloads the page automatically. Maybe I'm overestimating this feature but I work everyday in an outdated
+					frontend and this feature drove me crazy!
+				</li>
+				<li>
+					<strong>Static page</strong>. Sapper allows you to export your project as a static site. 
+					Then it can be hosted and served as static files, which allows it to be deployed on hosting
+					environments such as Github Pages. To serve the page as static files also improves
+					the speed notoriously, obtaining better results in web positioning. You can use apps as 
+					<a href="https://developers.google.com/web/tools/lighthouse" class="post_link" target="_blank">Lighthouse</a> to check this.
+				</li>
+				<li>
+					<strong>Elegant syntax</strong>. I worked with different frontend technologies such as JQuery, 
+					<a href="https://knockoutjs.com/" class="post_link" target="_blank">Knockout</a>, 
+					 <a href="https://angular.io/" class="post_link" target="_blank">Angular</a> or Vue 
+					and Svelte syntax looks perfect for me. It's easy to understand, simple and elegant. In the following section you'll 
+					be able to check it in a easy example I'll show you.  
+				</li>
+				<li>
+					<strong>Component structure</strong>. One thing normally I don't like in a frontend based project is 
+					the way how developers structure the code. Last years I was working in projects where component HTML, Javascript and
+					specific CSS were in different folders and then developers loose to much time searching the 
+					Javascript or de CSS associated to a particular template. Svelte joins all in one file (.svelte) and
+					in my opinion is a great solution to improve the components reusability.
+				</li>
+				<li>
+					<strong>Speed</strong>. Svelte is based on reactivity. To understand easily which reasons 
+					allows Svelte to get such good results in terms of speed compared to other frameworks you can watch this 
+					<a href="https://www.youtube.com/watch?v=gJ2P6hGwcgo" class="post_link" target="_blank">great conference</a>
+					of its creator Rich Harris.
+				</li>
+				<li>
+					<strong>No CSS</strong>. With Tailwind you don't need to write CSS code. With its pre-defined classes
+					you can make pretty much anything.
+				</li>
+				<li>
+					<strong>Easy personalization</strong>. At Tailwind config file you can configure stuff as main 
+					colors, default spacing, text font, ... and using @apply CSS sentence you can create your own classes easily.
+				</li>
+				<li>
+					<strong>0 costs</strong>. With this architecture I was able to have my blog with 0 costs (I just have to pay the domain). 
+				</li>
+			</ul>
+			<p class="post_p">
+				Now I'm going to show
+				you how I made the comments engine using <a href="https://www.serverless.com/" class="post_link" target="_blank">Serverless</a> and Svelte
+				as an example of use of these frameworks.
+			</p>
+			<h4 class="post_section_title text-2xl text-bold">Persistent storage for comments</h4>
+			<p class="post_p">
+				A comments engine requires a persistent storage so I needed to add something else to the blog in order to allow users to write comments.
+				Serverless is a framework that makes easier to mount a serverless infrastructure with AWS. In this case I decided
+				to use <a href="https://aws.amazon.com/dynamodb/" class="post_link" target="_blank">Dynamo DB</a>
+				to store post user comments and <a href="https://aws.amazon.com/lambda/" class="post_link" target="_blank">Lambda</a> to get and publish comments.
+				This functions are not all time waiting for requests in a server (for this reason is so cheap).
+				AWS Lambda deploys them very fast just when they are invoked by different events such as queue events, S3 changes, HTTP requests, .... 
+				In this case the event was going to 
+				be an HTTP request to the <a href="https://aws.amazon.com/api-gateway/" class="post_link" target="_blank">AWS API Gateway</a>.
+			</p>
+			<p class="post_p">
+				All this could seem very complex but with a framework as Serverless is done with a simple config file. 
+				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/serverless.yml" class="post_link" target="_blank">Here</a>
+				you have the config file I wrote to have 2 lambda functions (at 2 different endpoints), one for 
+				get post comments and another to publish new ones. At this config file you can configure several things, from
+				language used and access management till requests rate limits and database resources. In this case the configuration is very simple, 
+				the 2 lambda functions are 2 views of a simple <a href="https://flask.palletsprojects.com/en/1.1.x/" class="post_link" target="_blank">Flask</a> application. 
+				This views just get the comments or stores a new one in the database (in this case Dynamo DB, you can check the databse repository 
+				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/repository.py" class="post_link" target="_blank">here</a>).
+			</p>
+			<div class="post_code">
+				<pre><code>from flask import Flask, jsonify, request
+	from flask_cors import CORS, cross_origin
 	
-   async function getComments() {
-      const response = await fetch(comments_url);
-      if (!response.ok) throw new Error(text);
-      return await response.json();
-    }
-&lt;/script&gt;
-
-{#await comments}
-   &lt;figure class="flex justify-center">&lt;img class="w-48" src="loader.gif" alt="Loader"&gt;&lt;/figure&gt;
-{:then comments}
-   {#each comments as comment}
-      &lt;div class="shadow bg-white rounded-md mb-1" role="alert"&gt;
-         &lt;div class="p-4 flex"&gt;
-            &lt;div class="pl-2"&gt;
-               &lt;p class="font-bold text-gray-700"&gt;{comment.text}&lt;/p&gt;
-               &lt;p class="text-gray-600"&gt;
-                  {comment.name} &lt;span class="text-gray-500 text-sm"&gt;{comment.date}&lt;/span&gt;
-                &lt;/p&gt;
-            &lt;/div&gt;
-         &lt;/div&gt;
-      &lt;/div&gt;
-   {/each}
-{:catch error}
-   &lt;p>No comments yet&lt;/p&gt;
-{/await}
-			</code></pre>
-		</div>
-		<p class="post_p">
-			I'm using {#await} Svelte declarative to wait the fetch promise of the comments request. Svelte
-			is going to manage the comments as soon as the promise ends and then comments will be rendered
-			using {#each} declarative. All classes used to give styles are Tailwind classes. If you want to see
-			the rest of the code to publish new comments 
-			<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/src/components/Comments.svelte" class="post_link" target="_blank">here</a> 
-			you have the complete component and the result online is just below!
-		</p>
-		<p class="post_p">
-			Feel free to ask anything in the comments section!
-		</p>
+	from exceptions import RepositoryException
+	from repository import comments_repository
+	
+	app = Flask(__name__)
+	cors = CORS(app)
+	app.config['CORS_HEADERS'] = 'Content-Type'
+	
+	
+	@app.route('/comments/<string:post_slug>', methods=['GET'])
+	@cross_origin()
+	def get_comments(post_slug):
+		try:
+			comments = comments_repository.get_comments(post_slug)
+			if comments:
+				return jsonify(comments), 200
+			return jsonify({'error': 'Comments not found'}), 404
+		except RepositoryException as e:
+			return jsonify({'error': str(e)}), 500
+	
+	
+	@app.route('/comments/<string:post_slug>', methods=['POST'])
+	@cross_origin()
+	def add_comment(post_slug):
+		try:
+			comments_repository.add_comment(post_slug, request.get_json())
+			return jsonify({}), 200
+		except RepositoryException as e:
+			return jsonify({'error': str(e)}), 500
+	
+				</code></pre>
+			</div>
+			<p class="post_p">
+				If you need you can check the rest of the 
+				<a href="https://github.com/bertini36/bertini36.github.io/tree/develop/lambdas" class="post_link" target="_blank">code</a>.
+			</p>
+			<p class="post_p">
+				Now we need a Svelte component that gets the comments of a post and publish new ones using the endpoints created with Serverless. In the following
+				code you can revise the component part required to get and show the comments of a post (.svelte file).
+			</p>
+			<div class="post_code">
+				<pre><code>&lt;script&gt;
+	   export let slug;
+	   const comments_url = \`dummy.com/prod/comments/\$\{slug\}\`;
+	   let comments = getComments();
+		
+	   async function getComments() {
+		  const response = await fetch(comments_url);
+		  if (!response.ok) throw new Error(text);
+		  return await response.json();
+		}
+	&lt;/script&gt;
+	
+	{#await comments}
+	   &lt;figure class="flex justify-center">&lt;img class="w-48" src="loader.gif" alt="Loader"&gt;&lt;/figure&gt;
+	{:then comments}
+	   {#each comments as comment}
+		  &lt;div class="shadow bg-white rounded-md mb-1" role="alert"&gt;
+			 &lt;div class="p-4 flex"&gt;
+				&lt;div class="pl-2"&gt;
+				   &lt;p class="font-bold text-gray-700"&gt;{comment.text}&lt;/p&gt;
+				   &lt;p class="text-gray-600"&gt;
+					  {comment.name} &lt;span class="text-gray-500 text-sm"&gt;{comment.date}&lt;/span&gt;
+					&lt;/p&gt;
+				&lt;/div&gt;
+			 &lt;/div&gt;
+		  &lt;/div&gt;
+	   {/each}
+	{:catch error}
+	   &lt;p>No comments yet&lt;/p&gt;
+	{/await}
+				</code></pre>
+			</div>
+			<p class="post_p">
+				I'm using {#await} Svelte declarative to wait the fetch promise of the comments request. Svelte
+				is going to manage the comments as soon as the promise ends and then comments will be rendered
+				using {#each} declarative. All classes used to give styles are Tailwind classes. If you want to see
+				the rest of the code to publish new comments 
+				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/src/components/Comments.svelte" class="post_link" target="_blank">here</a> 
+				you have the complete component and the result online is just below!
+			</p>
+			<p class="post_p">
+				Feel free to ask anything in the comments section!
+			</p>
 		`
 	},
 
@@ -853,6 +853,250 @@ int main(int argc, char *argv[]) {
 				at config folder, there are a script to know graphic card specifications and a possible CUDA configuration
 				for that card.
 			</p>
+		`
+	},
+
+	{
+		title: 'Variational Inference II',
+		slug: 'variational-inference-2',
+		tags: ["#probabilistic-machine-learning", "#variational-inference", "#statistics"],
+		date: "2017-02-25",
+		html: `
+			<p class="post_p">
+			    In this post I'm going to continue explaining concepts that I introduced in my
+				<a href="https://albertopou.dev/blog/variational-inference-1" class="post_link" target="_blank">previous post</a> about
+				Variational Inference (VI). At first I'm going to show that to find the best posterior approach it's necessary
+				to minimize the Kullback-Leibler divergence (KL) between the variational model q(θ|λ) and the probabilistic
+				model p(θ|x). Starting from Bayes' rule we have:
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/ELBO_derivation.png"
+					 alt="ELBO derivation">
+			</figure>
+			<p class="post_p">
+				This expression gives us a more affordable way to calculate the evidence of the model where each factor is:
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/ELBO_explanation.png"
+					 alt="ELBO explantation">
+			</figure>
+			<p class="post_p">
+				With this demonstration we get that minimize KL[q(θ|λ)||p(θ|x)] is equivalent to maximize ELBO(q(θ|λ),p(x,θ))
+				which is easier to evaluate. An intractable integral has been transformed to an expectation of a known distribution.
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/kullback_leibler.png"
+					 alt="ELBO">
+			</figure>
+			<figcaption class="post_image_figcaption">
+				Maximize ELBO is equivalent to minimize the distance between variational model and probabilistic model.
+			</figcaption>
+			<p class="post_p">
+				Variational inference uses ELBO as algorithm stop condition. When some iterations, where ELBO value does not
+				increase, are executed it means that good values for variational model λ params have been found. These are values of
+				λ which get closer probabilistic model (the posterior). We can rewrite ELBO as:
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/ELBO_reescritura.png"
+					 alt="Rewrited ELBO">
+			</figure>
+			<p class="post_p">
+				Where each factor is:
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/ELBO_terminos.png"
+					 alt="ELBO factors">
+			</figure>
+			<p class="post_p">
+				And now, if we take into account the Mean-Field assumption commented in the
+				<a href="https://albertopou.dev/blog/variational-inference-1" class="post_link" target="_blank">previous post</a>,
+				ELBO ends as follows:
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image" style="width: 90%"
+					 src="variational-inference-2/ELBO_MeanField.png"
+					 alt="ELBO taking into account Mean Field assumption">
+			</figure>
+			<h4 class="post_section_title text-2xl text-black">Variational Inference algorithm</h4>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/VI.png"
+					 alt="Variational Inference algorithm">
+			</figure>
+			<p class="post_p">
+				This algorithm represents the basic idea of VI. In practice more things must be taken into account for its correct
+				operation. First, variational model could be formed by local and global variables and the updates of these have to be
+				done in a concrete way. You also have to choose an inference method: Coordinate Ascent, Gradient Ascent, Sthocastic
+				Gradient Descent, ... Chosen inference method doesn't change the basic structure of the VI algorithm just change
+				the method of obtaining the λ new values of variational model in each iteration.
+			</p>
+			<h5 class="post_section_title text-xl text-black">Coordinate Ascent Variational Inference</h5>
+			<p class="post_p">
+				The most traditional method for the inference of probabilistic models is: Coordinate Ascent Variational Inference
+				(CAVI). For the implementation of this kind of inference you require knowledge of Bayesian statistics because
+				for the update of each variational model λ parameter and ELBO some analytical closed formulas have to be derived.
+				As previously mentioned when the model is completely conjugated (as Dirichlet-Categorical model or Normal Inverse
+				Wishart-Normal model) posterior can be analytically calculated, that is, without the need to approximate it.
+				However if we have a bast amount of data this analytical calculus is impracticable due to the operations with
+				very large matrices in memory. For this reason, in this case and the case of no conjugated models it is a good
+				option to approximate the posterior using VI.
+			</p>
+			<p class="post_p">
+				The derivation of the analytical updates for the variational model parameters can be done in two ways: generic
+				derivation or using the properties of the
+				<a href="https://en.wikipedia.org/wiki/Exponential_family" class="post_link" target="_blank">Exponential Family</a>.
+			</p>
+			<p class="post_p">
+				Generic derivarion is based on the following formula (assuming the Mean-Field assumption):
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/generic_derivation.png"
+					 alt="Generic derivation">
+			</figure>
+			<p class="post_p">
+				This derivation has to be done for each variable of the variational model θ<small>i</small> and after that,
+				a statistician could deduce the distribution type of the variational parameter and how to update it.
+			</p>
+			<p class="post_p">
+				Another way to obtain the variational parameters updates is to derive them using the properties of the Exponential
+				Family. To this family belong all the distributions that can be written in the form:
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/exponential_family.png"
+					 alt="Exponential family">
+			</figure>
+			<ul class="post_list">
+				<li>h(x): Base measure.</li>
+				<li>η(θ): Natural parameters(it just depends on the parameters).</li>
+				<li>t(x): Sufficient statistics(it just depends on the data). Lets know the shape of the distribution.
+					Describe the possible space for the distribution parameters.</li>
+				<li>a(η(θ)): Cumulant. It is a normalizer.</li>
+			</ul>
+			<p class="post_p">
+				This family allows to establish conjugation relations between distributions. When creating the joint
+				distribution based on two distributions the natural parameters of one allow some simplification in the
+				formulation together with the sufficient statistics of the other one we say that the first distribution is
+				conjugated of the second. The conjugated models, as already mentioned, thanks to these simplifications,
+				allow to calculate the posterior analytically.
+			</p>
+			<h5 class="post_section_title text-xl text-black">Coordinate Ascent Variational Inference algorithm</h5>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/CAVI.png"
+					 alt="Coordinate Ascent Variational Inference Algorithm">
+			</figure>
+			<p class="post_p">
+				In this version of CAVI algorithm the distinction between updating local and global variables of the model has
+				already been taken into accoun.
+			</p>
+			<h5 class="post_section_title text-xl text-black">Gradient Ascent Variational Inference</h5>
+			<p class="post_p">
+				A more naive inference alternative is Gradient Ascent Variational Inference (GAVI). The difference is how is
+				the variational parameters update. It is not done analytically with derived formulas by a statistician,
+				it is an exploratory process. GAVI is based on the Gradient Descent/Ascent algorithm.
+			</p>
+			<h5 class="post_section_title text-xl text-black">Gradient Ascent</h5>
+			<p class="post_p">
+				Gradient Ascent aims to maximize a cost function C(λ) parameterized by the model parameters, λ. The algorithm
+				optimizes these parameters λ in the gradient direction (in the case of Gradient Descent, in the opposite
+				direction of the gradient) of the objective function ∇<small>λ</small>C(λ).
+				In our case we need Gradient Ascent because we want to maximize ELBO function. Learning rate η>0  determines the
+				size of the step in the direction of the local maximum. Gradient Ascent explores latent variables space of the
+				model and moves in the direction of maximum slope (which is indicated by the gradient of the function) until find
+				a local maximum. Variational model parameters are updated as follows:
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/gradient.png"
+					 alt="Gradient application">
+			</figure>
+			<p class="post_p">
+				Over the last years optimizations of this algorithm have been appearing: Momentum, Adagrad, Adadelta, RMSprop,
+				Adam, ... the improvements they offer are based on aspects such as each parameter λ<small>i</small> has its
+			    own learning rate η<small>i</small> or taking into account the value of previous iterations gradients to calculate
+				the following.
+			</p>
+			<h5 class="post_section_title text-xl text-black">Gradient Ascent Variational Inference algorithm</h5>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/GAVI.png"
+					 alt="Gradient Ascent Variational Inference algorithm">
+			</figure>
+			<p class="post_p">
+				A problem of this algorithm to approximate the posterior (which causes more inaccurate convergences) is the use of
+				the gradient to optimize variational parameters. The gradient supposes that latent variables space is an
+				Euclidean space. This fact implies the assumption that distance between the distributions is mesured by the
+				Euclidean distance of their parameters. The solution to this problem, to find the real distance between two
+				distributions, is to use the natural gradient.
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/natural_gradient.png"
+					 alt="Natural gradient definition">
+			</figure>
+			<p class="post_p">
+				Natural gradient indicates the direction of maximum slope in other space, the Riemman space, where the real
+				distance between distributions is taken into account. This distance can be calculated premultiplying the normal
+				gradient by the inverse of the matrix Fisher's, G(λ).
+			</p>
+			<figure class="post_figure flex justify-center">
+				<img class="post_image"
+					 src="variational-inference-2/natural_gradient2.png"
+					 alt="Natural gradient definition">
+			</figure>
+			<p class="post_p">
+				In the case of CAVI, when the analytical updates of each variational parameter are derived, the shape of the
+				distributions to measure the distance between them is already taking into account.
+			</p>
+			<h5 class="post_section_title text-xl text-black">Efficiency problems</h5>
+			<p class="post_p">
+				Nowadays, in the already known as the information age, algorithms used in machine learning use huge volumes of
+				data. This causes programmers to scale algorithms or design alternatives less computationally expensive. CAVI and
+				GAVI have to pass through all the data for each iteration. This procedure for massive datasets is intractable. In
+				the next post I'm going to explain the measures you can take in this cases and how to solve the scalability problem.
+			</p>
+			<h4 class="post_section_title text-2xl text-black">References</h4>
+			<ul class="post_list">
+				<li>
+					Journal of the American Statistical AssociationGeorge
+					(E. P. Box)
+				</li>
+				<li>
+					Build, Compute, Critique, Repeat: Data Analysis with Latent Variable Models
+					(David M. Blei)
+				</li>
+				<li>
+					Probabilistic graphical models: principles and techniques
+					(Koller, Daphne, and Nir Friedman)
+				</li>
+				<li>
+					Model-based Machine Learning
+					(Christopher M. Bishop)
+				</li>
+				<li>
+					Machine Learning. A probabilistic perspective
+					(Kevin P. Murphy)
+				</li>
+				<li>
+					An overview of gradient descent optimization algorithms
+					(Sebastian Rudes)
+				</li>
+				<li>
+					Variational Bayesian inference (slides)
+					(Kay H. Brodersen)
+				</li>
+				<li>
+					Variational Inference
+					(David M. Blei)
+				</li>
+			</ul>
 		`
 	},
 
