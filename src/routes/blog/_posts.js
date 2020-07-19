@@ -125,38 +125,38 @@ const posts = [
 				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/repository.py" class="post_link" target="_blank">here</a>).
 			</p>
 			<div class="post_code">
-				<pre><code>from flask import Flask, jsonify, request
-	from flask_cors import CORS, cross_origin
-	
-	from exceptions import RepositoryException
-	from repository import comments_repository
-	
-	app = Flask(__name__)
-	cors = CORS(app)
-	app.config['CORS_HEADERS'] = 'Content-Type'
-	
-	
-	@app.route('/comments/<string:post_slug>', methods=['GET'])
-	@cross_origin()
-	def get_comments(post_slug):
-		try:
-			comments = comments_repository.get_comments(post_slug)
-			if comments:
-				return jsonify(comments), 200
-			return jsonify({'error': 'Comments not found'}), 404
-		except RepositoryException as e:
-			return jsonify({'error': str(e)}), 500
-	
-	
-	@app.route('/comments/<string:post_slug>', methods=['POST'])
-	@cross_origin()
-	def add_comment(post_slug):
-		try:
-			comments_repository.add_comment(post_slug, request.get_json())
-			return jsonify({}), 200
-		except RepositoryException as e:
-			return jsonify({'error': str(e)}), 500
-	
+				<pre><code>
+from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
+    
+from exceptions import RepositoryException
+from repository import comments_repository
+
+app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+    
+    
+@app.route('/comments/<string:post_slug>', methods=['GET'])
+@cross_origin()
+def get_comments(post_slug):
+    try:
+        comments = comments_repository.get_comments(post_slug)
+        if comments:
+            return jsonify(comments), 200
+        return jsonify({'error': 'Comments not found'}), 404
+    except RepositoryException as e:
+        return jsonify({'error': str(e)}), 500
+
+    
+@app.route('/comments/<string:post_slug>', methods=['POST'])
+@cross_origin()
+def add_comment(post_slug):
+    try:
+        comments_repository.add_comment(post_slug, request.get_json())
+        return jsonify({}), 200
+    except RepositoryException as e:
+        return jsonify({'error': str(e)}), 500
 				</code></pre>
 			</div>
 			<p class="post_p">
@@ -168,36 +168,37 @@ const posts = [
 				code you can revise the component part required to get and show the comments of a post (.svelte file).
 			</p>
 			<div class="post_code">
-				<pre><code>&lt;script&gt;
-	   export let slug;
-	   const comments_url = \`dummy.com/prod/comments/\$\{slug\}\`;
-	   let comments = getComments();
-		
-	   async function getComments() {
-		  const response = await fetch(comments_url);
-		  if (!response.ok) throw new Error(text);
-		  return await response.json();
-		}
-	&lt;/script&gt;
-	
-	{#await comments}
-	   &lt;figure class="flex justify-center">&lt;img class="w-48" src="loader.gif" alt="Loader"&gt;&lt;/figure&gt;
-	{:then comments}
-	   {#each comments as comment}
-		  &lt;div class="shadow bg-white rounded-md mb-1" role="alert"&gt;
-			 &lt;div class="p-4 flex"&gt;
-				&lt;div class="pl-2"&gt;
-				   &lt;p class="font-bold text-gray-700"&gt;{comment.text}&lt;/p&gt;
-				   &lt;p class="text-gray-600"&gt;
-					  {comment.name} &lt;span class="text-gray-500 text-sm"&gt;{comment.date}&lt;/span&gt;
-					&lt;/p&gt;
-				&lt;/div&gt;
-			 &lt;/div&gt;
-		  &lt;/div&gt;
-	   {/each}
-	{:catch error}
-	   &lt;p>No comments yet&lt;/p&gt;
-	{/await}
+				<pre><code>
+&lt;script&gt;
+   export let slug;
+   const comments_url = \`dummy.com/prod/comments/\$\{slug\}\`;
+   let comments = getComments();
+    
+   async function getComments() {
+      const response = await fetch(comments_url);
+      if (!response.ok) throw new Error(text);
+      return await response.json();
+    }
+&lt;/script&gt;
+
+{#await comments}
+   &lt;figure class="flex justify-center">&lt;img class="w-48" src="loader.gif" alt="Loader"&gt;&lt;/figure&gt;
+{:then comments}
+   {#each comments as comment}
+      &lt;div class="shadow bg-white rounded-md mb-1" role="alert"&gt;
+         &lt;div class="p-4 flex"&gt;
+            &lt;div class="pl-2"&gt;
+               &lt;p class="font-bold text-gray-700"&gt;{comment.text}&lt;/p&gt;
+               &lt;p class="text-gray-600"&gt;
+                  {comment.name} &lt;span class="text-gray-500 text-sm"&gt;{comment.date}&lt;/span&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+         &lt;/div&gt;
+      &lt;/div&gt;
+   {/each}
+{:catch error}
+   &lt;p>No comments yet&lt;/p&gt;
+{/await}
 				</code></pre>
 			</div>
 			<p class="post_p">
