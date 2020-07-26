@@ -9,7 +9,7 @@
     <title>Alberto Pou</title>
 </svelte:head>
 
-<h1 class="text-3xl text-center lg:mt-10 xl:mt-20">>albertopou.dev<span class="blinking">_</span></h1>
+<h1 class="text-3xl text-center lg:mt-10 xl:mt-20">>&nbsp;albertopou.dev<span class="blinking">_</span></h1>
 <div class="text-center">
     Powered by
     <a class="hover:text-red-500 hover:underline" href="https://svelte.dev/"
