@@ -14519,6 +14519,15 @@ a {
   border-radius: 2px;
 }
 
+.blinking {
+  animation: blinker 1.5s infinite;
+}
+
+@keyframes blinker {
+  0% { opacity: 0;
+  }
+}
+
 @media (min-width: 640px) {
   .sm\:space-y-0 > :not(template) ~ :not(template) {
     --space-y-reverse: 0;
