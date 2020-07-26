@@ -137,3 +137,11 @@ a {
   padding: 0.2em 0.4em;
   border-radius: 2px;
 }
+
+.blinking {
+  animation: blinker 1.5s infinite;
+}
+
+@keyframes blinker {
+  0% { opacity: 0; }
+}

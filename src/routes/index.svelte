@@ -9,7 +9,7 @@
     <title>Alberto Pou</title>
 </svelte:head>
 
-<h1 class="text-3xl text-center lg:mt-10 xl:mt-20">Alberto Pou - Dev Blog</h1>
+<h1 class="text-3xl text-center lg:mt-10 xl:mt-20">>&nbsp;albertopou.dev<span class="blinking">_</span></h1>
 <div class="text-center">
     Powered by
     <a class="hover:text-red-500 hover:underline" href="https://svelte.dev/"
@@ -27,6 +27,7 @@
        href="https://www.serverless.com/" rel="noreferrer" target="_blank">
         #serverless
     </a>
+    🚀
 </div>
 
 <div class="max-w-sm w-full lg:max-w-full lg:flex mt-10 lg:mt-16 md:max-w-full">
@@ -35,7 +36,7 @@
     </div>
     <div class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal md:flex md:content-center md:flex-wrap">
         <div>
-            <div class="text-gray-900 font-bold text-2xl mb-2">Who I am?</div>
+            <div class="text-gray-900 font-bold text-2xl mb-2">Who I am?&nbsp;👨‍💻</div>
             <p class="text-gray-700 text-xl mb-5">
                 Hi, I'm Alberto. I live in Mallorca, a small island in the Mediterranean sea.
                 I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.roiback.com/" target="_blank">Roiback</a>.

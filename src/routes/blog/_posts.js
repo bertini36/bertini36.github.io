@@ -9,7 +9,7 @@
 
 const posts = [
 		{
-		title: 'Recoding my blog',
+		title: 'Recoding my blog ⛩',
 		slug: 'recoding-my-blog',
 		tags: ["#svelte", "#sapper", "#serverless", "#python", "#javascript"],
 		date: "2020-07-12",
@@ -216,7 +216,7 @@ def add_comment(post_slug):
 	},
 
 	{
-		title: 'Profiling on social networks',
+		title: 'Profiling on social networks 🤹‍♂️',
 		slug: 'profiling-on-social-networks',
 		tags: ["#python", "#twitter", "#text-mining", "#machine-learning", "#lda"],
 		date: "2019-06-22",
@@ -318,7 +318,7 @@ def add_comment(post_slug):
 	},
 
 	{
-		title: 'Automatic differentiation',
+		title: 'Automatic differentiation 📈',
 		slug: 'automatic-differentiation',
 		tags: ["#python", "#tensorflow", "#autograd", "#linear-regression"],
 		date: "2017-05-03",
@@ -613,7 +613,7 @@ plt.show()</code></pre>
 	},
 
 	{
-		title: 'Distributed matrix product',
+		title: 'Distributed matrix product 🔢',
 		slug: 'distributed-matrix-product',
 		tags: ["#CUDA", "#MPI", "#C", "#maths"],
 		date: "2017-02-02",
@@ -858,7 +858,7 @@ int main(int argc, char *argv[]) {
 	},
 
 	{
-		title: 'Variational Inference III',
+		title: 'Variational Inference III 🤖🤖🤖',
 		slug: 'variational-inference-3',
 		tags: ["#probabilistic-machine-learning", "#variational-inference", "#statistics"],
 		date: "2017-05-11",
@@ -1091,7 +1091,7 @@ int main(int argc, char *argv[]) {
 	},
 
 	{
-		title: 'Variational Inference II',
+		title: 'Variational Inference II 🤖🤖',
 		slug: 'variational-inference-2',
 		tags: ["#probabilistic-machine-learning", "#variational-inference", "#statistics"],
 		date: "2017-02-25",
@@ -1335,7 +1335,7 @@ int main(int argc, char *argv[]) {
 	},
 
 	{
-		title: 'Variational Inference I',
+		title: 'Variational Inference I 🤖',
 		slug: 'variational-inference-1',
 		tags: ["#probabilistic-machine-learning", "#variational-inference", "#statistics"],
 		date: "2017-02-09",

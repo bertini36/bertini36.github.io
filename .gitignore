@@ -10,3 +10,4 @@ node_modules
 .dynamodb
 .idea
 __pycache__
+.todo
