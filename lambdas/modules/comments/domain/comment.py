@@ -7,12 +7,19 @@ from ...shared.domain.constants import REGISTERED_POST_SLUGS
 
 class Comment:
 
-    def __init__(self, post_slug: str, name: str, email: str, text: str):
+    def __init__(
+            self,
+            post_slug: str,
+            name: str,
+            email: str,
+            text: str,
+            date: str = None
+    ):
         self.post_slug = post_slug
         self.name = name
         self.email = email
         self.text = text
-        self.date = str(datetime.now())
+        self.date = date if date else str(datetime.now())
         self.validate()
 
     def validate(self):
@@ -36,12 +43,12 @@ class Comment:
             'date': self.date
         }
 
-    @staticmethod
-    def sort(comments: List[__class__]) -> List[__class__]:
+    @classmethod
+    def sort(cls, comments: List['Comment']) -> List['Comment']:
         return list(sorted(
             comments,
             key=lambda comment: datetime.strptime(
-                comment['date'],
+                comment.date,
                 '%Y-%m-%d %H:%M:%S.%f'
             )
         ))

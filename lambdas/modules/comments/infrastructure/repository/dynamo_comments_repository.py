@@ -20,10 +20,10 @@ class DynamoCommentsRepository(CommentsRepository):
         try:
             response = self.table.get_item(Key={'postSlug': post_slug})
             comment_dicts = (
-                response['Item']['comments'] if 'Item' in response else None
+                response['Item']['comments'] if 'Item' in response else []
             )
             comments = [
-                Comment(post_slug=post_slug, **comment_dict)
+                Comment(**comment_dict)
                 for comment_dict in comment_dicts
             ]
             return comments
@@ -32,9 +32,12 @@ class DynamoCommentsRepository(CommentsRepository):
 
     def add_comment(self, comment: Comment):
         try:
+            previous_comments = self.get_comments(comment.post_slug) or []
             post_data = {
                 'postSlug': comment.post_slug,
-                'comments': self.get_comments(comment.post_slug) or []
+                'comments': [
+                    comment.serialize() for comment in previous_comments
+                ]
             }
             post_data['comments'].append(comment.serialize())
             self.table.put_item(Item=post_data)

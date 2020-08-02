@@ -1,5 +1,7 @@
 <script>
     export let slug;
+    // For local purposes
+    // const comments_url = `http://127.0.0.1:5000/comments/${slug}`;
     const comments_url = `https://xjdf38glwl.execute-api.eu-west-1.amazonaws.com/prod/comments/${slug}`;
     let comment = {name: "", email: "", text: ""};
     let errors = {name: "", email: "", text: ""};
