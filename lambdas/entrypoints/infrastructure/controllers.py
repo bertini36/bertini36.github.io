@@ -11,13 +11,16 @@ from ...modules.comments.application.search.comments_searcher import (
 from ...modules.comments.infrastructure.repository.dynamo_comments_repository import (  # noqa
     DynamoCommentsRepository
 )
+from ...modules.comments.infrastructure.repository.inmemory_comments_repository import (  # noqa
+    InmemoryCommentsRepository
+)
 
 
 @app.route('/comments/<string:post_slug>', methods=['GET'])
 @cross_origin()
 def get_comments(post_slug):
     try:
-        searcher = CommentsSearcher(DynamoCommentsRepository())
+        searcher = CommentsSearcher(InmemoryCommentsRepository())
         comments = searcher.search(post_slug)
         if comments:
             return jsonify(comments), 200
@@ -30,7 +33,7 @@ def get_comments(post_slug):
 @cross_origin()
 def add_comment(post_slug):
     try:
-        creator = CommentsCreator(DynamoCommentsRepository())
+        creator = CommentsCreator(InmemoryCommentsRepository())
         creator.create(post_slug, **request.get_json())
         return jsonify({}), 200
     except Exception as e:
