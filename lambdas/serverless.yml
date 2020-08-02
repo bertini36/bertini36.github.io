@@ -1,4 +1,4 @@
-org: xiscosc
+org: bertini36
 service: serverless-flask
 
 plugins:
@@ -14,7 +14,7 @@ custom:
 
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.8
   stage: prod
   memorySize: 256
   region: eu-west-1
