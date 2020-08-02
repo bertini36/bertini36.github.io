@@ -1,4 +1,4 @@
-# Blog
+# 👩‍💻 Blog
 
 In this blog I used to write posts about different technologies that I have 
 found interesting.
@@ -8,7 +8,7 @@ Powered by [#svelte](https://github.com/sveltejs/svelte),
  [#tailwind](https://github.com/tailwindcss/tailwindcss) and
  [#serverless](https://www.serverless.com/).
 
-## Getting started
+## 🚀 Environment Setup
 
 ### Download the code
 
@@ -35,16 +35,12 @@ npm run dev:tailwind
 Open up [localhost:3000](http://localhost:3000) and start clicking around
 and when you update the code you will see the changes directly in your browser.
 
-### Installing lambdas dependencies
-```bash
-cd lambdas/
-npm install 
-sls plugin install -n serverless-python-requirements
-sls plugin install -n serverless-wsgi
-```
+### Run lambdas in local
+- Change uses of `DynamoCommentsRepository` by `InMemoryCommentsRepository`
+- Uncomment local url at `Comments.svelte` component
+- Run flask from `lambdas/`: `flask run`
 
-
-## Deploy
+## 🔥 Deploy
 
 ### Github deploy
 Check configurations at `scripts/deploy.js` and then
