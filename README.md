@@ -35,11 +35,11 @@ npm run dev:tailwind
 Open up [localhost:3000](http://localhost:3000) and start clicking around
 and when you update the code you will see the changes directly in your browser.
 
-### Run lambdas in local
+### Run comments engine backend in local
 - Change use of `DynamoCommentsRepository` by `InMemoryCommentsRepository` at
-dependency injector (`container.py`).
+dependency injector (`comments_engine/container.py`).
 - Uncomment local url at `Comments.svelte` component
-- Run flask from `lambdas/`: `flask run`
+- Run flask from `comments_engine/`: `flask run`
 
 ## 🔥 Deploy
 
@@ -51,11 +51,11 @@ npm run deploy
 This script builds `develop` branch and allocates results on `master` branch. 
 Finally just configure the custom domain on Github pages.
 
-### Lambdas deploy
+### Comments engine backend deploy
 
 First time you need to install dependencies
 ```bash
-cd lambdas/
+cd comments_engine/
 npm install 
 sls plugin install -n serverless-python-requirements
 sls plugin install -n serverless-wsgi
