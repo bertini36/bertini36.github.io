@@ -3,15 +3,15 @@ from dependency_injector.ext import flask
 from flask import Flask
 
 from entrypoints.infrastructure import controllers
-from modules.comments.infrastructure.repository.inmemory_comments_repository import (  # noqa
-    InMemoryCommentsRepository
+from modules.comments.infrastructure.repository.dynamo_comments_repository import (  # noqa
+    DynamoCommentsRepository
 )
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
     app = flask.Application(Flask, __name__)
 
-    comments_repository = providers.Factory(InMemoryCommentsRepository)
+    comments_repository = providers.Factory(DynamoCommentsRepository)
 
     get_comments_view = flask.View(
         controllers.get_comments,
