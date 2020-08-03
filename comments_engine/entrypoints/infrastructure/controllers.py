@@ -1,24 +1,19 @@
 from flask import jsonify, request
 from flask_cors import cross_origin
 
-from ...modules.comments.application.create.comments_creator import (
+from modules.comments.application.create.comments_creator import (
     CommentsCreator
 )
-from ...modules.comments.application.search.comments_searcher import (
+from modules.comments.application.search.comments_searcher import (
     CommentsSearcher
 )
-from ...modules.comments.infrastructure.repository.dynamo_comments_repository import (  # noqa
-    DynamoCommentsRepository
-)
-from ...modules.comments.infrastructure.repository.inmemory_comments_repository import (  # noqa
-    InMemoryCommentsRepository
-)
+from modules.comments.domain.comments_repository import CommentsRepository
 
 
 @cross_origin()
-def get_comments(post_slug):
+def get_comments(post_slug, comments_repository: CommentsRepository):
     try:
-        searcher = CommentsSearcher(InMemoryCommentsRepository())
+        searcher = CommentsSearcher(comments_repository)
         comments = searcher.search(post_slug)
         return jsonify(comments), 200
     except Exception as e:
@@ -26,9 +21,9 @@ def get_comments(post_slug):
 
 
 @cross_origin()
-def add_comment(post_slug):
+def add_comment(post_slug, comments_repository: CommentsRepository):
     try:
-        creator = CommentsCreator(InMemoryCommentsRepository())
+        creator = CommentsCreator(comments_repository)
         creator.create(post_slug, **request.get_json())
         return jsonify({}), 200
     except Exception as e:

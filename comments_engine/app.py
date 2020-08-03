@@ -1,13 +1,9 @@
-import os
-
-from flask import Flask
 from flask_cors import CORS
 
-from .containers import ApplicationContainer
+from containers import ApplicationContainer
 
 
-def create_app(test_config=None):
-    # create and configure the app
+def create_app():
     container = ApplicationContainer()
 
     app = container.app()
@@ -26,4 +22,5 @@ def create_app(test_config=None):
         view_func=container.add_comment_view.as_view(),
         methods=('POST',)
     )
+
     return app
