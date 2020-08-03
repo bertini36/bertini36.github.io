@@ -1,6 +1,6 @@
 from flask_cors import CORS
 
-from containers import ApplicationContainer
+from container import ApplicationContainer
 
 
 container = ApplicationContainer()
