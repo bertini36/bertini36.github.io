@@ -36,7 +36,8 @@ Open up [localhost:3000](http://localhost:3000) and start clicking around
 and when you update the code you will see the changes directly in your browser.
 
 ### Run lambdas in local
-- Change uses of `DynamoCommentsRepository` by `InMemoryCommentsRepository`
+- Change use of `DynamoCommentsRepository` by `InMemoryCommentsRepository` at
+dependency injector (`container.py`).
 - Uncomment local url at `Comments.svelte` component
 - Run flask from `lambdas/`: `flask run`
 
