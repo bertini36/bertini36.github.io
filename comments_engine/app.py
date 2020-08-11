@@ -1,9 +1,15 @@
+import os
+
 from flask_cors import CORS
 
-from container import ApplicationContainer
+from containers.prod_container import ProdApplicationContainer
+from containers.test_container import TestApplicationContainer
 
+env = os.environ.get('FLASK_ENV')
+container = ProdApplicationContainer()
 
-container = ApplicationContainer()
+if env == 'development':
+    container = TestApplicationContainer()
 
 app = container.app()
 app.container = container
