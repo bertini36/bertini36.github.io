@@ -10,38 +10,18 @@ Powered by [#svelte](https://github.com/sveltejs/svelte),
 
 ## 🚀 Environment Setup
 
-### Download the code
+### 🐳 Required tools
 
-```bash
-git clone https://github.com/bertini36/bertini36.github.io
-```
+1. [Install Docker and Docker Compose](https://www.docker.com/get-started)
+2. Clone this project: `git clone https://github.com/bertini36/bertini36.github.io`
+3. Move to the project folder: `bertini36.github.io`
 
-### Running the project
+### 🔥 Application execution
 
-When you get the code, you can install dependencies and run the project in development mode with:
+1. Install all the dependencies and bring up the project with Docker executing: `make build`
+2. Run the server: `make up`
 
-```bash
-cd bertini36.github.io
-npm install
-npm run dev
-```
-
-and in other console
-
-```bash
-npm run dev:tailwind
-```
-
-Open up [localhost:3000](http://localhost:3000) and start clicking around
-and when you update the code you will see the changes directly in your browser.
-
-### Run comments engine backend in local
-- Change use of `DynamoCommentsRepository` by `InMemoryCommentsRepository` at
-dependency injector (`comments_engine/container.py`).
-- Uncomment local url at `Comments.svelte` component
-- Run flask from `comments_engine/`: `flask run`
-
-## 🔥 Deploy
+## ✈ Deploy
 
 ### Github deploy
 Check configurations at `scripts/deploy.js` and then

@@ -1,0 +1,33 @@
+version: "3"
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ".:/code/"
+    ports:
+      - "3000:3000"
+      - "10000:10000"
+    command: npm run dev
+
+  reloader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ".:/code/"
+    command: npm run dev:tailwind
+
+  comments_engine:
+    build:
+      context: comments_engine/
+      dockerfile: Dockerfile
+    environment:
+      FLASK_ENV: "development"
+    volumes:
+      - "./comments_engine:/code/"
+    ports:
+      - "5000:5000"
+    command: flask run
