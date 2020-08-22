@@ -18,8 +18,8 @@ Powered by [#svelte](https://github.com/sveltejs/svelte),
 
 ### 🔥 Application execution
 
-1. Install all the dependencies and bring up the project with Docker executing: `docker-compose build`
-2. Run the server: `docker-compose up`
+1. Install all the dependencies and bring up the project with Docker executing: `make build`
+2. Run the server: `make up`
 
 ## ✈ Deploy
 
