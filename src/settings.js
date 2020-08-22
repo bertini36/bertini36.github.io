@@ -1,5 +1,5 @@
 const settings = {
-    ENV: "development"
+    ENV: process.env.SAPPER_ENV
 }
 
 export default settings;

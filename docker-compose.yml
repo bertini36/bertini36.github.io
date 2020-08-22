@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - SAPPER_ENV=development
     volumes:
       - ".:/code/"
     ports:

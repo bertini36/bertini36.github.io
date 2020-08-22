@@ -36,6 +36,7 @@ provider:
         - { "Fn::GetAtt": ['CommentsDynamoDBTable', 'Arn' ] }
   environment:
     COMMENTS_TABLE: ${self:custom.commentsTableName}
+    FLASK_ENV: 'production'
 
 functions:
   getComments:
