@@ -9,10 +9,10 @@ override UID = 1001
 endif
 
 build:
-	docker-compose build --no-cache ${T}
+	docker-compose build ${T}
 
 up:
-	docker-compose up -d
+	docker-compose up -d web
 
 restart:
 	docker-compose restart
@@ -38,3 +38,9 @@ logs:
 clean-all:
 	docker-compose kill
 	docker-compose rm -v
+
+frontend-deploy:
+	docker-compose run --rm --entrypoint sh web -c "npm run deploy"
+
+backend-deploy:
+	docker-compose run --rm --entrypoint /bin/sh serverless -c "cd /code/ && serverless deploy"

@@ -26,24 +26,14 @@ Powered by [#svelte](https://github.com/sveltejs/svelte),
 ### Github deploy
 Check configurations at `scripts/deploy.js` and then
 ```bash
-npm run deploy
+make frontend-deploy
 ```
 This script builds `develop` branch and allocates results on `master` branch. 
 Finally just configure the custom domain on Github pages.
 
 ### Comments engine backend deploy
-
-First time you need to install dependencies
 ```bash
-cd comments_engine/
-npm install 
-sls plugin install -n serverless-python-requirements
-sls plugin install -n serverless-wsgi
-```
-
-And then deploy lambdas at AWS
-```bash
-sls deploy
+make backend-deploy
 ```
 
 <p align="center">&mdash; Built with :heart: from Mallorca &mdash;</p>

@@ -10,6 +10,9 @@ services:
     ports:
       - "3000:3000"
       - "10000:10000"
+    depends_on:
+      - reloader
+      - comments_engine
     command: npm run dev
 
   reloader:
@@ -31,3 +34,12 @@ services:
     ports:
       - "5000:5000"
     command: flask run
+
+  serverless:
+    build:
+      context: comments_engine/
+      dockerfile: ServerlessDockerfile
+    env_file:
+      - comments_engine/.env
+    volumes:
+      - "./comments_engine:/code/"
