@@ -2,13 +2,17 @@
 	import Comments from "../../components/Comments.svelte";
 
 	export async function preload({ params, query }) {
+
+		const settings_res = await this.fetch("settings.json");
+    	const settings = await settings_res.json();
+
 		// the `slug` parameter is available because
 		// this file is called [slug].svelte
 		const res = await this.fetch(`blog/${params.slug}.json`);
 		const data = await res.json();
 
 		if (res.status === 200) {
-			return { post: data };
+			return { post: data, env: settings.ENV };
 		} else {
 			this.error(res.status, data.message);
 		}
@@ -17,6 +21,7 @@
 
 <script>
 	export let post;
+	export let env;
 </script>
 
 <style>
@@ -83,5 +88,5 @@
 
 <div class='content mb-10'>
 	{@html post.html}
-	<Comments slug="{post.slug}"/>
+	<Comments slug="{post.slug}" env="{env}"/>
 </div>

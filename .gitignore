@@ -12,4 +12,3 @@ node_modules
 __pycache__
 .todo
 .instance/
-comments_engine/.env
