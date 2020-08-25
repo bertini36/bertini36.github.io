@@ -15,7 +15,7 @@ def get_comments(post_slug, comments_repository: CommentsRepository):
     try:
         searcher = CommentsSearcher(comments_repository)
         comments = searcher.search(post_slug)
-        return jsonify(comments), 200
+        return jsonify([comment.serialize() for comment in comments]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

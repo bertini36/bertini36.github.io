@@ -9,8 +9,7 @@ class CommentsSearcher:
     def __init__(self, repository: CommentsRepository):
         self.repository = repository
 
-    def search(self, post_slug: str) -> List[dict]:
+    def search(self, post_slug: str) -> List[Comment]:
         comments = self.repository.get_comments(post_slug)
         comments = Comment.sort(comments)
-        comments = [comment.serialize() for comment in comments]
         return comments
