@@ -24,7 +24,7 @@ Powered by [#svelte](https://github.com/sveltejs/svelte),
 ## ✈ Deploy
 
 ### Github deploy
-Check configurations at `scripts/deploy.js` and then
+Check Github configurations at `scripts/deploy.js` and then
 ```bash
 make frontend-deploy
 ```
@@ -32,6 +32,13 @@ This script builds `develop` branch and allocates results on `master` branch.
 Finally just configure the custom domain on Github pages.
 
 ### Comments engine backend deploy
+First configure your AWS credentials at `.env`.
+```bash
+cd comments_engine/
+cp .env-sample .env
+```
+
+After this, to update your lambda functions
 ```bash
 make backend-deploy
 ```
