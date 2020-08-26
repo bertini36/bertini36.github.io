@@ -24,9 +24,10 @@ Powered by [#svelte](https://github.com/sveltejs/svelte),
 ## ✈ Deploy
 
 ### Github deploy
-Check Github configurations at `scripts/deploy.js` and then
+1. Check Github configurations at `scripts/deploy.js`
+2. Find your comments base url and execute
 ```bash
-make frontend-deploy
+make frontend-deploy COMMENTS_BASE_URL=[your-aws-url-or-whathever]
 ```
 This script builds `develop` branch and allocates results on `master` branch. 
 Finally just configure the custom domain on Github pages.
