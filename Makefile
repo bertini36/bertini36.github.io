@@ -40,7 +40,7 @@ clean-all:
 	docker-compose rm -v
 
 frontend-deploy:
-	docker-compose run --rm --entrypoint sh web -c "export SAPPER_ENV=production && npm run deploy"
+	docker-compose run --rm --entrypoint sh web -c "export COMMENTS_BASE_URL=https://xjdf38glwl.execute-api.eu-west-1.amazonaws.com/prod/comments/ && npm run deploy"
 
 backend-deploy:
 	docker-compose run --rm --entrypoint /bin/sh serverless -c "cd /code/ && serverless deploy"
