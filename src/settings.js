@@ -1,5 +1,5 @@
 const settings = {
-    ENV: process.env.SAPPER_ENV
+    COMMENTS_BASE_URL: process.env.COMMENTS_BASE_URL
 }
 
 export default settings;

@@ -1,18 +1,14 @@
 <script>
 
-    export let slug;
-    export let env;
-
-    let comments_url = `https://xjdf38glwl.execute-api.eu-west-1.amazonaws.com/prod/comments/${slug}`;
-    if (env === "development") comments_url = `http://127.0.0.1:5000/comments/${slug}`;
+    export let url;
 
     let comment = {name: "", email: "", text: ""};
     let errors = {name: "", email: "", text: ""};
     let comments = getComments();
 
     async function getComments() {
-        const response = await fetch(comments_url);
-        if (!response.ok) throw new Error(text);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Get comments url has failed");
         return await response.json();
     }
 
@@ -23,7 +19,7 @@
     async function publish_comment() {
         errors = resetObject(errors);
         if (!formHasErrors()) {
-            await fetch(comments_url, {
+            await fetch(url, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(comment)

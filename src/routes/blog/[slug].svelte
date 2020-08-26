@@ -12,7 +12,10 @@
 		const data = await res.json();
 
 		if (res.status === 200) {
-			return { post: data, env: settings.ENV };
+
+			let comments_url = settings.COMMENTS_BASE_URL + data.slug
+			return { post: data, comments_url: comments_url };
+
 		} else {
 			this.error(res.status, data.message);
 		}
@@ -21,7 +24,7 @@
 
 <script>
 	export let post;
-	export let env;
+	export let comments_url;
 </script>
 
 <style>
@@ -88,5 +91,5 @@
 
 <div class='content mb-10'>
 	{@html post.html}
-	<Comments slug="{post.slug}" env="{env}"/>
+	<Comments url="{comments_url}"/>
 </div>
