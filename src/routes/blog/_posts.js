@@ -858,7 +858,7 @@ int main(int argc, char *argv[]) {
 	},
 
 	{
-		title: 'Variational Inference III 🤖🎯',
+		title: 'Variational Inference III 📦',
 		slug: 'variational-inference-3',
 		tags: ["#probabilistic-machine-learning", "#variational-inference", "#statistics"],
 		date: "2017-05-11",
@@ -1091,7 +1091,7 @@ int main(int argc, char *argv[]) {
 	},
 
 	{
-		title: 'Variational Inference II 🤖🎯',
+		title: 'Variational Inference II ⛰️',
 		slug: 'variational-inference-2',
 		tags: ["#probabilistic-machine-learning", "#variational-inference", "#statistics"],
 		date: "2017-02-25",
@@ -1335,7 +1335,7 @@ int main(int argc, char *argv[]) {
 	},
 
 	{
-		title: 'Variational Inference I 🤖🎯',
+		title: 'Variational Inference I 🤖',
 		slug: 'variational-inference-1',
 		tags: ["#probabilistic-machine-learning", "#variational-inference", "#statistics"],
 		date: "2017-02-09",
