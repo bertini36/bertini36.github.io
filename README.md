@@ -33,9 +33,9 @@ This script builds `develop` branch and allocates results on `master` branch.
 Finally just configure the custom domain on Github pages.
 
 ### Comments engine backend deploy
-First configure your AWS credentials at `.env`.
+First configure your AWS credentials at `.env`. Including generated AWS Api Gateway
+url `COMMENTS_BASE_URL`.
 ```bash
-cd comments_engine/
 cp .env-sample .env
 ```
 

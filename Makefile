@@ -4,6 +4,9 @@ ifndef T
 override T = web
 endif
 
+include .env
+$(eval export $(shell sed -ne 's/ *#.*$//; /./ s/=.*$$// p' .env))
+
 build:
 	docker-compose build ${T}
 
