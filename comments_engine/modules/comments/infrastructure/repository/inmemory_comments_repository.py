@@ -6,7 +6,6 @@ from ...domain.exceptions import DatabaseError
 
 
 class InMemoryCommentsRepository(CommentsRepository):
-    REGION_NAME = 'eu-west-1'
 
     def __init__(self):
         self.data = {
