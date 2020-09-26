@@ -1,12 +1,21 @@
-# 👩‍💻 Blog
-
+<h3 align="center">
+    bertini36/blog 👩‍💻 
+</h3>
+<p align="center">
+  <a href="#-environment-setup">Install</a>&nbsp;&nbsp;•&nbsp;
+  <a href="src">Sapper code</a>&nbsp;&nbsp;•&nbsp;
+  <a href="comments_engine">Serverless code</a>&nbsp;&nbsp;•&nbsp;
+</p>
+<p align="center">
 In this blog I used to write posts about different technologies that I have 
 found interesting.
-
-Powered by [#svelte](https://github.com/sveltejs/svelte),
- [#sapper](https://github.com/sveltejs/sapper),
- [#tailwind](https://github.com/tailwindcss/tailwindcss) and
- [#serverless](https://www.serverless.com/).
+</p>
+<p align="center">
+Powered by <a href="https://github.com/sveltejs/svelte">#svelte</a>,
+ <a href="https://github.com/sveltejs/sapper">#sapper</a>,
+ <a href="https://github.com/tailwindcss/tailwindcss">#tailwind</a> and
+ <a href="https://www.serverless.com/">#serverless</a>.
+</p>
 
 ## 🚀 Environment Setup
 
