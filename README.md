@@ -4,7 +4,7 @@
 <p align="center">
   <a href="#-environment-setup">Install</a>&nbsp;&nbsp;•&nbsp;
   <a href="src">Sapper code</a>&nbsp;&nbsp;•&nbsp;
-  <a href="comments_engine">Serverless code</a>&nbsp;&nbsp;•&nbsp;
+  <a href="comments_engine">Serverless code</a>
 </p>
 <p align="center">
 In this blog I used to write posts about different technologies that I have 
