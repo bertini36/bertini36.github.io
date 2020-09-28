@@ -1,15 +1,21 @@
-.DS_Store
+# Node
 /node_modules/
 /src/node_modules/@sapper/
 yarn-error.log
 /cypress/screenshots/
 /__sapper__/
-.idea/
-.serverless
 node_modules
-.dynamodb
-.idea
-__pycache__
-.todo
 .instance/
+
+# Confs
+.todo
 .env
+.serverless
+
+# Python
+.direnv
+*.pyc
+__pycache__
+
+# Other
+.dynamodb
