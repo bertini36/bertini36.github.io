@@ -9,7 +9,7 @@ build:
 	@docker-compose build --no-cache web
 
 serve:
-	@echo "🚀 Serving app"
+	@echo "🛫 Serving app"
 	docker-compose up web
 
 down:
@@ -33,5 +33,5 @@ test:
 	@docker-compose run --rm --entrypoint sh web -c "npm run test"
 
 deploy:
-	@echo "🛫 Let's deploy!!!"
+	@echo "🚀 Let's deploy!!!"
 	@docker-compose run --rm --entrypoint sh web -c "export COMMENTS_URL=${COMMENTS_URL} && npm run deploy"
