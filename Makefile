@@ -28,11 +28,9 @@ log:
 	@echo "📋 Showing logs"
 	@docker-compose logs -f --tail 100 web
 
-lint:
-	@echo "🔦 Linting code"
-
 test:
 	@echo "🏃‍ Running tests"
+	@docker-compose run --rm --entrypoint sh web -c "npm run test"
 
 deploy:
 	@echo "🛫 Let's deploy!!!"
