@@ -13,7 +13,7 @@
 
 		if (res.status === 200) {
 
-			let comments_url = settings.COMMENTS_BASE_URL + data.slug
+			let comments_url = settings.COMMENTS_URL + data.slug
 			return { post: data, comments_url: comments_url };
 
 		} else {

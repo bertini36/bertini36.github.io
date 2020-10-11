@@ -1,5 +1,5 @@
 const settings = {
-    COMMENTS_BASE_URL: process.env.COMMENTS_BASE_URL
+    COMMENTS_URL: process.env.COMMENTS_URL
 }
 
 export default settings;

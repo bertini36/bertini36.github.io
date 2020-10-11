@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - COMMENTS_BASE_URL=http://127.0.0.1:5000/comments/
+      - COMMENTS_URL=http://127.0.0.1:5000/comments/
     volumes:
       - ".:/code/"
     ports:
@@ -14,7 +14,6 @@ services:
       - "10000:10000"
     depends_on:
       - reloader
-      - comments_engine
     command: npm run dev
 
   reloader:
@@ -24,24 +23,3 @@ services:
     volumes:
       - ".:/code/"
     command: npm run dev:tailwind
-
-  comments_engine:
-    build:
-      context: comments_engine/
-      dockerfile: Dockerfile
-    environment:
-      FLASK_ENV: "development"
-    volumes:
-      - "./comments_engine:/code/"
-    ports:
-      - "5000:5000"
-    command: flask run
-
-  serverless:
-    build:
-      context: comments_engine/
-      dockerfile: ServerlessDockerfile
-    env_file:
-      - .env
-    volumes:
-      - "./comments_engine:/code/"

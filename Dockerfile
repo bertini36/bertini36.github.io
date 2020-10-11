@@ -1,6 +1,6 @@
 FROM node:latest
 
-ENV COMMENTS_BASE_URL http://127.0.0.1:5000/comments/
+ENV COMMENTS_URL http://127.0.0.1:5000/comments/
 
 WORKDIR code
 

@@ -2,22 +2,27 @@
     bertini36/blog 👩‍💻 
 </h3>
 <p align="center">
-  <a href="#-environment-setup">Install</a>&nbsp;&nbsp;•&nbsp;
-  <a href="src">Sapper code</a>&nbsp;&nbsp;•&nbsp;
-  <a href="comments_engine">Serverless code</a>
+  <a href="#-environment-setup" target="_blank">
+    Installation
+  </a>&nbsp;&nbsp;•&nbsp;
+  <a href="tailwind.config.js" target="_blank">
+    Tailwind config
+  </a>&nbsp;&nbsp;•&nbsp;
+  <a href="https://github.com/bertini36/comments-engine/blob/master/Makefile" target="_blank">
+    Commands
+  </a>
 </p>
 <p align="center">
 In this blog I used to write posts about different technologies that I have 
-found interesting.
+found interesting. 
 </p>
 <p align="center">
 Powered by <a href="https://github.com/sveltejs/svelte">#svelte</a>,
- <a href="https://github.com/sveltejs/sapper">#sapper</a>,
- <a href="https://github.com/tailwindcss/tailwindcss">#tailwind</a> and
- <a href="https://www.serverless.com/">#serverless</a>.
+ <a href="https://github.com/sveltejs/sapper">#sapper</a> and
+ <a href="https://github.com/tailwindcss/tailwindcss">#tailwind</a>
 </p>
 
-## 🚀 Environment Setup
+## ⚙️ Environment Setup
 
 ### 🐳 Required tools
 
@@ -28,29 +33,19 @@ Powered by <a href="https://github.com/sveltejs/svelte">#svelte</a>,
 ### 🔥 Application execution
 
 1. Install all the dependencies and bring up the project with Docker executing: `make build`
-2. Run the server: `make up`
+2. Run the server: `make serve` (by default Sapper runs applications at 3000 port)
+3. Run [comments engine](https://github.com/bertini36/comments-engine)
 
-## ✈ Deploy
+## 🚀 Deploy
 
-### Github deploy
-1. Check Github configurations at `scripts/deploy.js`
-2. Find your comments base url and execute
+Check Github configurations at `scripts/deploy.js`
+
+Set your comments url and execute
 ```bash
-make frontend-deploy COMMENTS_BASE_URL=[your-aws-url-or-whathever]
+make deploy COMMENTS_URL=[your-aws-url-or-whathever]
 ```
 This script builds `develop` branch and allocates results on `master` branch. 
-Finally just configure the custom domain on Github pages.
 
-### Comments engine backend deploy
-First configure your AWS credentials at `.env`. Including generated AWS Api Gateway
-url `COMMENTS_BASE_URL`.
-```bash
-cp .env-sample .env
-```
-
-After this, to update your lambda functions
-```bash
-make backend-deploy
-```
+Finally just configure yout custom domain on Github pages.
 
 <p align="center">&mdash; Built with :heart: from Mallorca &mdash;</p>

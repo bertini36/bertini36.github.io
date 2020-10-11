@@ -1,45 +1,39 @@
-#!/bin/bash
-
-ifndef T
-override T = web
-endif
+all: build
 
 include .env
 $(eval export $(shell sed -ne 's/ *#.*$//; /./ s/=.*$$// p' .env))
 
+.PHONY: build
 build:
-	docker-compose build ${T}
+	@echo "📦 Building app"
+	@docker-compose build --no-cache web
 
-up:
-	docker-compose up -d web
-
-restart:
-	docker-compose restart
-
-stop:
-	docker-compose stop
+serve:
+	@echo "🚀 Serving app"
+	docker-compose up web
 
 down:
-	docker-compose down
+	@echo "🔌 Disconnecting"
+	@docker-compose down
 
-kill:
-	docker-compose kill
+restart:
+	@echo "↩️ Restarting"
+	@docker-compose restart
 
-ps:
-	docker-compose ps
+connect:
+	@echo "🔞 Connecting to container"
+	@docker-compose run --rm --entrypoint bash
 
-ssh:
-	docker-compose run --rm --entrypoint bash ${T}
+log:
+	@echo "📋 Showing logs"
+	@docker-compose logs -f --tail 100 web
 
-logs:
-	docker-compose logs -f --tail 100 ${T}
+lint:
+	@echo "🔦 Linting code"
 
-clean-all:
-	docker-compose kill
-	docker-compose rm -v
+test:
+	@echo "🏃‍ Running tests"
 
-frontend-deploy:
-	docker-compose run --rm --entrypoint sh web -c "export COMMENTS_BASE_URL=${COMMENTS_BASE_URL} && npm run deploy"
-
-backend-deploy:
-	docker-compose run --rm --entrypoint /bin/sh serverless -c "cd /code/ && serverless deploy"
+deploy:
+	@echo "🛫 Let's deploy!!!"
+	@docker-compose run --rm --entrypoint sh web -c "export COMMENTS_URL=${COMMENTS_URL} && npm run deploy"
