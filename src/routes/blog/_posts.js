@@ -19,40 +19,40 @@ const posts = [
 				to modernize my <a href="https://albertopou.dev/" class="post_link" target="_blank">blog</a>.
 				I coded the first version 5 years ago choosing technologies
 				simply because I knew them. That resulted in a <a href="https://www.djangoproject.com/" class="post_link" target="_blank">Django</a>
-				 app with a <a href="https://www.postgresql.org/" class="post_link" target="_blank">Postgres</a> database 
-				 and an outdated design using <a href="https://getbootstrap.com/" class="post_link" target="_blank">Bootstrap</a>.  
-				After the years I used to use my blog to test new technologies so I had versions 
+				 app with a <a href="https://www.postgresql.org/" class="post_link" target="_blank">Postgres</a> database
+				 and an outdated design using <a href="https://getbootstrap.com/" class="post_link" target="_blank">Bootstrap</a>.
+				After the years I used to use my blog to test new technologies so I had versions
 				of my blog using <a href="https://jquery.com/" class="post_link" target="_blank">JQuery</a>,
-				<a href="https://vuejs.org/" class="post_link" target="_blank">Vue</a>, Django, Django 2.0 
+				<a href="https://vuejs.org/" class="post_link" target="_blank">Vue</a>, Django, Django 2.0
 				using a DDD approach, ... and it was deployed on <a href="https://www.digitalocean.com/" class="post_link" target="_blank">Digital Ocean</a>,
 				<a href="https://aws.amazon.com/" class="post_link" target="_blank">AWS</a>,
-				<a href="https://www.heroku.com/" class="post_link" target="_blank">Heroku</a>, 
-				Heroku using <a href="https://www.terraform.io/" class="post_link" target="_blank">Terraform</a>, ... 
-				Anyone who saw the code could say that a blog should never be so over-engineer, and I agree. For this 
-				reason I decided to check which technologies were being used nowadays to make simple blogs.  
+				<a href="https://www.heroku.com/" class="post_link" target="_blank">Heroku</a>,
+				Heroku using <a href="https://www.terraform.io/" class="post_link" target="_blank">Terraform</a>, ...
+				Anyone who saw the code could say that a blog should never be so over-engineer, and I agree. For this
+				reason I decided to check which technologies were being used nowadays to make simple blogs.
 			</p>
 			<p class="post_p">
-				My goal was to make a simple, fast and modern blog which allows me to write posts easily, 
-				deploy them on <a href="https://pages.github.com/" class="post_link" target="_blank">Github Pages</a> 
-				and, of course, spend as little time as possible on maintenance. After check several technologies 
+				My goal was to make a simple, fast and modern blog which allows me to write posts easily,
+				deploy them on <a href="https://pages.github.com/" class="post_link" target="_blank">Github Pages</a>
+				and, of course, spend as little time as possible on maintenance. After check several technologies
 				a co-worker told me about <a href="https://svelte.dev/" class="post_link" target="_blank">Svelte</a>
 				and I loved it. Svelte and its server-rendering backend <a href="https://sapper.svelte.dev/" class="post_link" target="_blank">Sapper</a>
-				were what I was looking for and there were a lot of examples of blogs made with these technologies.  
-				After that I just required a new design. I was tired about Bootstrap designs so I was looking 
-				for something new, and then I found <a href="https://tailwindcss.com/" class="post_link" target="_blank">Tailwind</a>. 
-				Tailwind had all that I needed. A framework which, after memorize some easy classes, allows you not to write CSS. Maybe for 
-				you this is not a plus feature but for me, a backend coder, it was perfect. 
+				were what I was looking for and there were a lot of examples of blogs made with these technologies.
+				After that I just required a new design. I was tired about Bootstrap designs so I was looking
+				for something new, and then I found <a href="https://tailwindcss.com/" class="post_link" target="_blank">Tailwind</a>.
+				Tailwind had all that I needed. A framework which, after memorize some easy classes, allows you not to write CSS. Maybe for
+				you this is not a plus feature but for me, a backend coder, it was perfect.
 			</p>
 			<h4 class="post_section_title text-2xl text-bold">The good parts of this architecture</h4>
 			<p class="post_p">
-				After this introduction I want to list the advantages that I found making my 
-				blog with Svelte, Sapper and Tailwind. Remember that this benefits I found exist in 
-				the case of study of a simple blog. 
+				After this introduction I want to list the advantages that I found making my
+				blog with Svelte, Sapper and Tailwind. Remember that this benefits I found exist in
+				the case of study of a simple blog.
 			</p>
 			<ul class="post_list">
 				<li>
 					<strong>Easy installation</strong>. Sapper has a great initial template and several pre-configured commands
-					which allows you to focus on the important parts of your project. 
+					which allows you to focus on the important parts of your project.
 				</li>
 				<li>
 					<strong>Great development environment</strong>. Live reload! When you modify some file, the navigator
@@ -60,29 +60,29 @@ const posts = [
 					frontend and this feature drove me crazy!
 				</li>
 				<li>
-					<strong>Static page</strong>. Sapper allows you to export your project as a static site. 
+					<strong>Static page</strong>. Sapper allows you to export your project as a static site.
 					Then it can be hosted and served as static files, which allows it to be deployed on hosting
 					environments such as Github Pages. To serve the page as static files also improves
-					the speed notoriously, obtaining better results in web positioning. You can use apps as 
+					the speed notoriously, obtaining better results in web positioning. You can use apps as
 					<a href="https://developers.google.com/web/tools/lighthouse" class="post_link" target="_blank">Lighthouse</a> to check this.
 				</li>
 				<li>
-					<strong>Elegant syntax</strong>. I worked with different frontend technologies such as JQuery, 
-					<a href="https://knockoutjs.com/" class="post_link" target="_blank">Knockout</a>, 
-					 <a href="https://angular.io/" class="post_link" target="_blank">Angular</a> or Vue 
-					and Svelte syntax looks perfect for me. It's easy to understand, simple and elegant. In the following section you'll 
-					be able to check it in a easy example I'll show you.  
+					<strong>Elegant syntax</strong>. I worked with different frontend technologies such as JQuery,
+					<a href="https://knockoutjs.com/" class="post_link" target="_blank">Knockout</a>,
+					 <a href="https://angular.io/" class="post_link" target="_blank">Angular</a> or Vue
+					and Svelte syntax looks perfect for me. It's easy to understand, simple and elegant. In the following section you'll
+					be able to check it in a easy example I'll show you.
 				</li>
 				<li>
-					<strong>Component structure</strong>. One thing normally I don't like in a frontend based project is 
+					<strong>Component structure</strong>. One thing normally I don't like in a frontend based project is
 					the way how developers structure the code. Last years I was working in projects where component HTML, Javascript and
-					specific CSS were in different folders and then developers loose to much time searching the 
+					specific CSS were in different folders and then developers loose to much time searching the
 					Javascript or de CSS associated to a particular template. Svelte joins all in one file (.svelte) and
 					in my opinion is a great solution to improve the components reusability.
 				</li>
 				<li>
-					<strong>Speed</strong>. Svelte is based on reactivity. To understand easily which reasons 
-					allows Svelte to get such good results in terms of speed compared to other frameworks you can watch this 
+					<strong>Speed</strong>. Svelte is based on reactivity. To understand easily which reasons
+					allows Svelte to get such good results in terms of speed compared to other frameworks you can watch this
 					<a href="https://www.youtube.com/watch?v=gJ2P6hGwcgo" class="post_link" target="_blank">great conference</a>
 					of its creator Rich Harris.
 				</li>
@@ -91,11 +91,11 @@ const posts = [
 					you can make pretty much anything.
 				</li>
 				<li>
-					<strong>Easy personalization</strong>. At Tailwind config file you can configure stuff as main 
+					<strong>Easy personalization</strong>. At Tailwind config file you can configure stuff as main
 					colors, default spacing, text font, ... and using @apply CSS sentence you can create your own classes easily.
 				</li>
 				<li>
-					<strong>0 costs</strong>. With this architecture I was able to have my blog with 0 costs (I just have to pay the domain). 
+					<strong>0 costs</strong>. With this architecture I was able to have my blog with 0 costs (I just have to pay the domain).
 				</li>
 			</ul>
 			<p class="post_p">
@@ -110,33 +110,33 @@ const posts = [
 				to use <a href="https://aws.amazon.com/dynamodb/" class="post_link" target="_blank">Dynamo DB</a>
 				to store post user comments and <a href="https://aws.amazon.com/lambda/" class="post_link" target="_blank">Lambda</a> to get and publish comments.
 				This functions are not all time waiting for requests in a server (for this reason is so cheap).
-				AWS Lambda deploys them very fast just when they are invoked by different events such as queue events, S3 changes, HTTP requests, .... 
-				In this case the event was going to 
+				AWS Lambda deploys them very fast just when they are invoked by different events such as queue events, S3 changes, HTTP requests, ....
+				In this case the event was going to
 				be an HTTP request to the <a href="https://aws.amazon.com/api-gateway/" class="post_link" target="_blank">AWS API Gateway</a>.
 			</p>
 			<p class="post_p">
-				All this could seem very complex but with a framework as Serverless is done with a simple config file. 
+				All this could seem very complex but with a framework as Serverless is done with a simple config file.
 				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/serverless.yml" class="post_link" target="_blank">Here</a>
-				you have the config file I wrote to have 2 lambda functions (at 2 different endpoints), one for 
+				you have the config file I wrote to have 2 lambda functions (at 2 different endpoints), one for
 				get post comments and another to publish new ones. At this config file you can configure several things, from
-				language used and access management till requests rate limits and database resources. In this case the configuration is very simple, 
-				the 2 lambda functions are 2 views of a simple <a href="https://flask.palletsprojects.com/en/1.1.x/" class="post_link" target="_blank">Flask</a> application. 
-				This views just get the comments or stores a new one in the database (in this case Dynamo DB, you can check the databse repository 
+				language used and access management till requests rate limits and database resources. In this case the configuration is very simple,
+				the 2 lambda functions are 2 views of a simple <a href="https://flask.palletsprojects.com/en/1.1.x/" class="post_link" target="_blank">Flask</a> application.
+				This views just get the comments or stores a new one in the database (in this case Dynamo DB, you can check the databse repository
 				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/repository.py" class="post_link" target="_blank">here</a>).
 			</p>
 			<div class="post_code">
 				<pre><code>
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
-    
+
 from exceptions import RepositoryException
 from repository import comments_repository
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-    
-    
+
+
 @app.route('/comments/<string:post_slug>', methods=['GET'])
 @cross_origin()
 def get_comments(post_slug):
@@ -148,7 +148,7 @@ def get_comments(post_slug):
     except RepositoryException as e:
         return jsonify({'error': str(e)}), 500
 
-    
+
 @app.route('/comments/<string:post_slug>', methods=['POST'])
 @cross_origin()
 def add_comment(post_slug):
@@ -160,7 +160,7 @@ def add_comment(post_slug):
 				</code></pre>
 			</div>
 			<p class="post_p">
-				If you need you can check the rest of the 
+				If you need you can check the rest of the
 				<a href="https://github.com/bertini36/bertini36.github.io/tree/develop/lambdas" class="post_link" target="_blank">code</a>.
 			</p>
 			<p class="post_p">
@@ -173,7 +173,7 @@ def add_comment(post_slug):
    export let slug;
    const comments_url = \`dummy.com/prod/comments/\$\{slug\}\`;
    let comments = getComments();
-    
+
    async function getComments() {
       const response = await fetch(comments_url);
       if (!response.ok) throw new Error(text);
@@ -205,8 +205,8 @@ def add_comment(post_slug):
 				I'm using {#await} Svelte declarative to wait the fetch promise of the comments request. Svelte
 				is going to manage the comments as soon as the promise ends and then comments will be rendered
 				using {#each} declarative. All classes used to give styles are Tailwind classes. If you want to see
-				the rest of the code to publish new comments 
-				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/src/components/Comments.svelte" class="post_link" target="_blank">here</a> 
+				the rest of the code to publish new comments
+				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/src/components/Comments.svelte" class="post_link" target="_blank">here</a>
 				you have the complete component and the result online is just below!
 			</p>
 			<p class="post_p">
@@ -286,7 +286,7 @@ def add_comment(post_slug):
 				Profiler has a command interface. With the next command you could analize some Spain politicians:
 			</p>
 			<div class="post_code">
-				<pre><code>make run_all timelines=Albert_Rivera,sanchezcastejon,Pablo_Iglesias_,pablocasado_ n_topics=5</code></pre>
+				<pre><code>make run timelines=Albert_Rivera,sanchezcastejon,Pablo_Iglesias_,pablocasado_ topics=5</code></pre>
 			</div>
 			<p class="post_p">
 				You can find Profiler installation steps at the
@@ -677,12 +677,12 @@ plt.show()</code></pre>
 /* MULTI-NODE AND PARALLEL MATRIX-MATRIX PRODUCT WITH MPI AND CUDA           */
 /*                                                                           */
 /* File:         mmpmpicuda.cu                                               */
-/* Author:       Alberto Pou Quirós (Github: bertini36)                      */ 
+/* Author:       Alberto Pou Quirós (Github: bertini36)                      */
 /* Description:  This program performs a matrix product (A * B = C)          */
 /*               distributing the computation between multiple nodes         */
 /*               with MPI technology and parallelizing the computation in    */
 /*               every node with Nvidia CUDA technology                      */
-/* Compilation:  nvcc -I/opt/mpi/bullxmpi/1.2.9.1/include                    */  
+/* Compilation:  nvcc -I/opt/mpi/bullxmpi/1.2.9.1/include                    */
 /*               -L/opt/mpi/bullxmpi/1.2.9.1/lib -lmpi -ldl -lm -lnuma       */
 /*               -lrt -lnsl -lutil -lm -ldl mmpmpicuda.cu -o mmpmpicuda      */
 /* Strategy:                                                                 */
@@ -693,11 +693,11 @@ plt.show()</code></pre>
 /*                   |_________________________________|                     */
 /*                   |                                 |                     */
 /*                   |               NODE 2            | 4                   */
-/*              C =  |_________________________________|    16               */ 
+/*              C =  |_________________________________|    16               */
 /*                   |                                 |                     */
 /*                   |               NODE 3            | 4                   */
 /*                   |_________________________________|                     */
-/*                   |                                 |                     */ 
+/*                   |                                 |                     */
 /*                   |               NODE 4            | 4                   */
 /*                   |_________________________________|                     */
 /*                                                                           */
@@ -729,7 +729,7 @@ inline void checkCuda(cudaError_t e) {
 
 __global__ void matrixProduct(double *matrix_a, double *matrix_b, double *matrix_c, int width, int nrows, int my_rank) {
     int row = threadIdx.y + blockDim.y * blockIdx.y;
-    int col = threadIdx.x + blockDim.x * blockIdx.x; 
+    int col = threadIdx.x + blockDim.x * blockIdx.x;
     matrix_c[row * width + col] = 0;
     for (int k=0; k&lt;width; k++) {
         matrix_c[row * width + col] += matrix_a[(row * width) + (my_rank * nrows * width) + k] * matrix_b[k * width + col];
@@ -775,11 +775,11 @@ int main(int argc, char *argv[]) {
     double A[N][N], B[N][N], C[N][N];
     double *d_a, *d_b, *d_c;
     int my_rank, comm_sz, from, to, nrows;
-  
+
     // MPI initialization
     MPI_Init (&argc, &argv);
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);    // Process id 
-    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);    // Number of processors 
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);    // Process id
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);    // Number of processors
 
     if (N % comm_sz != 0) {
         if (my_rank == 0) printf("Matrix size not divisible by number of processors \\n");
@@ -809,7 +809,7 @@ int main(int argc, char *argv[]) {
 
     // CUDA threads structure definition
     dim3 dimGrid(1);
-    dim3 dimBlock(N, nrows);    
+    dim3 dimBlock(N, nrows);
 
     MPI_Barrier(MPI_COMM_WORLD);
     if (my_rank == 0) { gettimeofday(&start_time, NULL); }
@@ -821,7 +821,7 @@ int main(int argc, char *argv[]) {
 
     // Calculate compute time
     MPI_Barrier(MPI_COMM_WORLD);
-    if (my_rank == 0) { 
+    if (my_rank == 0) {
         gettimeofday(&end_time, NULL);
         printf("Compute time: %.1f ms \\n", (float) (end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_usec - start_time.tv_usec) / 1000);
      }
@@ -837,7 +837,7 @@ int main(int argc, char *argv[]) {
     checkCuda(cudaFree(d_a));
     checkCuda(cudaFree(d_b));
     checkCuda(cudaFree(d_c));
-    
+
     MPI_Finalize();
     return 0;
 
