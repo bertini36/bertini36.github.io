@@ -1,5 +1,5 @@
 <h3 align="center">
-    bertini36/blog 👩‍💻 
+    bertini36/blog 👩‍💻
 </h3>
 <p align="center">
   <a href="#-environment-setup" target="_blank">
@@ -13,8 +13,8 @@
   </a>
 </p>
 <p align="center">
-In this blog I used to write posts about different technologies that I have 
-found interesting. 
+In this blog I used to write posts about different technologies that I have
+found interesting.
 </p>
 <p align="center">
 Powered by <a href="https://github.com/sveltejs/svelte">#svelte</a>,
@@ -44,8 +44,9 @@ Set your comments url and execute
 ```bash
 make deploy COMMENTS_URL=[your-aws-url-or-whathever]
 ```
-This script builds `develop` branch and allocates results on `master` branch. 
+This script builds `develop` branch and allocates results on `master` branch.
 
 Finally just configure yout custom domain on Github pages.
 
+<br />
 <p align="center">&mdash; Built with :heart: from Mallorca &mdash;</p>
