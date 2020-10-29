@@ -40,9 +40,14 @@ Powered by <a href="https://github.com/sveltejs/svelte">#svelte</a>,
 
 Check Github configurations at `scripts/deploy.js`
 
-Set your comments url and execute
+Then configure your comments api url at `.env` file.
 ```bash
-make deploy COMMENTS_URL=[your-aws-url-or-whathever]
+cp .env-sample .env
+```
+
+Finally execute
+```bash
+make deploy
 ```
 This script builds `develop` branch and allocates results on `master` branch.
 
