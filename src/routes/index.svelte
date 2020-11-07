@@ -39,7 +39,7 @@
             <div class="text-gray-900 font-bold text-2xl mb-2">Who I am?&nbsp;👨‍💻</div>
             <p class="text-gray-700 text-xl mb-5">
                 Hi, I'm Alberto. I live in Mallorca, a small island in the Mediterranean sea.
-                I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.roiback.com/" target="_blank">Roiback</a>.
+                I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.skitude.com/" target="_blank">Skitude</a>.
             </p>
             <p class="text-gray-700 text-xl mb-5">
                 As a software engineer I focus mostly on the backend. Specifically these last years I've been working with Python
