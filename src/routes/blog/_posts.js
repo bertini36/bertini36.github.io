@@ -1487,7 +1487,7 @@ int main(int argc, char *argv[]) {
 				best known algorithms of this family are
 				<a href="https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm" class="post_link" target="_blank">Metropolis–Hastings</a>
 				, <a href="https://en.wikipedia.org/wiki/Gibbs_sampling" class="post_link" target="_blank">Gibbs sampling</a> and
-				<a href="{https://en.wikipedia.org/wiki/Hybrid_Monte_Carlo">Hamiltonian Monte Carlo</a>.
+				<a href="https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo">Hamiltonian Monte Carlo</a>.
 			</p>
 			<p class="post_p">
 				On the other hand, Variational Inference approximates the posterior creating an analytical approximation, the
