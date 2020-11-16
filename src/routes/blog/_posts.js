@@ -100,10 +100,9 @@ const posts = [
 			</ul>
 			<p class="post_p">
 				Now I'm going to show
-				you how I made the comments engine using <a href="https://www.serverless.com/" class="post_link" target="_blank">Serverless</a> and Svelte
-				as an example of use of these frameworks.
+				you how I made the comments engine using <a href="https://www.serverless.com/" class="post_link" target="_blank">Serverless</a>.
 			</p>
-			<h4 class="post_section_title text-2xl text-bold">Persistent storage for comments</h4>
+			<h4 class="post_section_title text-2xl text-bold">Comments engine</h4>
 			<p class="post_p">
 				A comments engine requires a persistent storage so I needed to add something else to the blog in order to allow users to write comments.
 				Serverless is a framework that makes easier to mount a serverless infrastructure with AWS. In this case I decided
@@ -116,52 +115,18 @@ const posts = [
 			</p>
 			<p class="post_p">
 				All this could seem very complex but with a framework as Serverless is done with a simple config file.
-				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/serverless.yml" class="post_link" target="_blank">Here</a>
+				<a href="https://github.com/bertini36/comments-engine/blob/master/serverless.yml" class="post_link" target="_blank">Here</a>
 				you have the config file I wrote to have 2 lambda functions (at 2 different endpoints), one for
 				get post comments and another to publish new ones. At this config file you can configure several things, from
 				language used and access management till requests rate limits and database resources. In this case the configuration is very simple,
 				the 2 lambda functions are 2 views of a simple <a href="https://flask.palletsprojects.com/en/1.1.x/" class="post_link" target="_blank">Flask</a> application.
-				This views just get the comments or stores a new one in the database (in this case Dynamo DB, you can check the databse repository
-				<a href="https://github.com/bertini36/bertini36.github.io/blob/develop/lambdas/repository.py" class="post_link" target="_blank">here</a>).
+				<a href="https://github.com/bertini36/comments-engine/blob/master/src/entrypoints/infrastructure/controllers.py" class="post_link" target="_blank">
+				These controllers</a> just get the comments and stores a new one in the database (in this case Dynamo DB, you can check the databse repository
+				<a href="https://github.com/bertini36/comments-engine/blob/master/src/modules/comments/infrastructure/repository/dynamo_comments_repository.py" class="post_link" target="_blank">here</a>).
 			</p>
-			<div class="post_code">
-				<pre><code>
-from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
-
-from exceptions import RepositoryException
-from repository import comments_repository
-
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-
-@app.route('/comments/<string:post_slug>', methods=['GET'])
-@cross_origin()
-def get_comments(post_slug):
-    try:
-        comments = comments_repository.get_comments(post_slug)
-        if comments:
-            return jsonify(comments), 200
-        return jsonify({'error': 'Comments not found'}), 404
-    except RepositoryException as e:
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/comments/<string:post_slug>', methods=['POST'])
-@cross_origin()
-def add_comment(post_slug):
-    try:
-        comments_repository.add_comment(post_slug, request.get_json())
-        return jsonify({}), 200
-    except RepositoryException as e:
-        return jsonify({'error': str(e)}), 500
-				</code></pre>
-			</div>
 			<p class="post_p">
-				If you need you can check the rest of the
-				<a href="https://github.com/bertini36/bertini36.github.io/tree/develop/lambdas" class="post_link" target="_blank">code</a>.
+				Check <a href="https://github.com/bertini36/comments-engine/blob/master/README.md" class="post_link" target="_blank">comments engine README</a>
+				in order to install this simple API and start using it and if you find some error please let me know!
 			</p>
 			<p class="post_p">
 				Now we need a Svelte component that gets the comments of a post and publish new ones using the endpoints created with Serverless. In the following
