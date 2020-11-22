@@ -1,6 +1,5 @@
 <script>
 	export let segment;
-	const logo_img_url = "/static/logo.png";
 	const blog_github_url = "https://github.com/bertini36/blogv2";
 </script>
 
@@ -33,10 +32,10 @@
 	}
 </style>
 
-<nav class="border-b-2 font-light py-0 px-4">
+<nav class="border-b-2 py-0 px-4 font-light">
 	<ul class="m-0 p-0">
 		<li class="float-left"><a class="block no-underline py-4 px-3 hover:text-red-500" aria-current="{segment === undefined ? 'page' : undefined}" href=".">Home</a></li>
 		<li class="float-left"><a class="block no-underline py-4 px-3 hover:text-red-500" rel=prefetch aria-current="{segment === 'blog' ? 'page' : undefined}" href="blog">Blog</a></li>
-		<li class="float-right"><a class="block no-underline py-4 px-3 text-black hover:text-red-500" href="{blog_github_url}" target="_blank"><i class="fa fa-github"></i></a></li>
+		<li class="float-right"><a class="block no-underline py-4 px-3 hover:text-red-500" href="{blog_github_url}" target="_blank"><i class="fa fa-github"></i></a></li>
 	</ul>
 </nav>

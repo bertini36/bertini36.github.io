@@ -43,7 +43,7 @@ const posts = [
 				Tailwind had all that I needed. A framework which, after memorize some easy classes, allows you not to write CSS. Maybe for
 				you this is not a plus feature but for me, a backend coder, it was perfect.
 			</p>
-			<h4 class="post_section_title text-2xl text-bold">The good parts of this architecture</h4>
+			<h4>The good parts of this architecture</h4>
 			<p class="post_p">
 				After this introduction I want to list the advantages that I found making my
 				blog with Svelte, Sapper and Tailwind. Remember that this benefits I found exist in
@@ -102,7 +102,7 @@ const posts = [
 				Now I'm going to show
 				you how I made the comments engine using <a href="https://www.serverless.com/" class="post_link" target="_blank">Serverless</a>.
 			</p>
-			<h4 class="post_section_title text-2xl text-bold">Comments engine</h4>
+			<h4>Comments engine</h4>
 			<p class="post_p">
 				A comments engine requires a persistent storage so I needed to add something else to the blog in order to allow users to write comments.
 				Serverless is a framework that makes easier to mount a serverless infrastructure with AWS. In this case I decided
@@ -212,7 +212,7 @@ const posts = [
 				topics that this user writes about. From this idea I coded a Python application that downloads all these tweets of
 				a user, stores them, preprocesses them and finally looks for its main topics.
 			</p>
-			<h4 class="post_section_title text-2xl text-black">Technological stack</h4>
+			<h4>Technological stack</h4>
 			<ul class="post_list">
 				<li>
 					Twitter data is downloaded using <a href="https://github.com/tweepy/tweepy" class="post_link" target="_blank">Tweepy</a>.
@@ -246,7 +246,7 @@ const posts = [
 					<a href="https://travis-ci.org/" class="post_link" target="_blank">Travis</a> to execute automatic tests.
 				</li>
 			</ul>
-			<h4 class="post_section_title text-2xl text-black">Command interface</h4>
+			<h4>Command interface</h4>
 			<p class="post_p">
 				Profiler has a command interface. With the next command you could analize some Spain politicians:
 			</p>
@@ -259,7 +259,7 @@ const posts = [
 				In this <a href="https://github.com/bertini36/profiler/blob/master/src/settings.py" class="post_link" target="_blank">file</a> you
 				can configure some application behaviours about the data preprocessing and about the model.
 			</p>
-			<h4 class="post_section_title text-2xl text-black">Example of obtained results</h4>
+			<h4>Example of obtained results</h4>
 			<figure class="post_figure flex justify-center">
 				<img class="md:w-3/4" src="profiling-on-social-networks/profiler1.png" alt="Results">
 			</figure>
@@ -359,7 +359,7 @@ const posts = [
 			<figcaption class="post_image_figcaption">
 				AD reverse mode schema.
 			</figcaption>
-			<h4 class="post_section_title text-2xl text-black">Derivatives tools</h4>
+			<h4>Derivatives tools</h4>
 			<p class="post_p">
 				In this post we will be focus on function parameters optimization using Automatic Differentiation. Here are listed
 				some software packages to calculate derivatives and gradients:
@@ -370,7 +370,7 @@ const posts = [
 				<li><a href="https://www.wolfram.com/mathematica/" class="post_link" target="_blank">Mathematica</a>: It uses symbolic differentiation.</li>
 				<li><a href="https://github.com/HIPS/autograd" class="post_link" target="_blank">Autograd</a>: It uses AD reverse mode.</li>
 			</ul>
-			<h4 class="post_section_title text-2xl text-black">Tensorflow</h4>
+			<h4>Tensorflow</h4>
 			<p class="post_p">
 				It is an open source library developed by Google for numerical computation using flow graphs. Before to execute
 				a program, Tensorflow makes a flow graph where nodes represent mathematical operations and edges represent
@@ -394,7 +394,7 @@ const posts = [
 				The coder defines a model indicating its parameters as variables and practically automatically, after specify the
 				inference algorithm, Tensorflow is in charge of calculating gradients and apply them in optimization procedures.
 			</p>
-			<h4 class="post_section_title text-2xl text-black">Usage examples</h4>
+			<h4>Usage examples</h4>
 			<p class="post_p">
 				Below is the code to optimize the parameters of a lineal regression model with Tensorflow and with Autograd (both
 				use AD reverse model to get gradients). A lineal regression model is defined by the equation:
@@ -567,7 +567,7 @@ plt.show()</code></pre>
 				The main objective of this post was to uncover a bit the black box that involves the optimization of models using
 				tools as Tensorflow, Theano, <a href="http://pytorch.org/" class="post_link" target="_blank">Pytorch</a>, ...
 			</p>
-			<h4 class="post_section_title text-2xl text-black">References</h4>
+			<h4>References</h4>
 			<ul class="post_list">
 				<li>
 					Automatic differentiation in machine learning: a survey <br>
@@ -839,8 +839,8 @@ int main(int argc, char *argv[]) {
 				will tend to a local optimum. The main advantage of this mechanism is that it doesn't require to keep all dataset in
 				memory, solving the bottleneck that could be formed by using VI with very big datasets.
 			</p>
-			<h4 class="post_section_title text-2xl text-black">Sthocastic Variational Inference</h4>
-			<h5 class="post_section_title text-xl text-black">Sthocastic optimization</h5>
+			<h4>Sthocastic Variational Inference</h4>
+			<h5>Sthocastic optimization</h5>
 			<p class="post_p">
 				This technique obtains estimations of the real gradient of an objective function.
 				Thus we obtain an algorithm which iterates each batch and adjusts the hidden structure of the model based only
@@ -875,7 +875,7 @@ int main(int argc, char *argv[]) {
 			<figcaption class="post_image_figcaption">
 				Saddle point. (Source: Wikipedia)
 			</figcaption>
-			<h5 class="post_section_title text-xl text-black">Algorithm</h5>
+			<h5>Algorithm</h5>
 			<p class="post_p">
 				In VI, the function to be optimized is called ELBO. If variational parameters are updated by closed analytical
 				formulas, the algorithm is known as Sthocastic Coordinate Ascent Variational Inference (SCAVI) while if we use
@@ -887,7 +887,7 @@ int main(int argc, char *argv[]) {
 					 src="variational-inference-3/svi-algorithm.png"
 					 alt="Sthocastic Variational Inference Algorithm">
 			</figure>
-			<h4 class="post_section_title text-2xl text-black">Black Box Variational Inference</h4>
+			<h4>Black Box Variational Inference</h4>
 			<p class="post_p">
 				Starting from the ELBO formula that was reached in the
 				<a href="https://albertopou.herokuapp.com/#variational_inference_2" class="post_link" target="_blank">previous post</a>:
@@ -902,7 +902,7 @@ int main(int argc, char *argv[]) {
 				the purpose of obtain an approach of formula expectations. Such expectations regarding the variational model
 				can be computationally expensive and can be a bottleneck at computer memory level.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Score Gradients</h5>
+			<h5>Score Gradients</h5>
 			<p class="post_p">
 				Now we apply gradients and some algebraic transformations into the analytic ELBO formula (complete derivation
 				is not shown):
@@ -916,7 +916,7 @@ int main(int argc, char *argv[]) {
 				After these transformations you could notice that it is not necesary to obtain gradients of complete ELBO, it
 				is enough to derive the variational model (q(θ|λ)).
 			</p>
-			<h5 class="post_section_title text-xl text-black">Monte-Carlo Integration</h5>
+			<h5>Monte-Carlo Integration</h5>
 			<p class="post_p">
 				Monte-Carlo integration is a mechanism to approximate integrals. It consists of sampling the variable
 				with respect to which we are integrating and do a summation of function values given those samples.
@@ -930,7 +930,7 @@ int main(int argc, char *argv[]) {
 					 src="variational-inference-3/montecarlo.png"
 					 alt="Monte-Carlo Integration">
 			</figure>
-			<h5 class="post_section_title text-xl text-black">Algorithm</h5>
+			<h5>Algorithm</h5>
 			<p class="post_p">
 				Below is the BBVI algorithm:
 			</p>
@@ -939,7 +939,7 @@ int main(int argc, char *argv[]) {
 					 src="variational-inference-3/bbvi.png"
 					 alt="Black Box Variational Inference Algorithm">
 			</figure>
-			<h4 class="post_section_title text-2xl text-black">Considerations</h4>
+			<h4>Considerations</h4>
 			<p class="post_p">
 				This algorithm is the result of get some measures that can question the convergence of VI algorithm. Starting by
 				supposing q(θ|λ) factorizes (mean field assumption) to approximate ELBO integral using Monte-Carlo.
@@ -968,7 +968,7 @@ int main(int argc, char *argv[]) {
 				The discovery of algorithms like ADVI and BBVI allowed the inference of this kind of models because they changed
 				the analytical calculus for an approximate strategy.
 			</p>
-			<h4 class="post_section_title text-2xl text-black">Variational inference libraries</h4>
+			<h4>Variational inference libraries</h4>
 			<p class="post_p">
 				Best-known libraries for the use of VI and Markov Chain Monte-Carlo (MCMC):
 			</p>
@@ -1001,7 +1001,7 @@ int main(int argc, char *argv[]) {
 				<a href="https://github.com/HIPS/autograd" class="post_link" target="_blank">Autograd</a>, ...
 				And also other probabilistic models that helped me to learn.
 			</p>
-			<h4 class="post_section_title text-2xl text-black">References</h4>
+			<h4>References</h4>
 			<ul class="post_list">
 				<li>
 					Journal of the American Statistical AssociationGeorge
@@ -1121,7 +1121,7 @@ int main(int argc, char *argv[]) {
 					 src="variational-inference-2/ELBO_MeanField.png"
 					 alt="ELBO taking into account Mean Field assumption">
 			</figure>
-			<h4 class="post_section_title text-2xl text-black">Variational Inference algorithm</h4>
+			<h4>Variational Inference algorithm</h4>
 			<figure class="post_figure flex justify-center">
 				<img class="post_image"
 					 src="variational-inference-2/VI.png"
@@ -1134,7 +1134,7 @@ int main(int argc, char *argv[]) {
 				Gradient Descent, ... Chosen inference method doesn't change the basic structure of the VI algorithm just change
 				the method of obtaining the λ new values of variational model in each iteration.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Coordinate Ascent Variational Inference</h5>
+			<h5>Coordinate Ascent Variational Inference</h5>
 			<p class="post_p">
 				The most traditional method for the inference of probabilistic models is: Coordinate Ascent Variational Inference
 				(CAVI). For the implementation of this kind of inference you require knowledge of Bayesian statistics because
@@ -1185,7 +1185,7 @@ int main(int argc, char *argv[]) {
 				conjugated of the second. The conjugated models, as already mentioned, thanks to these simplifications,
 				allow to calculate the posterior analytically.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Coordinate Ascent Variational Inference algorithm</h5>
+			<h5>Coordinate Ascent Variational Inference algorithm</h5>
 			<figure class="post_figure flex justify-center">
 				<img class="post_image"
 					 src="variational-inference-2/CAVI.png"
@@ -1195,13 +1195,13 @@ int main(int argc, char *argv[]) {
 				In this version of CAVI algorithm the distinction between updating local and global variables of the model has
 				already been taken into accoun.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Gradient Ascent Variational Inference</h5>
+			<h5>Gradient Ascent Variational Inference</h5>
 			<p class="post_p">
 				A more naive inference alternative is Gradient Ascent Variational Inference (GAVI). The difference is how is
 				the variational parameters update. It is not done analytically with derived formulas by a statistician,
 				it is an exploratory process. GAVI is based on the Gradient Descent/Ascent algorithm.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Gradient Ascent</h5>
+			<h5>Gradient Ascent</h5>
 			<p class="post_p">
 				Gradient Ascent aims to maximize a cost function C(λ) parameterized by the model parameters, λ. The algorithm
 				optimizes these parameters λ in the gradient direction (in the case of Gradient Descent, in the opposite
@@ -1222,7 +1222,7 @@ int main(int argc, char *argv[]) {
 			    own learning rate η<small>i</small> or taking into account the value of previous iterations gradients to calculate
 				the following.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Gradient Ascent Variational Inference algorithm</h5>
+			<h5>Gradient Ascent Variational Inference algorithm</h5>
 			<figure class="post_figure flex justify-center">
 				<img class="post_image"
 					 src="variational-inference-2/GAVI.png"
@@ -1254,14 +1254,14 @@ int main(int argc, char *argv[]) {
 				In the case of CAVI, when the analytical updates of each variational parameter are derived, the shape of the
 				distributions to measure the distance between them is already taking into account.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Efficiency problems</h5>
+			<h5>Efficiency problems</h5>
 			<p class="post_p">
 				Nowadays, in the already known as the information age, algorithms used in machine learning use huge volumes of
 				data. This causes programmers to scale algorithms or design alternatives less computationally expensive. CAVI and
 				GAVI have to pass through all the data for each iteration. This procedure for massive datasets is intractable. In
 				the next post I'm going to explain the measures you can take in this cases and how to solve the scalability problem.
 			</p>
-			<h4 class="post_section_title text-2xl text-black">References</h4>
+			<h4>References</h4>
 			<ul class="post_list">
 				<li>
 					Journal of the American Statistical AssociationGeorge
@@ -1311,7 +1311,7 @@ int main(int argc, char *argv[]) {
 				interesting to write a set of posts summarizing my experience about it thanks to my teacher
 				<a href="https://twitter.com/CapdevilaPujol" class="post_link" target="_blank">Joan Capdevila</a>.
 			</p>
-			<h4 class="post_section_title text-2xl text-black">Probabilistic Machine Learning</h4>
+			<h4>Probabilistic Machine Learning</h4>
 			<p class="post_p">
 				Last decades studies about machine learning has caused the appearance of a wide variety of algorithms to solve
 				a large set of problems covering areas such as driving autonomous vehicles, medical diagnosis, speech recognition
@@ -1369,7 +1369,7 @@ int main(int argc, char *argv[]) {
 					used to describe or predict new data.
 				</li>
 			</ul>
-			<h4 class="post_section_title text-2xl text-black">Bayesian inference</h4>
+			<h4>Bayesian inference</h4>
 			<p class="post_p">
 				Bayesian inference tries to reveal a hidden structure in data that cannot be directly observed. For
 				traditional machine learning methods parameters are values that are determined by optimization algorithms
@@ -1377,7 +1377,7 @@ int main(int argc, char *argv[]) {
 				unknown parameters are described by probability distributions and observation of evidence avoids to update
 				these distrubutions using Bayes rule.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Bayes rule</h5>
+			<h5>Bayes rule</h5>
 			<p class="post_p">
 				The first thing you need to be clear about to understand Bayesian inference is Bayes rule. Bayes rule indicates
 				how a priori probability about an event has to be updated after observe evidences about it. From a bayesian point
@@ -1455,7 +1455,7 @@ int main(int argc, char *argv[]) {
 				that requires to calculate the evidence. For these models, another strategy is required to obtain the posterior,
 				for that reason the calculation of the posterior becomes an approximation problem.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Posterior approximation</h5>
+			<h5>Posterior approximation</h5>
 			<p class="post_p">
 				Probabilistic machine learning uses latent variables to describe data hidden structure, some relations
 				between observed and latent variables are modeled using probability distributions and inference algorithms are used
@@ -1494,7 +1494,7 @@ int main(int argc, char *argv[]) {
 				variational model, which is adjusted in order to reduce the distance with the posterior. In this family the
 				problem is transformed from an approximation one to an optimization one.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Probabilistic Graphical Models</h5>
+			<h5>Probabilistic Graphical Models</h5>
 			<p class="post_p">
 				In the bayesian field, a model represents a joint probability over all random variables of the problem.
 			</p>
@@ -1531,7 +1531,7 @@ int main(int argc, char *argv[]) {
 			<p class="post_p">
 				This notation indicates a vector of n random variables <i>x</i>.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Local and global variables</h5>
+			<h5>Local and global variables</h5>
 			<p class="post_p">
 				In a probabilistic model two types of random variables can be distinguished: globals and locals. A global variable
 				is the one which is shared between all dataset examples while a local variable is owned by each example. For
@@ -1543,11 +1543,11 @@ int main(int argc, char *argv[]) {
 					 src="variational-inference-1/global_local_variables.png"
 					 alt="Model example">
 			</figure>
-			<h4 class="post_section_title text-2xl text-black">Variational inference</h4>
+			<h4>Variational inference</h4>
 			<p class="post_p">
 				In next posts we will focus on the different variational strategies for posterior approach.
 			</p>
-			<h5 class="post_section_title text-xl text-black">Strategy</h5>
+			<h5>Strategy</h5>
 			<p class="post_p">
 				As already mentioned, Variational Inference consists in defining a distribution, q(&theta;|&lambda;), whose parameters &lambda;
 				will be optimized in order to reduce the differences with the posterior p(&theta;|x). This new distribution is known as
@@ -1560,7 +1560,7 @@ int main(int argc, char *argv[]) {
 					 src="variational-inference-1/variational_inference.jpg"
 					 alt="Variational inference">
 			</figure>
-			<h5 class="post_section_title text-xl text-black">Kullback-Leibler divergence</h5>
+			<h5>Kullback-Leibler divergence</h5>
 			<p class="post_p">
 				To calculate Euclidean distance between distribution parameters to establish the similarity between both is an
 				imperfect measure since we are comparing distributions and not points. Imagine a Normal distribution with 0 mean
@@ -1623,7 +1623,7 @@ int main(int argc, char *argv[]) {
 				to be approximated and red one the approximation. <strong>a</strong> image is an approximation
 				with forwards KL and <strong>b</strong> is an approximation with reverse KL.
 			</figcaption>
-			<h5 class="post_section_title text-xl text-black">Mean-Field assumption</h5>
+			<h5>Mean-Field assumption</h5>
 			<p class="post_p">
 				In order to define a treatable distribution over all latent variables to approximate the posterior we can
 				simplify variational model optimization assuming that it is a factorized model. It is to suppose that q(&theta;|&lambda;) is
@@ -1641,7 +1641,7 @@ int main(int argc, char *argv[]) {
 				In following posts we will go deeper into these algorithms and programming tools to code this models will be
 				presented.
 			</p>
-			<h4 class="post_section_title text-2xl text-bold">References</h4>
+			<h4>References</h4>
 			<ul class="post_list">
 				<li>
 					Journal of the American Statistical AssociationGeorge (E. P. Box)

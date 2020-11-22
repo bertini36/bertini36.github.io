@@ -1,13 +1,17 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
     purge: {
         content: [
-            "./src/**/*.svelte",
-            "./src/**/*.js"
+            './src/**/*.svelte',
+            './src/**/*.js'
         ],
     },
-    extend: {
-        colors: {
-            red: "#FF3E00"
-        },
+    theme: {
+        extend: {
+            colors: {
+                orange: colors.orange,
+            }
+        }
     }
 }

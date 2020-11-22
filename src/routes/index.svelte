@@ -9,61 +9,70 @@
     <title>Alberto Pou</title>
 </svelte:head>
 
-<h1 class="text-3xl text-center lg:mt-10 xl:mt-20">>&nbsp;albertopou.dev<span class="blinking">_</span></h1>
+<h1 class="lg:mt-10 xl:mt-20 text-3xl title text-center font-bold uppercase">>&nbsp;albertopou.dev<span class="blinking">_</span></h1>
 <div class="text-center">
     Powered by
-    <a class="hover:text-red-500 hover:underline" href="https://svelte.dev/"
-       rel="noreferrer" target="_blank">#svelte
-    </a>,
-    <a class="hover:text-red-500 hover:underline"
-       href="https://sapper.svelte.dev/" rel="noreferrer" target="_blank">
-        #sapper
-    </a>,
-    <a class="hover:text-red-500 hover:underline"
-       href="https://tailwindcss.com/" rel="noreferrer" target="_blank">
-        #tailwind
-    </a> and
-    <a class="hover:text-red-500 hover:underline"
-       href="https://www.serverless.com/" rel="noreferrer" target="_blank">
-        #serverless
-    </a>
+    <a class="link" href="https://svelte.dev/" rel="noreferrer" target="_blank">#svelte</a>,
+    <a class="link" href="https://tailwindcss.com/" rel="noreferrer" target="_blank">#tailwind</a> and
+    <a class="link" href="https://www.serverless.com/" rel="noreferrer" target="_blank">#serverless</a>
     🚀
 </div>
 
-<div class="max-w-sm w-full lg:max-w-full lg:flex mt-10 lg:mt-16 md:max-w-full">
-    <div class="h-48 md:h-auto md:mw-auto lg:w-1/3 hidden lg:block flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden ">
-        <img class="w-full h-full" src="profile.jpg" alt="">
-    </div>
-    <div class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal md:flex md:content-center md:flex-wrap">
-        <div>
-            <div class="text-gray-900 font-bold text-2xl mb-2">Who I am?&nbsp;👨‍💻</div>
-            <p class="text-gray-700 text-xl mb-5">
-                Hi, I'm Alberto. I live in Mallorca, a small island in the Mediterranean sea.
-                I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.skitude.com/" target="_blank">Skitude</a>.
-            </p>
-            <p class="text-gray-700 text-xl mb-5">
-                As a software engineer I focus mostly on the backend. Specifically these last years I've been working with Python
-                and Django on tasks ranging from creating new functionalities to refactoring and testing legacy ones. Also I'm interested in other stuff
-                such as machine learning, data mining, algorithms and async Python frameworks.
-            </p>
-            <p class="text-gray-700 text-xl mb-5">
-                These last months some modern frontend technologies grabbed my attention and for this reason I decided to
-                recode my blog using Svelte, Sapper and Tailwind.
-            </p>
-            <div class="text-center">
-                <a href="{instagram_url}" target="_blank" class="mr-4">
-                    <i class="fa fa-instagram text-xl hover:text-red-500"></i>
-                </a>
-                <a href={twitter_url} target="_blank" class="mr-4">
-                    <i class="fa fa-twitter text-xl hover:text-red-500"></i>
-                </a>
-                <a href={linkedin_url} target="_blank" class="mr-4">
-                    <i class="fa fa-linkedin text-xl hover:text-red-500"></i>
-                </a>
-                <a href={github_url} target="_blank">
-                    <i class="fa fa-github text-xl hover:text-red-500"></i>
-                </a>
+<div class="mt-20 text-center">
+    <div class="w-full flex-none -ml-full rounded-3xl bg-gray-100">
+        <div class="w-full flex-none rounded-3xl transform shadow-lg bg-gradient-to-r from-red-500 to-orange-300 -rotate-2 sm:-rotate-2">
+            <div class="grid grid-flow-col grid-rows-1 grid-cols-3">
+                <div class="hidden md:block row-start-1 col-start-1 col-span-1 pl-4 pt-4">
+                    <div class="transform scale-90 -rotate-6">
+                        <img class="w-full h-full rounded-2xl shadow-2xl" src="profile.jpg" alt="">
+                    </div>
+                </div>
+
+                <div class="xl:relative row-start-1 col-start-1 md:col-start-2 col-span-3 md:col-span-2 transform translate-x-4 md:translate-x-8 translate-y-4 md:translate-y-7 pt-8 px-4 md:px-6 lg:px-12 rounded-3xl text-left bg-white shadow-2xl">
+                    <h2 class="title text-2xl font-bold mb-6">Who I am?&nbsp;👨‍💻</h2>
+
+                    <p class="mb-5">
+                        Hi, I'm Alberto. I live in Mallorca, a small island in the Mediterranean sea.
+                        I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.skitude.com/"
+                                                              target="_blank">Skitude</a>.
+                    </p>
+                    <p class="mb-5">
+                        As a software engineer I focus mostly on the backend. Specifically these last years I've been working with Python
+                        and Django on tasks ranging from creating new functionalities to refactoring and testing legacy ones. Also I'm
+                        interested in
+                        other stuff
+                        such as machine learning, data mining, algorithms and async Python frameworks.
+                    </p>
+                    <p>
+                        These last months some modern frontend technologies grabbed my attention and for this reason I decided to
+                        recode my blog using Svelte, Vue and Tailwind.
+                    </p>
+
+                    <div class="my-6 xl:absolute xl:inset-x-0 xl:bottom-0 text-center">
+                        <a href="{instagram_url}" target="_blank" class="mr-4">
+                            <i class="fa fa-instagram text-xl hover:text-red-500"></i>
+                        </a>
+                        <a href={twitter_url} target="_blank" class="mr-4">
+                            <i class="fa fa-twitter text-xl hover:text-red-500"></i>
+                        </a>
+                        <a href={linkedin_url} target="_blank" class="mr-4">
+                            <i class="fa fa-linkedin text-xl hover:text-red-500"></i>
+                        </a>
+                        <a href={github_url} target="_blank">
+                            <i class="fa fa-github text-xl hover:text-red-500"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .blinking {
+      animation: blinker 1.5s infinite;
+    }
+    @keyframes blinker {
+      0% { opacity: 0; }
+    }
+</style>

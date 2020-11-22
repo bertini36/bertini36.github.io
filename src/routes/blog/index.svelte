@@ -79,18 +79,16 @@
 				{#each post.tags as tag}
 					<span class="text-base text-gray-600">{tag}</span>&nbsp;
 				{/each}
-				<h1 class="text-3xl hover:text-red-500 mb-0 pb-0">
+				<h1 class="text-3xl title hover:text-red-500 mb-0 pb-0 font-bold">
 					<a rel="prefetch" hreflang='en' href="blog/{post.slug}">{post.title}</a>
 				</h1>
-				<span class='text-base text-gray-600'>{formatDate(post.date)}</span>
+				<span class='text-base text-gray-800'>{formatDate(post.date)}</span>
 			</div>
 			<p>
 				{@html truncate(post.html, 400)}
 			</p>
-			<div class="mt-2">
-				<a rel="prefetch"
-				   class="hover:text-red-500 border border-black hover:border-red-500 px-3 py-1"
-				   hreflang="en" href="blog/{post.slug}">Continue reading »</a>
+			<div class="mt-3 title font-semibold">
+				<a rel="prefetch" class="link" lang="en" href="blog/{post.slug}">Continue reading</a>
 			</div>
 		</div>
 	{/each}
