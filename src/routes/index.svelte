@@ -18,9 +18,9 @@
     🚀
 </div>
 
-<div class="mt-20 text-center">
-    <div class="w-full flex-none -ml-full rounded-3xl bg-gray-100">
-        <div class="w-full flex-none rounded-3xl transform shadow-lg bg-gradient-to-r from-red-500 to-orange-300 -rotate-2 sm:-rotate-2">
+<div class="mt-10 md:mt-20 text-center">
+    <div class="w-full flex-none -ml-full rounded-3xl bg-gray-100 dark:bg-gray-400">
+        <div class="w-full flex-none rounded-3xl transform shadow-lg bg-gradient-to-r from-red-500 dark:from-red-400 to-orange-300 dark:to-orange-300 -rotate-2 sm:-rotate-2">
             <div class="grid grid-flow-col grid-rows-1 grid-cols-3">
                 <div class="hidden md:block row-start-1 col-start-1 col-span-1 pl-4 pt-4">
                     <div class="transform scale-90 -rotate-6">
@@ -28,12 +28,12 @@
                     </div>
                 </div>
 
-                <div class="xl:relative row-start-1 col-start-1 md:col-start-2 col-span-3 md:col-span-2 transform translate-x-4 md:translate-x-8 translate-y-4 md:translate-y-7 pt-8 px-4 md:px-6 lg:px-12 rounded-3xl text-left bg-white shadow-2xl">
+                <div class="bg-white dark:bg-gray-500 dark:text-white xl:relative row-start-1 col-start-1 md:col-start-2 col-span-3 md:col-span-2 transform translate-x-4 md:translate-x-8 translate-y-4 md:translate-y-7 pt-8 px-4 md:px-6 lg:px-12 rounded-3xl text-left bg-white shadow-2xl">
                     <h2 class="title text-2xl font-bold mb-6">Who I am?&nbsp;👨‍💻</h2>
 
                     <p class="mb-5">
                         Hi, I'm Alberto. I live in Mallorca, a small island in the Mediterranean sea.
-                        I'm a software engineer working at <a class="text-red-500 hover:underline" href="https://www.skitude.com/"
+                        I'm a software engineer working at <a class="text-red-500 dark:text-red-400 hover:underline" href="https://www.skitude.com/"
                                                               target="_blank">Skitude</a>.
                     </p>
                     <p class="mb-5">
@@ -45,9 +45,9 @@
                     </p>
                     <p>
                         These last months some modern frontend technologies grabbed my attention and for this reason I decided to
-                        recode my blog using <a class="text-red-500 hover:underline" href="https://svelte.dev/" target="_blank">Svelte</a>,
-                        <a class="text-red-500 hover:underline" href="https://tailwindcss.com/" target="_blank">Tailwind</a> and
-                        <a class="text-red-500 hover:underline" href="https://www.serverless.com/" target="_blank">Serverless</a>.
+                        recode my blog using <a class="text-red-500 dark:text-red-400 hover:underline" href="https://svelte.dev/" target="_blank">Svelte</a>,
+                        <a class="text-red-500 dark:text-red-400 hover:underline" href="https://tailwindcss.com/" target="_blank">Tailwind</a> and
+                        <a class="text-red-500 dark:text-red-400 hover:underline" href="https://www.serverless.com/" target="_blank">Serverless</a>.
                     </p>
 
                     <div class="my-6 xl:absolute xl:inset-x-0 xl:bottom-0 text-center">
