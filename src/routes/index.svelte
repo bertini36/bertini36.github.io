@@ -18,7 +18,7 @@
     <a class="hover:text-red-500 hover:underline"
        href="https://sapper.svelte.dev/" rel="noreferrer" target="_blank">
         #sapper
-    </a>,
+    </a>
     <a class="hover:text-red-500 hover:underline"
        href="https://tailwindcss.com/" rel="noreferrer" target="_blank">
         #tailwind

@@ -4,10 +4,5 @@ module.exports = {
             "./src/**/*.svelte",
             "./src/**/*.js"
         ],
-    },
-    extend: {
-        colors: {
-            red: "#FF3E00"
-        },
     }
 }
