@@ -1,7 +1,7 @@
 {
   "name": "alberto_pou_blog",
   "description": "Dev blog",
-  "license": "",    // TODO
+  "license": "",
   "repository": "https://github.com/bertini36/bertini36.github.io",
   "version": "2.0.0",
   "scripts": {
