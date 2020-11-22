@@ -45,7 +45,9 @@
                     </p>
                     <p>
                         These last months some modern frontend technologies grabbed my attention and for this reason I decided to
-                        recode my blog using Svelte, Vue and Tailwind.
+                        recode my blog using <a class="text-red-500 hover:underline" href="https://svelte.dev/" target="_blank">Svelte</a>,
+                        <a class="text-red-500 hover:underline" href="https://tailwindcss.com/" target="_blank">Tailwind</a> and
+                        <a class="text-red-500 hover:underline" href="https://www.serverless.com/" target="_blank">Serverless</a>.
                     </p>
 
                     <div class="my-6 xl:absolute xl:inset-x-0 xl:bottom-0 text-center">
