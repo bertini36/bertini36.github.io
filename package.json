@@ -1,7 +1,9 @@
 {
   "name": "alberto_pou_blog",
   "description": "Dev blog",
-  "version": "0.0.1",
+  "license": "",    // TODO
+  "repository": "https://github.com/bertini36/bertini36.github.io",
+  "version": "2.0.0",
   "scripts": {
     "dev": "sapper dev",
     "build": "npm run build:tailwind && sapper build --legacy",
