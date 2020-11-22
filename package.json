@@ -9,7 +9,7 @@
     "build": "npm run build:tailwind && sapper build --legacy",
     "export": "npm run build:tailwind && sapper export --legacy",
     "start": "node __sapper__/build",
-    "dev:tailwind": "postcss static/tailwind.css -o static/stayles.css -w",
+    "dev:tailwind": "postcss static/tailwind.css -o static/styles.css -w",
     "build:tailwind": "NODE_ENV=production postcss static/tailwind.css -o static/styles.css",
     "deploy": "npm run clean && npm run export && node ./scripts/deploy.js",
     "clean": "rm -rf ./__sapper__",
