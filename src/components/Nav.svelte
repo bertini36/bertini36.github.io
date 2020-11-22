@@ -32,7 +32,7 @@
 	}
 </style>
 
-<nav class="border-b-2 font-light py-0 px-4 text-gray-700 text-xl">
+<nav class="border-b-2 font-light py-0 px-4 text-gray-600 text-xl">
 	<ul class="m-0 p-0">
 		<li class="float-left"><a class="block no-underline py-4 px-3 hover:text-red-500" aria-current="{segment === undefined ? 'page' : undefined}" href=".">Home</a></li>
 		<li class="float-left"><a class="block no-underline py-4 px-3 hover:text-red-500" rel=prefetch aria-current="{segment === 'blog' ? 'page' : undefined}" href="blog">Blog</a></li>
