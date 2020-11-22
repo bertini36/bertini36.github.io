@@ -19,19 +19,20 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   padding-bottom: 2em;
 
-  @apply text-xl text-gray-700;
+  @apply text-xl text-gray-700 dark:text-white;
+  @apply bg-white dark:bg-gray-600;
 }
 
 .link {
-    @apply hover:text-red-500 hover:underline;
+    @apply hover:text-red-500 hover:underline dark:hover:text-red-400;
 }
 
 .title {
-    @apply text-gray-800;
+    @apply text-gray-800 dark:text-white;
 }
 
 .post_link {
-    @apply text-red-500 hover:underline;
+    @apply text-red-500 hover:underline dark:text-red-400;
 }
 
 .post_p {
@@ -51,11 +52,11 @@ body {
 }
 
 h4 {
-    @apply post_section_title text-2xl font-bold;
+    @apply post_section_title text-2xl font-bold dark:text-white;
 }
 
 h5 {
-    @apply post_section_title text-xl font-bold;
+    @apply post_section_title text-xl font-bold dark:text-white;
 }
 
 .post_figure {
