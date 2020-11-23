@@ -600,6 +600,11 @@ video {
   border-color: rgba(229, 231, 235, var(--tw-border-opacity));
 }
 
+.border-red-200 {
+  --tw-border-opacity: 1;
+  border-color: rgba(254, 202, 202, var(--tw-border-opacity));
+}
+
 .border-red-400 {
   --tw-border-opacity: 1;
   border-color: rgba(248, 113, 113, var(--tw-border-opacity));
@@ -733,10 +738,6 @@ video {
 
 .font-light {
   font-weight: 300;
-}
-
-.font-semibold {
-  font-weight: 600;
 }
 
 .font-bold {
