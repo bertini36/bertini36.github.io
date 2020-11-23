@@ -1,0 +1,169 @@
+<!doctype html> <html lang=en> <head> <meta charset=utf-8> <meta content="width=device-width,initial-scale=1" name=viewport> <meta content=#333333 name=theme-color> <base href=/ > <link href=https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css rel=stylesheet> <link href=styles.css rel=stylesheet> <link href=manifest.json rel=manifest crossorigin=use-credentials> <link href=black_logo.png rel=icon type=image/png> <link href=client/main.2075857528.css rel=stylesheet> <noscript id=sapper-head-start></noscript><title>Distributed matrix product 🔢</title><noscript id=sapper-head-end></noscript> </head> <body> <div id=sapper> <nav class="border-b-2 border-red-200 dark:border-b-4 font-light px-4 py-0"><ul class="svelte-i3hbql m-0 p-0"><li class=float-left><a class="block svelte-i3hbql dark:hover:text-red-400 hover:text-red-500 px-3 py-4" href=.>Home</a></li> <li class=float-left><a class="block svelte-i3hbql dark:hover:text-red-400 hover:text-red-500 px-3 py-4 no-underline" href=blog aria-current=page rel=prefetch>Blog</a></li> <li class=float-right><a class="block dark:hover:text-red-400 hover:text-red-500 px-3 py-4 no-underline" href=https://github.com/bertini36/bertini36.github.io target=_blank><i class="fa fa-github"></i></a></li> <li class="float-right pt-4"><label class="mr-2 text-xs" for=toggle>Dark mode</label> <div class="mr-2 align-middle duration-200 ease-in inline-block relative select-none transition w-10"><input class="block appearance-none focus:outline-none absolute bg-white border-4 cursor-pointer h-6 rounded-full svelte-i3hbql toggle-checkbox w-6" id=toggle name=toggle type=checkbox> <label class="block svelte-i3hbql cursor-pointer h-6 rounded-full bg-gray-300 overflow-hidden toggle-label" for=toggle></label></div></ul> </nav> <main class=svelte-6aaop8> <h1 class="text-4xl font-bold title">Distributed matrix product 🔢</h1> <div class="mb-10 post"> <p class=post_p> Nowadays one of the main problems of any algorithm is its facility to scale it, in other words, its facility to be executed over multiple cores (parallelization) or nodes (distribution). The amount of data that is available today has led the world of computing to develop technologies with which to parallelize and distribute processes are done more easily and automatically. Actually, each computationally expensive algorithm works in its distributed version. In this way tasks as finding prime numbers, complex simulations or statistical prediction models, which would spend years to get results, can obtain it in a few hours thanks to the joint work of many computers. </p> <p class=post_p> Precisely this is what supercomputing centers like <a class=post_link href=https://www.bsc.es/ target=_blank>BSC</a> are engaged. BSC has a supercomputer, called Marenostrum III, which avoids to its users to run computationally expensive algorithms or algorithms that require a huge amount of data in a distributed way. Specifically, Marenostrum III has 3108 nodes each with 2 processors of 8 cores (over 49.728 cores). </p> <figure class="flex justify-center post_figure"> <img alt="Marenostrum III supercomputer" src=distributed-matrix-product/marenostrum.jpg> </figure> <figcaption class=post_image_figcaption>Marenostrum III</figcaption> <p class=post_p> In this post I'm going to show, with a simple example, how to distribute a matrix product over several nodes and how to parallelize at each node. Matrix product is a mathematical operation that, when it is taken to the extreme using very large matrices it is become in a very computationally expensive operation. </p> <figure class="flex justify-center post_figure"> <img alt="Matrix product" src=distributed-matrix-product/matrix_product.png> </figure> <figcaption class=post_image_figcaption>Matrix product</figcaption> <p class=post_p> Since each element of the resulting matrix does not depend on any other element of it we can distribute without any restriction. For this example I could use 4 nodes, so I decided that each node would be responsible for calculating a quarter of the resulting matrix. A and B matrices will be sent to each node to avoid them to do its computations. For the distribution I'm using <a class=post_link href=https://www.open-mpi.org/ target=_blank>MPI</a> (Message Passing Interface) technology. Using functions of this library data can be shared over the nodes (lines 123 and 124) and to specify, using process id, which part of the result matrix each node has to calculate (lines 116, 117 and 118). </p> <figure class="flex justify-center post_figure"> <img alt="Distributed matrix product" src=distributed-matrix-product/distributed_matrix_product.png> </figure> <figcaption class=post_image_figcaption>Matrix product distribution and parallelization</figcaption> <p class=post_p> Nowadays, for parallel computation, the power of GPUs is being used. In our case each node of Marenostrum III has a Nvidia K80 graphic card. This graphic cards can be used for parallel computation using Nvidia <a class=post_link href=https://en.wikipedia.org/wiki/CUDA target=_blank>CUDA</a> (Compute Unified Device Architecture) platform. GPUs are essentially a big number of simple processors that can be used to speed up some parts of the code. For this, the program has to be decomposed in a big number of threads which will be executed concurrently. In this example, each thread will be responsible for calculating just an element of the resulting matrix. Using CUDA it is required to define a block structure (threads group) delimiting each thread data domain using its threadId and its blockId. These threads will be executed in one kernel, in other words, a GPU program. </p> <div class=post_code> <pre><code>/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* MULTI-NODE AND PARALLEL MATRIX-MATRIX PRODUCT WITH MPI AND CUDA           */
+/*                                                                           */
+/* File:         mmpmpicuda.cu                                               */
+/* Author:       Alberto Pou Quirós (Github: bertini36)                      */
+/* Description:  This program performs a matrix product (A * B = C)          */
+/*               distributing the computation between multiple nodes         */
+/*               with MPI technology and parallelizing the computation in    */
+/*               every node with Nvidia CUDA technology                      */
+/* Compilation:  nvcc -I/opt/mpi/bullxmpi/1.2.9.1/include                    */
+/*               -L/opt/mpi/bullxmpi/1.2.9.1/lib -lmpi -ldl -lm -lnuma       */
+/*               -lrt -lnsl -lutil -lm -ldl mmpmpicuda.cu -o mmpmpicuda      */
+/* Strategy:                                                                 */
+/*                  Example 16x16 matrices with 4 nodes:                     */
+/*                   _________________16________________                     */
+/*                   |                                 |                     */
+/*                   |               NODE 1            | 4                   */
+/*                   |_________________________________|                     */
+/*                   |                                 |                     */
+/*                   |               NODE 2            | 4                   */
+/*              C =  |_________________________________|    16               */
+/*                   |                                 |                     */
+/*                   |               NODE 3            | 4                   */
+/*                   |_________________________________|                     */
+/*                   |                                 |                     */
+/*                   |               NODE 4            | 4                   */
+/*                   |_________________________________|                     */
+/*                                                                           */
+/*                  Node 1 computes 4 rows of result matrix:                 */
+/*                   __________________________________                      */
+/*                   |                                 |                     */
+/*                   |         4x16 CUDA block         |                     */
+/*                   |_________________________________|                     */
+/*                                                                           */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+#include &lt;sys/time.h>
+#include &lt;stdio.h>
+#include &lt;stdlib.h>
+#include &lt;assert.h>
+#include &lt;mpi.h>
+
+#define N 1024
+
+#define err(format, ...) do { fprintf(stderr, format, ##__VA_ARGS__); exit(1); } while (0)
+
+struct timeval start_time, end_time;
+
+inline void checkCuda(cudaError_t e) {
+    if (e != cudaSuccess) {
+        err("CUDA Error %d: %s\n", e, cudaGetErrorString(e));
+    }
+}
+
+__global__ void matrixProduct(double *matrix_a, double *matrix_b, double *matrix_c, int width, int nrows, int my_rank) {
+    int row = threadIdx.y + blockDim.y * blockIdx.y;
+    int col = threadIdx.x + blockDim.x * blockIdx.x;
+    matrix_c[row * width + col] = 0;
+    for (int k=0; k&lt;width; k++) {
+        matrix_c[row * width + col] += matrix_a[(row * width) + (my_rank * nrows * width) + k] * matrix_b[k * width + col];
+    }
+}
+
+void initializeMatrices(double matrix_a[N][N], double matrix_b[N][N]) {
+    int i, j;
+    srand(time(NULL));
+    for (i=0; i&lt;N; i++) {
+        for (j=0; j&lt;N; j++) {
+            matrix_a[i][j] = rand();
+            matrix_b[i][j] = rand();
+        }
+    }
+}
+
+void showMatrices(double matrix_a[N][N], double matrix_b[N][N], double matrix_c[N][N]) {
+    int i, j;
+    srand(time(NULL));
+    printf("***** MATRIX A ***** \n");
+    for (i=0; i&lt;N; i++) {
+        for (j=0; j&lt;N; j++) {
+            (j % N == N-1) ? printf("%.1f \n", matrix_a[i][j]) : printf("%.1f,", matrix_a[i][j]);
+        }
+    }
+    printf("***** MATRIX B ***** \n");
+    for (i=0; i&lt;N; i++) {
+        for (j=0; j&lt;N; j++) {
+            (j % N == N-1) ? printf("%.1f \n", matrix_b[i][j]) : printf("%.1f,", matrix_b[i][j]);
+        }
+    }
+    printf("***** RESULT MATRIX ***** \n");
+    for (int i=0; i&lt;N; i++) {
+        for (int j=0; j&lt;N; j++) {
+            (j % N == N-1) ? printf("%f \n", matrix_c[i][j]) : printf("%f,", matrix_c[i][j]);
+        }
+    }
+}
+
+int main(int argc, char *argv[]) {
+
+    double A[N][N], B[N][N], C[N][N];
+    double *d_a, *d_b, *d_c;
+    int my_rank, comm_sz, from, to, nrows;
+
+    // MPI initialization
+    MPI_Init (&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);    // Process id
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);    // Number of processors
+
+    if (N % comm_sz != 0) {
+        if (my_rank == 0) printf("Matrix size not divisible by number of processors \n");
+        MPI_Finalize();
+        exit(-1);
+    }
+
+    // Calculate interval lines to compute per node
+    from = my_rank * N / comm_sz;
+    to = (my_rank + 1) * N / comm_sz;
+    nrows = to - from;
+
+    if (my_rank == 0) { initializeMatrices(A, B); }
+
+    // Send A y B to every node
+    MPI_Bcast(A, N*N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(B, N*N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // Allocate memory in the device
+    checkCuda(cudaMalloc((void **) &d_a, N*N*sizeof(double)));
+    checkCuda(cudaMalloc((void **) &d_b, N*N*sizeof(double)));
+    checkCuda(cudaMalloc((void **) &d_c, (N*N/comm_sz)*sizeof(double)));
+
+    // Copy the information in the device
+    checkCuda(cudaMemcpy(d_a, A, N*N*sizeof(double), cudaMemcpyHostToDevice));
+    checkCuda(cudaMemcpy(d_b, B, N*N*sizeof(double), cudaMemcpyHostToDevice));
+
+    // CUDA threads structure definition
+    dim3 dimGrid(1);
+    dim3 dimBlock(N, nrows);
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (my_rank == 0) { gettimeofday(&start_time, NULL); }
+
+    // Kernel launch
+    matrixProduct&lt;&lt;&lt;dimGrid, dimBlock>>>(d_a, d_b, d_c, N, nrows, my_rank);
+    checkCuda(cudaDeviceSynchronize());
+    checkCuda(cudaGetLastError());
+
+    // Calculate compute time
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (my_rank == 0) {
+        gettimeofday(&end_time, NULL);
+        printf("Compute time: %.1f ms \n", (float) (end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_usec - start_time.tv_usec) / 1000);
+     }
+
+    // Get results from device
+    checkCuda(cudaMemcpy(C[from], d_c, (nrows)*N*sizeof(double), cudaMemcpyDeviceToHost));
+
+    // Unify results from nodes
+    MPI_Gather(C[from], N*N/comm_sz, MPI_DOUBLE, C, N*N/comm_sz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // if (my_rank == 0)  { showMatrices(A, B, C); }
+
+    checkCuda(cudaFree(d_a));
+    checkCuda(cudaFree(d_b));
+    checkCuda(cudaFree(d_c));
+
+    MPI_Finalize();
+    return 0;
+
+}</code></pre> </div> <p class=post_p> One of the main problems of CUDA is that to get the most out of it you have to know the technical specifications of the GPU on which it will run the code. Block size (number of threads) or the use of the memory hierarchy of the graphic card are aspects that the coder has to take into account when programming with this technology. </p> <p class=post_p> At this <a class=post_link href=https://github.com/bertini36/distributedMatrixProduct target=_blank>Github repository</a> you will find two versions of matrix product, one just using MPI technology and another just with CUDA. Also, at config folder, there are a script to know graphic card specifications and a possible CUDA configuration for that card. </p> <div class="border-red-400 border-t-2 dark:border-white my-10"></div> <div><h4 class="mb-10 text-2xl text-black text-center">Write a comment! 😀</h4> <figure class="flex justify-center"><img alt=Loader src=loader.gif class=w-48></figure> <form class="w-full mt-16" onsubmit="return false"><div class="flex -mx-3 flex-wrap mb-6"><div class="w-full px-3 md:w-1/2 mb-6 md:mb-0"><label class="block dark:text-white text-gray-700 font-bold mb-2 text-xs tracking-wide uppercase" for=name>Name</label> <input class="block dark:text-white text-gray-700 appearance-none bg-gray-200 border border-gray-200 focus:bg-white focus:border-gray-500 focus:outline-none leading-tight px-4 py-3 rounded w-full"> <p class="dark:text-white text-xs text-red-600"></div> <div class="w-full px-3 md:w-1/2"><label class="block dark:text-white text-gray-700 font-bold mb-2 text-xs tracking-wide uppercase" for=email>Email</label> <input class="block dark:text-white text-gray-700 appearance-none bg-gray-200 border border-gray-200 focus:bg-white focus:border-gray-500 focus:outline-none leading-tight px-4 py-3 rounded w-full"> <p class="dark:text-white text-xs text-red-600"></div></div> <div class="flex -mx-3 flex-wrap mb-6"><div class="w-full px-3"><label class="block dark:text-white text-gray-700 font-bold mb-2 text-xs tracking-wide uppercase" for=comment>Comment</label> <textarea class="block dark:text-white text-gray-700 appearance-none bg-gray-200 border border-gray-200 focus:bg-white focus:border-gray-500 focus:outline-none leading-tight px-4 py-3 rounded w-full" rows=2></textarea> <p class="dark:text-white text-xs text-red-600"></div></div> <div class=w-full><button class="w-full px-4 rounded bg-red-500 border-b-4 border-red-700 dark:bg-red-400 dark:border-red-500 dark:hover:bg-red-300 dark:hover:border-red-400 font-bold hover:bg-red-400 hover:border-red-500 py-2 text-white">Send </button></div></form></div></div> </main></div> <script>__SAPPER__={baseUrl:"",preloaded:[void 0,null,{post:{title:"Distributed matrix product 🔢",slug:"distributed-matrix-product",tags:["#CUDA","#MPI","#C","#maths"],date:"2017-02-02",html:"\n\u003Cp class=\"post_p\"\u003E\n\tNowadays one of the main problems of any algorithm is its facility to scale it, in other words, its facility to\n\tbe executed over multiple cores (parallelization) or nodes (distribution). The amount of data that is available\n\ttoday has led the world of computing to develop technologies with which to parallelize and distribute processes\n\tare done more easily and automatically. Actually, each computationally expensive algorithm works in its\n\tdistributed version. In this way tasks as finding prime numbers, complex simulations or statistical prediction\n\tmodels, which would spend years to get results, can obtain it in a few hours thanks to the joint work of many\n\tcomputers.\n\u003C\u002Fp\u003E\n\u003Cp class=\"post_p\"\u003E\n\tPrecisely this is what supercomputing centers like \u003Ca href=\"https:\u002F\u002Fwww.bsc.es\u002F\" class=\"post_link\" target=\"_blank\"\u003EBSC\u003C\u002Fa\u003E are\n\tengaged. BSC has a supercomputer, called Marenostrum III, which avoids to its users to run computationally\n\texpensive algorithms or algorithms that require a huge amount of data in a distributed way. Specifically,\n\tMarenostrum III has 3108 nodes each with 2 processors of 8 cores (over 49.728 cores).\n\u003C\u002Fp\u003E\n\u003Cfigure class=\"post_figure flex justify-center\"\u003E\n\t\u003Cimg src=\"distributed-matrix-product\u002Fmarenostrum.jpg\"\n\t\t alt=\"Marenostrum III supercomputer\"\u003E\n\u003C\u002Ffigure\u003E\n\u003Cfigcaption class=\"post_image_figcaption\"\u003EMarenostrum III\u003C\u002Ffigcaption\u003E\n\u003Cp class=\"post_p\"\u003E\n\tIn this post I'm going to show, with a simple example, how to distribute a matrix product over several nodes and\n\thow to parallelize at each node. Matrix product is a mathematical operation that, when it is taken to the extreme\n\tusing very large matrices it is become in a very computationally expensive operation.\n\u003C\u002Fp\u003E\n\u003Cfigure class=\"post_figure flex justify-center\"\u003E\n\t\u003Cimg src=\"distributed-matrix-product\u002Fmatrix_product.png\"\n\t\t alt=\"Matrix product\"\u003E\n\u003C\u002Ffigure\u003E\n\u003Cfigcaption class=\"post_image_figcaption\"\u003EMatrix product\u003C\u002Ffigcaption\u003E\n\u003Cp class=\"post_p\"\u003E\n\tSince each element of the resulting matrix does not depend on any other element of it we can distribute without\n\tany restriction. For this example I could use 4 nodes, so I decided that each node would be responsible for\n\tcalculating a quarter of the resulting matrix. A and B matrices will be sent to each node to avoid them to\n\tdo its computations. For the distribution I'm using \u003Ca href=\"https:\u002F\u002Fwww.open-mpi.org\u002F\" class=\"post_link\" target=\"_blank\"\u003EMPI\u003C\u002Fa\u003E\n\t(Message Passing Interface) technology. Using functions of this library data can be shared over the nodes\n\t(lines 123 and 124) and to specify, using process id, which part of the result matrix each node has to calculate\n\t(lines 116, 117 and 118).\n\u003C\u002Fp\u003E\n\u003Cfigure class=\"post_figure flex justify-center\"\u003E\n\t\u003Cimg src=\"distributed-matrix-product\u002Fdistributed_matrix_product.png\"\n\t\t alt=\"Distributed matrix product\"\u003E\n\u003C\u002Ffigure\u003E\n\u003Cfigcaption class=\"post_image_figcaption\"\u003EMatrix product distribution and parallelization\u003C\u002Ffigcaption\u003E\n\u003Cp class=\"post_p\"\u003E\n\tNowadays, for parallel computation, the power of GPUs is being used. In our case each node of Marenostrum III has a\n\tNvidia K80 graphic card. This graphic cards can be used for parallel computation using Nvidia\n\t\u003Ca href=\"https:\u002F\u002Fen.wikipedia.org\u002Fwiki\u002FCUDA\" class=\"post_link\" target=\"_blank\"\u003ECUDA\u003C\u002Fa\u003E (Compute Unified Device Architecture)\n\tplatform. GPUs are essentially a big number of simple processors that can be used to speed up some parts of the\n\tcode. For this, the program has to be decomposed in a big number of threads which will be executed concurrently.\n\tIn this example, each thread will be responsible for calculating just an element of the resulting matrix. Using\n\tCUDA it is required to define a block structure (threads group) delimiting each thread data domain using its\n\tthreadId and its blockId. These threads will be executed in one kernel, in other words, a GPU program.\n\u003C\u002Fp\u003E\n\u003Cdiv class=\"post_code\"\u003E\n\t\u003Cpre\u003E\u003Ccode\u003E\u002F* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\u002F\n\u002F* MULTI-NODE AND PARALLEL MATRIX-MATRIX PRODUCT WITH MPI AND CUDA           *\u002F\n\u002F*                                                                           *\u002F\n\u002F* File:         mmpmpicuda.cu                                               *\u002F\n\u002F* Author:       Alberto Pou Quirós (Github: bertini36)                      *\u002F\n\u002F* Description:  This program performs a matrix product (A * B = C)          *\u002F\n\u002F*               distributing the computation between multiple nodes         *\u002F\n\u002F*               with MPI technology and parallelizing the computation in    *\u002F\n\u002F*               every node with Nvidia CUDA technology                      *\u002F\n\u002F* Compilation:  nvcc -I\u002Fopt\u002Fmpi\u002Fbullxmpi\u002F1.2.9.1\u002Finclude                    *\u002F\n\u002F*               -L\u002Fopt\u002Fmpi\u002Fbullxmpi\u002F1.2.9.1\u002Flib -lmpi -ldl -lm -lnuma       *\u002F\n\u002F*               -lrt -lnsl -lutil -lm -ldl mmpmpicuda.cu -o mmpmpicuda      *\u002F\n\u002F* Strategy:                                                                 *\u002F\n\u002F*                  Example 16x16 matrices with 4 nodes:                     *\u002F\n\u002F*                   _________________16________________                     *\u002F\n\u002F*                   |                                 |                     *\u002F\n\u002F*                   |               NODE 1            | 4                   *\u002F\n\u002F*                   |_________________________________|                     *\u002F\n\u002F*                   |                                 |                     *\u002F\n\u002F*                   |               NODE 2            | 4                   *\u002F\n\u002F*              C =  |_________________________________|    16               *\u002F\n\u002F*                   |                                 |                     *\u002F\n\u002F*                   |               NODE 3            | 4                   *\u002F\n\u002F*                   |_________________________________|                     *\u002F\n\u002F*                   |                                 |                     *\u002F\n\u002F*                   |               NODE 4            | 4                   *\u002F\n\u002F*                   |_________________________________|                     *\u002F\n\u002F*                                                                           *\u002F\n\u002F*                  Node 1 computes 4 rows of result matrix:                 *\u002F\n\u002F*                   __________________________________                      *\u002F\n\u002F*                   |                                 |                     *\u002F\n\u002F*                   |         4x16 CUDA block         |                     *\u002F\n\u002F*                   |_________________________________|                     *\u002F\n\u002F*                                                                           *\u002F\n\u002F* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\u002F\n\n#include &lt;sys\u002Ftime.h&gt;\n#include &lt;stdio.h&gt;\n#include &lt;stdlib.h&gt;\n#include &lt;assert.h&gt;\n#include &lt;mpi.h&gt;\n\n#define N 1024\n\n#define err(format, ...) do { fprintf(stderr, format, ##__VA_ARGS__); exit(1); } while (0)\n\nstruct timeval start_time, end_time;\n\ninline void checkCuda(cudaError_t e) {\n    if (e != cudaSuccess) {\n        err(\"CUDA Error %d: %s\\n\", e, cudaGetErrorString(e));\n    }\n}\n\n__global__ void matrixProduct(double *matrix_a, double *matrix_b, double *matrix_c, int width, int nrows, int my_rank) {\n    int row = threadIdx.y + blockDim.y * blockIdx.y;\n    int col = threadIdx.x + blockDim.x * blockIdx.x;\n    matrix_c[row * width + col] = 0;\n    for (int k=0; k&lt;width; k++) {\n        matrix_c[row * width + col] += matrix_a[(row * width) + (my_rank * nrows * width) + k] * matrix_b[k * width + col];\n    }\n}\n\nvoid initializeMatrices(double matrix_a[N][N], double matrix_b[N][N]) {\n    int i, j;\n    srand(time(NULL));\n    for (i=0; i&lt;N; i++) {\n        for (j=0; j&lt;N; j++) {\n            matrix_a[i][j] = rand();\n            matrix_b[i][j] = rand();\n        }\n    }\n}\n\nvoid showMatrices(double matrix_a[N][N], double matrix_b[N][N], double matrix_c[N][N]) {\n    int i, j;\n    srand(time(NULL));\n    printf(\"***** MATRIX A ***** \\n\");\n    for (i=0; i&lt;N; i++) {\n        for (j=0; j&lt;N; j++) {\n            (j % N == N-1) ? printf(\"%.1f \\n\", matrix_a[i][j]) : printf(\"%.1f,\", matrix_a[i][j]);\n        }\n    }\n    printf(\"***** MATRIX B ***** \\n\");\n    for (i=0; i&lt;N; i++) {\n        for (j=0; j&lt;N; j++) {\n            (j % N == N-1) ? printf(\"%.1f \\n\", matrix_b[i][j]) : printf(\"%.1f,\", matrix_b[i][j]);\n        }\n    }\n    printf(\"***** RESULT MATRIX ***** \\n\");\n    for (int i=0; i&lt;N; i++) {\n        for (int j=0; j&lt;N; j++) {\n            (j % N == N-1) ? printf(\"%f \\n\", matrix_c[i][j]) : printf(\"%f,\", matrix_c[i][j]);\n        }\n    }\n}\n\nint main(int argc, char *argv[]) {\n\n    double A[N][N], B[N][N], C[N][N];\n    double *d_a, *d_b, *d_c;\n    int my_rank, comm_sz, from, to, nrows;\n\n    \u002F\u002F MPI initialization\n    MPI_Init (&argc, &argv);\n    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);    \u002F\u002F Process id\n    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);    \u002F\u002F Number of processors\n\n    if (N % comm_sz != 0) {\n        if (my_rank == 0) printf(\"Matrix size not divisible by number of processors \\n\");\n        MPI_Finalize();\n        exit(-1);\n    }\n\n    \u002F\u002F Calculate interval lines to compute per node\n    from = my_rank * N \u002F comm_sz;\n    to = (my_rank + 1) * N \u002F comm_sz;\n    nrows = to - from;\n\n    if (my_rank == 0) { initializeMatrices(A, B); }\n\n    \u002F\u002F Send A y B to every node\n    MPI_Bcast(A, N*N, MPI_DOUBLE, 0, MPI_COMM_WORLD);\n    MPI_Bcast(B, N*N, MPI_DOUBLE, 0, MPI_COMM_WORLD);\n\n    \u002F\u002F Allocate memory in the device\n    checkCuda(cudaMalloc((void **) &d_a, N*N*sizeof(double)));\n    checkCuda(cudaMalloc((void **) &d_b, N*N*sizeof(double)));\n    checkCuda(cudaMalloc((void **) &d_c, (N*N\u002Fcomm_sz)*sizeof(double)));\n\n    \u002F\u002F Copy the information in the device\n    checkCuda(cudaMemcpy(d_a, A, N*N*sizeof(double), cudaMemcpyHostToDevice));\n    checkCuda(cudaMemcpy(d_b, B, N*N*sizeof(double), cudaMemcpyHostToDevice));\n\n    \u002F\u002F CUDA threads structure definition\n    dim3 dimGrid(1);\n    dim3 dimBlock(N, nrows);\n\n    MPI_Barrier(MPI_COMM_WORLD);\n    if (my_rank == 0) { gettimeofday(&start_time, NULL); }\n\n    \u002F\u002F Kernel launch\n    matrixProduct&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(d_a, d_b, d_c, N, nrows, my_rank);\n    checkCuda(cudaDeviceSynchronize());\n    checkCuda(cudaGetLastError());\n\n    \u002F\u002F Calculate compute time\n    MPI_Barrier(MPI_COMM_WORLD);\n    if (my_rank == 0) {\n        gettimeofday(&end_time, NULL);\n        printf(\"Compute time: %.1f ms \\n\", (float) (end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_usec - start_time.tv_usec) \u002F 1000);\n     }\n\n    \u002F\u002F Get results from device\n    checkCuda(cudaMemcpy(C[from], d_c, (nrows)*N*sizeof(double), cudaMemcpyDeviceToHost));\n\n    \u002F\u002F Unify results from nodes\n    MPI_Gather(C[from], N*N\u002Fcomm_sz, MPI_DOUBLE, C, N*N\u002Fcomm_sz, MPI_DOUBLE, 0, MPI_COMM_WORLD);\n\n    \u002F\u002F if (my_rank == 0)  { showMatrices(A, B, C); }\n\n    checkCuda(cudaFree(d_a));\n    checkCuda(cudaFree(d_b));\n    checkCuda(cudaFree(d_c));\n\n    MPI_Finalize();\n    return 0;\n\n}\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003C\u002Fdiv\u003E\n\u003Cp class=\"post_p\"\u003E\n\tOne of the main problems of CUDA is that to get the most out of it you have to know the technical specifications\n\tof the GPU on which it will run the code. Block size (number of threads) or the use of the memory hierarchy\n\tof the graphic card are aspects that the coder has to take into account when programming with this technology.\n\u003C\u002Fp\u003E\n\u003Cp class=\"post_p\"\u003E\n\tAt this \u003Ca href=\"https:\u002F\u002Fgithub.com\u002Fbertini36\u002FdistributedMatrixProduct\" class=\"post_link\" target=\"_blank\"\u003EGithub repository\u003C\u002Fa\u003E\n\tyou will find two versions of matrix product, one just using MPI technology and another just with CUDA. Also,\n\tat config folder, there are a script to know graphic card specifications and a possible CUDA configuration\n\tfor that card.\n\u003C\u002Fp\u003E\n\t\t"},comments_url:"https:\u002F\u002Fydp2l1f32a.execute-api.eu-west-1.amazonaws.com\u002Fprod\u002Fcomments\u002Fdistributed-matrix-product"}]};if('serviceWorker' in navigator)navigator.serviceWorker.register('/service-worker.js');(function(){try{eval("async function x(){}");var main="/client/client.a68a3c41.js"}catch(e){main="/client/legacy/client.fd6b44ec.js"};var s=document.createElement("script");try{new Function("if(0)import('')")();s.src=main;s.type="module";s.crossOrigin="use-credentials";}catch(e){s.src="/client/shimport@1.0.1.js";s.setAttribute("data-main",main);}document.head.appendChild(s);}());</script> 
