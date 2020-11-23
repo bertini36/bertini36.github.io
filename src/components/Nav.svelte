@@ -1,8 +1,18 @@
 <script>
+    import { onMount } from 'svelte';
+
 	export let segment;
-	const blog_github_url = "https://github.com/bertini36/bertini36.github.io";
+	const blog_github_url = 'https://github.com/bertini36/bertini36.github.io';
 	let dark_mode = false;
-    $: document.documentElement.style.setProperty('--color', dark_mode ? '#F87171' : '#EF4444');
+
+	let setColor = null;
+    onMount(() => {
+        setColor = (color) => {
+            document.documentElement.style.setProperty('--color', color);
+        }
+    });
+
+    $: setColor && setColor(dark_mode ? '#F87171' : '#EF4444');
 
 	function updateDarkMode() {
 	    dark_mode = !dark_mode;
