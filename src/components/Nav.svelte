@@ -2,6 +2,7 @@
 	export let segment;
 	const blog_github_url = "https://github.com/bertini36/bertini36.github.io";
 	let dark_mode = false;
+    $: document.documentElement.style.setProperty('--color', dark_mode ? '#F87171' : '#EF4444');
 
 	function updateDarkMode() {
 	    dark_mode = !dark_mode;
@@ -14,9 +15,9 @@
     }
 </script>
 
-<nav class="border-b-2 dark:border-b-4 py-0 px-4 font-light">
+<nav class="border-b-2 dark:border-b-4 border-red-200 py-0 px-4 font-light">
 	<ul class="m-0 p-0">
-		<li class="float-left"><a class="block no-underline py-4 px-3 hover:text-red-500 dark:hover:text-red-400" aria-current="{segment === undefined ? 'page' : undefined}" href=".">Home</a></li>
+		<li class="float-left"><a class="block py-4 px-3 hover:text-red-500 dark:hover:text-red-400" aria-current="{segment === undefined ? 'page' : undefined}" href=".">Home</a></li>
 		<li class="float-left"><a class="block no-underline py-4 px-3 hover:text-red-500 dark:hover:text-red-400" rel=prefetch aria-current="{segment === 'blog' ? 'page' : undefined}" href="blog">Blog</a></li>
 
 		<li class="float-right"><a class="block no-underline py-4 px-3 hover:text-red-500 dark:hover:text-red-400" href="{blog_github_url}" target="_blank"><i class="fa fa-github"></i></a></li>
@@ -31,11 +32,6 @@
 </nav>
 
 <style>
-	nav {
-		border-bottom-color: rgba(255, 62, 0, 0.1);
-		padding: 0 1em;
-	}
-
 	/* clearfix */
 	ul::after {
 		content: '';
@@ -53,9 +49,9 @@
 		content: '';
 		width: calc(100% - 1em);
 		height: 2px;
-		background-color: rgb(255, 62, 0);
 		display: block;
 		bottom: -2px;
+        background-color: var(--color);
 	}
 
     /* CHECKBOX TOGGLE SWITCH */

@@ -87,8 +87,8 @@
 			<p>
 				{@html truncate(post.html, 400)}
 			</p>
-			<div class="mt-3 title font-semibold">
-				<a rel="prefetch" class="link" lang="en" href="blog/{post.slug}">Continue reading</a>
+			<div class="mt-3 title text-md">
+				<a rel="prefetch" class="text-red-500 dark:text-red-400 hover:underline" lang="en" href="blog/{post.slug}">Continue reading</a>
 			</div>
 		</div>
 	{/each}
