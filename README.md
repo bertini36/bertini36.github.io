@@ -33,7 +33,7 @@ Powered by <a href="https://github.com/sveltejs/svelte">#svelte</a>,
 ### 🔥 Application execution
 
 1. Install all the dependencies and bring up the project with Docker executing: `make build`
-2. Run the server: `make serve` (by default Sapper runs applications at 3000 port)
+2. Run the server: `make up` (by default Sapper runs applications at 3000 port)
 3. Run [comments engine](https://github.com/bertini36/comments-engine)
 
 ## 🚀 Deploy

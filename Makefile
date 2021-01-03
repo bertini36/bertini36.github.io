@@ -8,7 +8,7 @@ build:
 	@echo "📦 Building app"
 	@docker-compose build --no-cache web
 
-serve:
+up:
 	@echo "🛫 Serving app"
 	docker-compose up web
 
