@@ -9,8 +9,8 @@
     <title>Alberto Pou</title>
 </svelte:head>
 
-<h1 class="lg:mt-10 text-3xl title text-center font-bold uppercase">>&nbsp;albertopou.dev<span class="blinking">_</span></h1>
-<div class="text-center">
+<h1 class="mt-4 text-3xl title text-center font-bold uppercase">>&nbsp;albertopou.dev<span class="blinking">_</span></h1>
+<div class="text-center mb-10">
     Powered by
     <a class="link" href="https://svelte.dev/" rel="noreferrer" target="_blank">#svelte</a>,
     <a class="link" href="https://tailwindcss.com/" rel="noreferrer" target="_blank">#tailwind</a> and
@@ -18,7 +18,7 @@
     🚀
 </div>
 
-<div class="md:mt-20 text-center">
+<div class="text-center">
     <div class="w-full flex-none -ml-full rounded-3xl bg-gray-100 dark:bg-gray-400">
         <div class="w-full flex-none rounded-3xl transform shadow-lg bg-gradient-to-r from-red-500 dark:from-red-400 to-orange-300 dark:to-orange-300 -rotate-2 sm:-rotate-2">
             <div class="grid grid-flow-col grid-rows-1 grid-cols-3">
