@@ -9,10 +9,18 @@ module.exports = {
     },
     darkMode: 'class',
     theme: {
-        extend: {
-            colors: {
-                orange: colors.orange,
-            }
+        colors: {
+            transparent: 'transparent',
+            current: 'currentColor',
+            black: colors.black,
+            white: colors.white,
+            gray: colors.trueGray,
+            indigo: colors.indigo,
+            red: colors.rose,
+            orange: colors.orange,
+            yellow: colors.amber,
+            green: colors.green,
+            blue: colors.blue,
         }
     }
 }
