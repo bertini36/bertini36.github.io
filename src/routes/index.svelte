@@ -33,7 +33,7 @@
 
                     <p class="mb-5">
                         Hi, I'm Alberto. I live in Mallorca, a small island in the Mediterranean sea.
-                        I'm a software engineer working at <a class="text-red-500 dark:text-red-400 hover:underline" href="https://www.skioo.com/"
+                        I'm a software engineer working at <a class="text-red-500 dark:text-red-400 hover:underline" href="https://www.abacum.io/"
                                                               target="_blank">Abacum</a>.
                     </p>
                     <p class="mb-5">
