@@ -34,7 +34,7 @@
                     <p class="mb-5">
                         Hi, I'm Alberto. I live in Mallorca, a small island in the Mediterranean sea.
                         I'm a software engineer working at <a class="text-red-500 dark:text-red-400 hover:underline" href="https://www.skioo.com/"
-                                                              target="_blank">Skioo</a>.
+                                                              target="_blank">Abacum</a>.
                     </p>
                     <p class="mb-5">
                         As a software engineer I focus mostly on the backend. Specifically these last years I've been working with Python
