@@ -1,4 +1,4 @@
-# 🚀 My Awesome Blog
+# 📒 My blog
 
 This blog is built with performance and simplicity in mind, powered by [Astro](https://astro.build).
 
