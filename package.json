@@ -1,0 +1,25 @@
+{
+  "name": "growing-group",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "optimize-images": "node scripts/optimize-images.mjs",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.13",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.17.1",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a",
+  "devDependencies": {
+    "sharp": "^0.34.5",
+    "svgo": "^4.0.0"
+  }
+}

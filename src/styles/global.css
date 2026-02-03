@@ -1,0 +1,304 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Light mode (default) */
+:root {
+  --bg-primary: #ffffff;
+  --text-primary: #171717;
+  --text-secondary: #525252;
+  --title-color: #171717;
+  --link-underline: #737373;
+  --link-underline-hover: #a3a3a3;
+}
+
+/* Dark mode (system preference) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1a1a1a;
+    --text-primary: #eaeaea;
+    --text-secondary: #a3a3a3;
+    --title-color: #f2f2f2;
+    --link-underline: #737373;
+    --link-underline-hover: #525252;
+  }
+}
+
+html {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container - matches leerob.com spacing */
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 128px 24px 64px;
+}
+
+/* Force link colors using @layer base for Tailwind v4 */
+@layer base {
+  a {
+    color: var(--text-primary);
+    text-decoration-line: underline;
+    text-decoration-color: var(--link-underline);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.15s ease;
+  }
+
+  a:hover {
+    text-decoration-color: var(--link-underline-hover);
+  }
+
+  a:visited {
+    color: var(--text-primary);
+  }
+}
+
+/* Header styling - matches leerob.com exactly */
+header {
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+header h1 a {
+  color: var(--title-color) !important;
+  text-decoration: none !important;
+}
+
+header h1 a:hover {
+  text-decoration: none !important;
+}
+
+/* Footer links - no underline */
+footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--link-underline);
+}
+
+footer a {
+  text-decoration: none !important;
+}
+
+/* Prose styling for blog posts */
+.prose {
+  max-width: 100%;
+  line-height: 1.5;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-weight: 500;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.prose h1 {
+  font-size: 24px;
+}
+
+.prose h2 {
+  font-size: 20px;
+}
+
+.prose h3 {
+  font-size: 18px;
+}
+
+.prose p {
+  margin-bottom: 1.25em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-bottom: 0.75em;
+  padding-left: 0.25em;
+}
+
+.prose ul>li::marker {
+  color: var(--text-secondary);
+}
+
+.prose ol>li::marker {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Unified image sizing - must respect container */
+.prose img {
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: 350px;
+  object-fit: contain;
+  margin: 1.5em auto;
+  display: block;
+}
+
+.prose figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+.prose figcaption {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 0.5em;
+}
+
+/* KaTeX display math - center formulas */
+/* Target paragraphs that only contain a KaTeX formula */
+.prose p:has(> .katex:only-child) {
+  text-align: center;
+  margin: 1.5em 0;
+}
+
+/* Also center list items that only contain a formula */
+.prose li:has(> .katex:only-child) {
+  text-align: center;
+  list-style: none;
+}
+
+.prose .katex {
+  font-size: 1.1em;
+}
+
+/* Code blocks */
+.prose pre {
+  background-color: #1a1a1a;
+  color: #eaeaea;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.5em 0;
+  font-size: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+.prose :not(pre)>code {
+  background-color: #e5e5e5;
+  color: #171717;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose :not(pre)>code {
+    background-color: #333;
+    color: #eaeaea;
+  }
+}
+
+/* Post list styling - matches leerob.com */
+.post-list {
+  list-style: disc;
+  padding-left: 1em;
+  margin: 0;
+}
+
+.post-list li {
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+
+.post-list li::marker {
+  color: var(--text-secondary);
+  font-size: 0.6em;
+}
+
+/* Description text */
+.description {
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+/* Subtitle for post metadata */
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: -10px;
+  margin-bottom: 24px;
+}
+
+/* Algorithm Cards */
+.algorithm-card {
+  border: 1px solid var(--text-secondary);
+  padding: 1.5em;
+  border-radius: 4px;
+  margin: 1.5em 0;
+  display: block;
+}
+
+.algorithm-card-content {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  display: block;
+  font-size: 0.9em;
+}
+
+.algorithm-card-content ol {
+  margin: 0;
+  padding-left: 1.25em;
+  list-style-type: decimal;
+}
+
+.algorithm-card-content ol li {
+  margin-bottom: 0.5em;
+  padding-left: 0.5em;
+}
+
+.algorithm-card-content ul {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+  list-style-type: none;
+}
+
+.algorithm-card-content ul li {
+  margin-bottom: 0.25em;
+}
+
+/* Ensure bold text in algorithms stands out */
+.algorithm-card-content strong {
+  font-weight: 600;
+}

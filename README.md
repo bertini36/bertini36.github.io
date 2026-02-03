@@ -1,131 +1,48 @@
-![Heroku](https://heroku-badge.herokuapp.com/?app=heroku-badge)
-[![Build Status](https://api.travis-ci.org/bertini36/blog.svg?branch=master)](https://travis-ci.org/bertini36/blog)
+# 🚀 My Awesome Blog
 
-# Blog
+This blog is built with performance and simplicity in mind, powered by [Astro](https://astro.build).
 
-In this blog I used to write posts about different technologies that I have 
-found interesting. This code probably is not the best solution for a simple 
-blog but keep in mind that I use this project to learn and test new technologies!
+## ✨ Features
 
-## Project structure
+- ⚡️ **Super Fast**: Static site generation for lightning speed.
+- 🎨 **Minimal Design**: Clean and focused on content.
+- 📱 **Responsive**: Looks great on all devices.
+- 📝 **Markdown Support**: Easy writing experience.
 
-- Backend: [Django](https://www.djangoproject.com/)
-- Frontend: [Svelte](https://svelte.dev/) & [Tailwind](https://tailwindcss.com/)
-- Architecture deploy: [Terraform](https://www.terraform.io/)
+## 🛠️ Getting Started
 
-## Download code
+### Installation
 
-```bash
-git clone https://github.com/bertini36/blog
-```
-
-## Build production environment
-
-### Prerequisites
-
-If you don’t have Terraform installed, download it for your OS from: 
-
-- https://www.terraform.io/downloads.html
-
-If you don't have an Heroku account, create it:
-
-- https://www.heroku.com
-
-and follow the instructions to install its client from:
-
-- https://devcenter.heroku.com/articles/heroku-cli
-
-### Configure access to Heroku
+Clone the repo and install dependencies:
 
 ```bash
-export APP_NAME=albertopou
-heroku authorizations:create --description $APP_NAME
-export HEROKU_API_KEY=<TOKEN> HEROKU_EMAIL=<EMAIL>
+git clone https://github.com/bertini36/blog.git
+cd blog
+pnpm install
 ```
 
-### Build environment
+### 🏃‍♂️ Running Locally
+
+Start the development server:
 
 ```bash
-cd environments/prod/
-cp infrastructure.tfsample infrastructure.tf
+pnpm dev
 ```
 
-Set environment variables defined at `infrastructure.tf` and then execute terraform
+Visit `http://localhost:4321` to see your blog in action!
+
+### 🏗️ Build for Production
 
 ```bash
-terraform init
-terraform apply
+pnpm build
 ```
 
-If the infrascture has been created correctly in Heroku you will have received the blog url as output
-```
-blog_url = https://albertopou.herokuapp.com
-```
+## 🤝 Contributing
 
-**Register posts**
-```bash
-heroku run python manage.py load_backup
-```
+Feel free to open issues or submit pull requests if you have any cool ideas!
 
-## Build develop environment
+---
 
-### Prerequisites
-
-If you don’t have Docker installed, follow the instructions for your OS:
-
-- On Mac OS X, you’ll need [Docker for Mac](https://docs.docker.com/docker-for-mac/)
-- On Windows, you’ll need [Docker for Windows](https://docs.docker.com/docker-for-windows/)
-- On Linux, you’ll need [docker-engine](https://docs.docker.com/engine/installation/)
-
-And aditionally install [Docker compose](https://docs.docker.com/compose/install/)
-
-### Set project environ variables
-
-```
-cp .env-sample .env
-```
-Set environment variables defined at `.env`
-
-### Build environment
-
-**Build environment**
-```bash
-make build
-```
-
-**Create database tables**
-```bash
-make migrate
-```
-
-**Collect statics**
-```bash
-make collectstatic
-```
-
-**Register posts**
-```bash
-make loadbackup
-```
-
-**Create admin user**
-```bash
-make createsuperuser
-```
-
-**Generate frontend dependencies**
-```bash
-make npminstall
-```
-
-**Build Svelte app**
-```bash
-make build_frontend
-```
-
-## Run tests
-```bash
-make run_tests
-```
-
-<p align="center">&mdash; Built with :heart: from Mallorca &mdash;</p>
+<p align="center">
+  Build with love from Mallorca 🌴
+</p>
