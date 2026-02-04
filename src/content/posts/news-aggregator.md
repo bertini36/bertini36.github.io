@@ -9,9 +9,9 @@ I've always had a specific way of consuming news. I needed to consult my main so
 
 Existing solutions didn't quite cut it. They were either too cluttered, missed the specific niche sources I follow, or just didn't feel right. I also needed a reliable way to save articles to read later, without relying on yet another third-party service.
 
-So, I decided to take advantage of this necessity to embrace the "project vibe". I used this opportunity to code the project from scratch, leveraging **[Antigravity](https://antigravity.google/)** to accelerate the process.
+I used this opportunity to "vibe code" the project from scratch, leveraging **[Antigravity](https://antigravity.google/)** to accelerate the process.
 
-The experience was refreshing. Instead of wrestling with complex configurations for hours, I could focus on the selection of data sources and the design. [Antigravity](https://antigravity.google/) helped specifically with the integration parts, analyzing the website HTML structure and generating the scraping logic, which made the development flow much smoother. It felt like pair programming with a partner who handles the tedious parts while I make the executive decisions.
+The experience was refreshing. Instead of wrestling with complex configurations for hours, I could focus on the selection of data sources and the design. [Antigravity](https://antigravity.google/) helped specifically with the integration parts, analyzing the data sources website HTML structure and generating the scraping logic, which made the development flow much smoother. It felt like pair programming with a partner who handles the tedious parts while I make the executive decisions.
 
 ## The App
 
@@ -42,7 +42,7 @@ graph TD
 
 The stack is simple but powerful:
 - **Cloudflare Pages**: Hosts the frontend and provides the serverless backend (Pages Functions).
-- **Cloudflare D1**: A database to store articles and user preferences.
+- **Cloudflare D1**: A serverless SQLite database to store articles and user preferences.
 - **Fetching Strategy**: The application uses an **on-demand hydration** model. Data is fetched server-side *during* the user request if the cache is stale, utilizing **adaptive TTLs** to balance freshness with source rate limits. This avoids the cost and complexity of background cron jobs.
 - **Authentication**: OAuth implementation with Google and GitHub.
 
@@ -50,4 +50,11 @@ This setup ensures that the app scales effortlessly and stays responsive.
 
 ## Conclusion
 
-Building [NewsAggr](https://newsaggr.online/) was a fun journey. It solved a legitimate personal problem while giving me a playground to experiment with new tools like [Antigravity](https://antigravity.google/) and the [Cloudflare](https://www.cloudflare.com/en-gb/) ecosystem. Now, I have my news exactly how I like it: clean, fast, and all in one place.
+Building [NewsAggr](https://newsaggr.online/) was a fun journey. It solved a legitimate personal problem while giving me a playground to experiment with new tools like [Antigravity](https://antigravity.google/) and the [Cloudflare](https://www.cloudflare.com/en-gb/) ecosystem.
+
+This project was my first real dive into "vibe coding" with an AI agent, and I was genuinely impressed. One standout moment was watching [Antigravity](https://antigravity.google/) take control of the Chrome browser to verify everything worked correctly, testing responsiveness across different screen sizes, checking navigation flows, and confirming the UI behaved as expected. It felt like having a QA engineer built right into my IDE.
+
+Perhaps even more impressive was how effortless the scraper creation became. I simply pointed the agent to the data sources I wanted to aggregate, and it analyzed the HTML structure of each website, identified the relevant elements, and generated tailored scraping logic for each one. What would have taken me hours of inspecting DOM trees and writing brittle selectors was handled in minutes, with clean, maintainable code as the output.
+
+Now, I have my news exactly how I like it: clean, fast, and all in one place.
+
