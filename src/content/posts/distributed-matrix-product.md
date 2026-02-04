@@ -2,9 +2,8 @@
 title: "Distributed Matrix Product with MPI and CUDA"
 date: 2016-11-02
 description: "How to distribute and parallelize matrix multiplication across multiple nodes using MPI and CUDA"
+heroImage: "/images/posts/distributed_matrix_product/marenostrum_supercomputer_bsc.jpg"
 ---
-
-![MareNostrum III](/images/posts/distributed_matrix_product/marenostrum_supercomputer_bsc.jpg)
 
 One of the main challenges with any algorithm today is its ability to scale, whether that means running across multiple cores (parallelization) or across multiple nodes (distribution). The massive amounts of data available have driven the development of technologies that make parallelization and distribution easier and more automated. Virtually every computationally expensive algorithm now has a distributed version. Tasks like finding prime numbers, running complex simulations, or training statistical prediction models that would take years to complete can now produce results in hours thanks to the combined power of many computers.
 
