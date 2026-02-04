@@ -40,6 +40,39 @@ const formattedDate = new Date(post.data.date).toLocaleDateString("en-US", {
   </article>
 
   <Footer />
+
+  <dialog
+    id="image-dialog"
+    class="fixed inset-0 z-50 w-full h-full max-w-none max-h-none p-0 m-0 bg-transparent backdrop:bg-black/90 outline-none"
+  >
+    <div class="relative w-full h-full flex items-center justify-center">
+      <img
+        id="dialog-img"
+        src=""
+        alt=""
+        class="max-w-full max-h-[90vh] object-contain select-none"
+      />
+      <button
+        id="close-dialog"
+        class="absolute top-4 right-4 text-white bg-black/60 rounded-full p-2 hover:bg-black/80 transition-colors focus:outline-none cursor-pointer"
+        aria-label="Close image"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-x"
+          ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+        >
+      </button>
+    </div>
+  </dialog>
 </BaseLayout>
 
 <script>
@@ -51,6 +84,57 @@ const formattedDate = new Date(post.data.date).toLocaleDateString("en-US", {
       link.setAttribute("rel", "noopener noreferrer");
     }
   });
+
+  // Image Lightbox Logic
+  const dialog = document.getElementById(
+    "image-dialog",
+  ) as HTMLDialogElement | null;
+  const dialogImg = document.getElementById(
+    "dialog-img",
+  ) as HTMLImageElement | null;
+  const closeBtn = document.getElementById("close-dialog");
+
+  if (dialog && dialogImg && closeBtn) {
+    document.querySelectorAll(".prose img").forEach((img) => {
+      const imgElement = img as HTMLImageElement;
+      // Add zoom-in cursor to indicate it's clickable
+      imgElement.classList.add(
+        "cursor-zoom-in",
+        "transition-opacity",
+        "hover:opacity-90",
+      );
+
+      imgElement.addEventListener("click", () => {
+        dialogImg.src = imgElement.src;
+        dialogImg.alt = imgElement.alt;
+        dialog.showModal();
+        document.body.style.overflow = "hidden"; // Prevent background scrolling
+      });
+    });
+
+    const closeDialog = () => {
+      dialog.close();
+      document.body.style.overflow = ""; // Restore scrolling
+    };
+
+    closeBtn.addEventListener("click", closeDialog);
+
+    dialog.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      // Close if clicking the backdrop (dialog itself) but not the image
+      if (target === dialog || target.closest(".relative") === target) {
+        closeDialog();
+      }
+    });
+
+    // Also close on hitting the empty space around the image in the wrapper div
+    const wrapperDiv = dialog.querySelector("div");
+    if (wrapperDiv) {
+      wrapperDiv.addEventListener("click", (e) => {
+        if (e.target === e.currentTarget) closeDialog();
+      });
+    }
+  }
 </script>
 
 <script type="module">
