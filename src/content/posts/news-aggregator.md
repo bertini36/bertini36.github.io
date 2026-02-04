@@ -9,8 +9,6 @@ I've always had a specific way of consuming news. I needed to consult my main so
 
 Existing solutions didn't quite cut it. They were either too cluttered, missed the specific niche sources I follow, or just didn't feel right. I also needed a reliable way to save articles to read later, without relying on yet another third-party service.
 
-## Building it Myself
-
 So, I decided to take advantage of this necessity to embrace the "project vibe". I used this opportunity to code the project from scratch, leveraging **[Antigravity](https://antigravity.google/)** to accelerate the process.
 
 The experience was refreshing. Instead of wrestling with complex configurations for hours, I could focus on the selection of data sources and the design. [Antigravity](https://antigravity.google/) helped specifically with the integration parts, analyzing the website HTML structure and generating the scraping logic, which made the development flow much smoother. It felt like pair programming with a partner who handles the tedious parts while I make the executive decisions.
