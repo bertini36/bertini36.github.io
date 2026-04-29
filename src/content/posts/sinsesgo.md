@@ -42,7 +42,7 @@ The system runs four stages in sequence. Each stage feeds the next.
 ╰──────────────────────────╯
 ```
 
-The whole pipeline is a [Django](https://www.djangoproject.com/) project with [PostgreSQL](https://www.postgresql.org/) and [pgvector](https://github.com/pgvector/pgvector), orchestrated with [LangGraph](https://github.com/langgraph/langgraph). Two cron jobs on Render trigger the stages: ingestion runs several times a day, and the briefing runs once at 20:00.
+The whole pipeline is a [Django](https://www.djangoproject.com/) project with [PostgreSQL](https://www.postgresql.org/) and [pgvector](https://github.com/pgvector/pgvector), orchestrated with [LangGraph](https://github.com/langgraph/langgraph). Two cron jobs on [Render](https://render.com/) trigger the stages: ingestion runs several times a day, and the briefing runs once at 20:00.
 
 ### Stage 1: Data ingestion
 
@@ -65,16 +65,6 @@ The embedding column drives two later behaviors:
 This is where the briefing starts to take shape. Given all the embeddings of articles published on a given day, I cluster them and pick the largest groups.
 
 I use **Agglomerative Clustering** from [scikit-learn](https://scikit-learn.org/) with cosine distance and average linkage. The key parameter is `distance_threshold=0.35`. I set `n_clusters=None` so the algorithm finds the natural groupings instead of forcing a fixed count. Singletons get dropped as noise.
-
-```python
-clustering = AgglomerativeClustering(
-    n_clusters=None,
-    distance_threshold=0.35,
-    metric="cosine",
-    linkage="average",
-)
-labels = clustering.fit_predict(embeddings)
-```
 
 Why agglomerative and not k-means? Two reasons:
 
@@ -113,7 +103,9 @@ Here is what each agent does:
 
 **7. Topic Summary.** The final stage. Takes the cluster (up to five articles, all their pre-computed agent results) and synthesizes a structured output: a 6-10 word title, a one-liner, three to four cross-referenced verified facts, a "why it matters" paragraph, a quality note, and two narratives (left and right). Coverage counts and references are built in Python, not by the LLM, because it would lie about percentages.
 
-The output of this last agent is what you see on [sinsesgo](https://sinsesgo.es).
+The coverage bar you see on the site is computed as follows. Each outlet has a bias score from -1 (far left) to +1 (far right) that I curated by hand. Every article in the cluster is classified by its outlet's score: below -0.3 goes to the left bucket, above +0.3 to the right bucket, anything in between to center. The backend counts how many articles land in each bucket. A blindspot is flagged when one side has no articles at all, or when one side has at most one article while the other has three or more.
+
+The output of this last agent is what you see on [sinsesgo](https://sinsesgo.es) every day.
 
 ## The other use case: single-article reports
 
