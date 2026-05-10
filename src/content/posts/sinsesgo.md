@@ -81,11 +81,14 @@ Each cluster goes through a chain of agents. Every agent is a [LangGraph](https:
 
 Models split between two tiers, routed through [OpenRouter](https://openrouter.ai/) so I can swap them without touching the code:
 
+> **Claims extraction** &middot; `google/gemini-2.5`
+> parser
+
 > **Cheap extraction** &middot; `google/gemini-2.5-flash`
-> parser, framing, perspective balance
+> framing, perspective balance
 
 > **Long-context reasoning** &middot; `anthropic/claude-sonnet-4.6`
-> argumentation, omissions, historical coverage, summary
+> argumentation, omissions, historical coverage, summary, fact-checker
 
 Here is what each agent does:
 
@@ -102,6 +105,8 @@ Here is what each agent does:
 **6. Historical Coverage Analyzer.** Runs once per cluster, on the representative article only, to keep cost down. Pulls up to 10 semantically similar articles from the same outlet over the previous 90 days, deduplicated by day. The agent reads them and surfaces recurring framing patterns. This catches outlets that always frame a topic the same way.
 
 **7. Topic Summary.** The final stage. Takes the cluster (up to five articles, all their pre-computed agent results) and synthesizes a structured output: a 6-10 word title, a one-liner, three to four cross-referenced verified facts, a "why it matters" paragraph, a quality note, and two narratives (left and right). Coverage counts and references are built in Python, not by the LLM, because it would lie about percentages.
+
+**8. Fact-checker.** This is not part of the daily briefing, but an internal tool I run on demand when I want to double check a specific topic of the daily briefing. It takes the selected topic and validates them via [Tavily](https://tavily.com) searches. It catches some hallucinations before publication.
 
 The coverage bar you see on the site is computed as follows. Each outlet has a bias score from -1 (far left) to +1 (far right) that I curated by hand. Every article in the cluster is classified by its outlet's score: below -0.3 goes to the left bucket, above +0.3 to the right bucket, anything in between to center. The backend counts how many articles land in each bucket. A blindspot is flagged when one side has no articles at all, or when one side has at most one article while the other has three or more.
 
