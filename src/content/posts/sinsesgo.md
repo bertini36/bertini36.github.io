@@ -106,7 +106,11 @@ Here is what each agent does:
 
 **7. Topic Summary.** The final stage. Takes the cluster (up to five articles, all their pre-computed agent results) and synthesizes a structured output: a 6-10 word title, a one-liner, three to four cross-referenced verified facts, a "why it matters" paragraph, a quality note, and two narratives (left and right). Coverage counts and references are built in Python, not by the LLM, because it would lie about percentages.
 
-**8. Fact-checker.** This is not part of the daily briefing, but an internal tool I run on demand when I want to double check a specific topic of the daily briefing. It takes the selected topic and validates them via [Tavily](https://tavily.com) searches. It catches some hallucinations before publication.
+**8. Fact-checker.** Runs after the briefing is generated, on demand via a management command. It takes every verified fact and the topic one-liner from each section and validates them against open-web search results via [Tavily](https://tavily.com).
+
+The flow has three nodes: first, a cheap LLM generates a short keyword query per fact (stripping negations and long prose down to named entities, which Tavily handles better than a full sentence); then Tavily runs both the literal fact and the keyword query in parallel and merges the deduplicated hits; finally, a second LLM reads the snippets and assigns one of three verdicts: `confirmed`, `needs_correction`, or `unverifiable`. Confirmed facts are kept. Facts that need correction get their text updated to match the snippet. Unverifiable facts are dropped from the section entirely. The one-liner is corrected if wrong but never dropped, because an empty card preview is a worse outcome than an unverified one-liner.
+
+The hardest class of error to catch is temporal hallucination: the summary agent consistently confuses plans with executed actions. The fact-checker prompt treats verb tense as a first-class signal and flags any mismatch between the tense in the fact and the tense in the snippets as `needs_correction`, rewriting the fact in the correct tense grounded in the source.
 
 The coverage bar you see on the site is computed as follows. Each outlet has a bias score from -1 (far left) to +1 (far right) that I curated by hand. Every article in the cluster is classified by its outlet's score: below -0.3 goes to the left bucket, above +0.3 to the right bucket, anything in between to center. The backend counts how many articles land in each bucket. A blindspot is flagged when one side has no articles at all, or when one side has at most one article while the other has three or more.
 
@@ -134,6 +138,8 @@ A few rough edges that took real time:
 
 **Cost control.** Every daily briefing has to fit a budget I am paying out of pocket. I tuned the cluster and article limits until each briefing landed around 2.50€ in inference cost.
 The two main savings: capping the briefing at five topics per day, and running the historical-context agent once per cluster instead of once per article. Five topics is also about the right size for someone reading a daily briefing over a coffee.
+
+**LLM hallucinations, especially on verb tense.** The verified facts the summary agent produces go straight onto the website. LLMs are good at extracting content but blur the line between what happened and what was announced. The most common failure was temporal: the model would write a fact in the past tense for an event that was still a proposal, or use the present tense for something already voted on. Numerical hallucinations (wrong figures, wrong percentages) were the second most common class. Building the fact-checker as a post-processing step with explicit tense-verification rules in the prompt caught most of these before they ever reached readers.
 
 **Prompt drift across model updates.** Every time a model version changes, a few agents start producing slightly different outputs. I ended up with a small set of regression evals that run each agent on a fixed corpus of articles and compare outputs against a snapshot. Not perfect, but enough to catch the worst regressions.
 
