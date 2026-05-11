@@ -20,6 +20,8 @@ The first is professional. I work with LLMs every day and I wanted to spend time
 
 The second is personal. I want to read the news without picking a side first. Every Spanish outlet I open has a clear lean, and switching between two of them does not give you the truth, it gives you two opinions and a headache. What I actually want is a single place that reads the same story across the spectrum, tells me which facts every outlet agrees on, and lists the ones each side leaves out. That tool did not exist for Spanish media, so I built it.
 
+Ground News was the closest thing, but it treats Spain as one country among many in a global aggregator. It mixes Spanish outlets with English-language sources reporting on Spain from the outside, which works for international readers but not for someone who reads Spanish and wants depth. More fundamentally, Ground News signals bias at the outlet level: it tells you that a source leans left or right, but it does not read the article. sinsesgo goes one level deeper. Every article goes through a chain of agents that examine the headline framing, the logical fallacies, the sources quoted, and the specific facts the outlet chose to omit. The goal is not to compete with Ground News but to replicate what makes their model valuable, applied to Spain's media landscape with the granularity that geographic focus allows.
+
 ## The pipeline
 
 The system runs four stages in sequence. Each stage feeds the next.
