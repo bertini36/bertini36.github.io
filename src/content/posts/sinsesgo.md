@@ -8,7 +8,7 @@ For years I’ve read Spanish news with a thumb on the scroll bar and one eye on
 
 [Ground News](https://ground.news/daily-briefing) does this for the English-speaking world. Their daily briefing was the inspiration. But Ground News does not cover Spanish outlets in any meaningful depth, and most of their bias signal comes from the source label, not from the content of each article. I wanted something focused on Spain, that read every article in full, and that ran on its own every afternoon without me touching it.
 
-That project is **[sinsesgo](https://sinsesgo.es)**. Every day at 20:00, a cron job pulls articles from 18 Spanish outlets, clusters them by topic, picks the five most covered stories of the day, analyze them through a pipeline of agents, and builds a briefing that contrasts how the left, center and right framed each one. No login, no paywall, no human in the loop.
+That project is **[sinsesgo](https://sinsesgo.es)**. Every afternoon, a cron job pulls articles from 18 Spanish outlets, clusters them by topic, picks the five most covered stories of the day, analyze them through a pipeline of agents, and builds a briefing that contrasts how the left, center and right framed each one. No login, no paywall, no human in the loop.
 
 This post is for the technical readers who land on the [funcionamiento page](https://sinsesgo.es/funcionamiento) and want the long version. I will walk through the pipeline end to end: data ingestion, embeddings, clustering, and the agents that do the analysis. I will also explain a second use case that lives in the codebase but does not run in production, and why.
 
@@ -44,7 +44,7 @@ The system runs four stages in sequence. Each stage feeds the next.
 ╰──────────────────────────╯
 ```
 
-The whole pipeline is a [Django](https://www.djangoproject.com/) project with [PostgreSQL](https://www.postgresql.org/) and [pgvector](https://github.com/pgvector/pgvector), orchestrated with [LangGraph](https://github.com/langgraph/langgraph). Two cron jobs on [Render](https://render.com/) trigger the stages: ingestion runs several times a day, and the briefing runs once at 20:00.
+The whole pipeline is a [Django](https://www.djangoproject.com/) project with [PostgreSQL](https://www.postgresql.org/) and [pgvector](https://github.com/pgvector/pgvector), orchestrated with [LangGraph](https://github.com/langgraph/langgraph). Two cron jobs on [Render](https://render.com/) trigger the stages: ingestion runs several times a day, and the briefing runs once every afternoon.
 
 ### Stage 1: Data ingestion
 
