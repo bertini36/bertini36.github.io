@@ -4,13 +4,13 @@ date: 2026-04-27
 description: "How I built a fully autonomous pipeline of agents that ingests, clusters and contrasts the daily news from 18 Spanish outlets across the political spectrum"
 ---
 
-For years I have read Spanish news with a thumb on the scroll bar and one eye on the source. The same event reads as a triumph in one outlet and a scandal in another, and the gap between the two has widened. I wanted a tool that read the same story across the spectrum for me, told me what every outlet agreed on, and pointed out what each side left out.
+For years I’ve read Spanish news with a thumb on the scroll bar and one eye on the source. The same event can read like a triumph in one outlet and a scandal in another, and that gap keeps widening. What I wanted was simple: a tool that reads the same story across the spectrum, surfaces what everyone agrees on, and highlights what each side leaves out.
 
 [Ground News](https://ground.news/daily-briefing) does this for the English-speaking world. Their daily briefing was the inspiration. But Ground News does not cover Spanish outlets in any meaningful depth, and most of their bias signal comes from the source label, not from the content of each article. I wanted something focused on Spain, that read every article in full, and that ran on its own every afternoon without me touching it.
 
 That project is **[sinsesgo](https://sinsesgo.es)**. Every day at 20:00, a cron job pulls articles from 18 Spanish outlets, clusters them by topic, picks the five most covered stories of the day, analyze them through a pipeline of agents, and builds a briefing that contrasts how the left, center and right framed each one. No login, no paywall, no human in the loop.
 
-This post is for the technical readers who land on the [funcionamiento](https://sinsesgo.es/funcionamiento) page and want the long version. I will walk through the pipeline end to end: data ingestion, embeddings, clustering, and the agents that do the analysis. I will also explain a second use case that lives in the codebase but does not run in production, and why.
+This post is for the technical readers who land on the [funcionamiento page](https://sinsesgo.es/funcionamiento) and want the long version. I will walk through the pipeline end to end: data ingestion, embeddings, clustering, and the agents that do the analysis. I will also explain a second use case that lives in the codebase but does not run in production, and why.
 
 ## Why I built it
 
@@ -20,7 +20,7 @@ The first is professional. I work with LLMs every day and I wanted to spend time
 
 The second is personal. I want to read the news without picking a side first. Every Spanish outlet I open has a clear lean, and switching between two of them does not give you the truth, it gives you two opinions and a headache. What I actually want is a single place that reads the same story across the spectrum, tells me which facts every outlet agrees on, and lists the ones each side leaves out. That tool did not exist for Spanish media, so I built it.
 
-Ground News was the closest thing, but it treats Spain as one country among many in a global aggregator. It mixes Spanish outlets with English-language sources reporting on Spain from the outside, which works for international readers but not for someone who reads Spanish and wants depth. More fundamentally, Ground News signals bias at the outlet level: it tells you that a source leans left or right, but it does not read the article. sinsesgo goes one level deeper. Every article goes through a chain of agents that examine the headline framing, the logical fallacies, the sources quoted, and the specific facts the outlet chose to omit. The goal is not to compete with Ground News but to replicate what makes their model valuable, applied to Spain's media landscape with the granularity that geographic focus allows.
+Ground News was the closest thing, but it treats Spain as one country among many in a global aggregator. It mixes Spanish outlets with English-language sources reporting on Spain from the outside, which works for international readers but not for someone who reads Spanish and wants depth. More fundamentally, Ground News signals bias at the outlet level: it tells you that a source leans left or right, but it does not read the article. sinsesgo goes one level deeper. Every article goes through a chain of agents that examine the headline framing, the logical fallacies, the sources quoted, and the specific facts the outlet chose to omit. The goal is not to compete with Ground News but to replicate what makes their model valuable, applied to Spain’s media landscape with the granularity that geographic focus allows.
 
 ## The pipeline
 
