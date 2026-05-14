@@ -20,7 +20,7 @@ The first is professional. I work with LLMs every day and I wanted to spend time
 
 The second is personal. I want to read the news without picking a side first. Every Spanish outlet I open has a clear lean, and switching between two of them does not give you the truth, it gives you two opinions and a headache. What I actually want is a single place that reads the same story across the spectrum, tells me which facts every outlet agrees on, and lists the ones each side leaves out. That tool did not exist for Spanish media, so I built it.
 
-Ground News was the closest thing, but it treats Spain as one country among many in a global aggregator. It mixes Spanish outlets with English-language sources reporting on Spain from the outside, which works for international readers but not for someone who reads Spanish and wants depth. More fundamentally, Ground News signals bias at the outlet level: it tells you that a source leans left or right, but it does not read the article. sinsesgo goes one level deeper. Every article goes through a chain of agents that examine the headline framing, the logical fallacies, the sources quoted, and the specific facts the outlet chose to omit. The goal is not to compete with Ground News but to replicate what makes their model valuable, applied to Spain’s media landscape with the granularity that geographic focus allows.
+[sinsesgo](https://sinsesgo.es) goes deeper than Ground News. It does not just signal bias at the outlet level; it reads every article. Every article goes through a chain of agents that examine the headline framing, the logical fallacies, the sources quoted, and the specific facts the outlet chose to omit, applied to Spain’s media landscape with the granularity that geographic focus allows.
 
 ## The pipeline
 
@@ -48,8 +48,9 @@ The whole pipeline is a [Django](https://www.djangoproject.com/) project with [P
 
 ### Stage 1: Data ingestion
 
-Each outlet has an RSS feed and a known political bias score from -1 (far left) to +1 (far right) that I curated by hand. The ingestion command walks every outlet, fetches the feed, and discards anything that looks like sports, gossip or lifestyle.
-What survives the filter is a list of records with a URL, headline, snippet, author and a published date. The next step scrapes the article body and writes to the database.
+First problem: RSS feeds are chaos. Some outlets publish full bodies. Others truncate to 200 characters and force a scrape. A few publish broken XML. The ingestion command handles this by walking every outlet, fetching the feed, detecting and recovering from malformed XML, and filtering out sports, gossip and lifestyle noise.
+
+What survives is a raw record with URL, headline, snippet, author and date. The next step scrapes the full article body and writes to the database. Each outlet carries a bias score I curated by hand, from -1 (far left) to +1 (far right).
 
 ### Stage 2: Embeddings
 
@@ -64,16 +65,14 @@ The embedding column drives two later behaviors:
 
 ### Stage 3: Topic clustering
 
-This is where the briefing starts to take shape. Given all the embeddings of articles published on a given day, I cluster them and pick the largest groups.
+This is where the briefing starts to take shape. Given all embeddings of articles published on a given day, I cluster them to find the main topics. I use **Agglomerative Clustering** from [scikit-learn](https://scikit-learn.org/) with cosine distance and average linkage.
 
-I use **Agglomerative Clustering** from [scikit-learn](https://scikit-learn.org/) with cosine distance and average linkage. The key parameter is `distance_threshold=0.35`. I set `n_clusters=None` so the algorithm finds the natural groupings instead of forcing a fixed count. Singletons get dropped as noise.
+Why agglomerative? Two reasons:
 
-Why agglomerative and not k-means? Two reasons:
+1. Some days have one dominant story; others have ten. I don't know the count in advance. K-means forces a number; agglomerative discovers it.
+2. Cosine distance is the right metric for embeddings. K-means defaults to Euclidean.
 
-1. I do not know how many topics will be in the news on any given day. Some days have one dominant story; others have ten. K-means forces a number; agglomerative discovers it.
-2. Cosine distance is the natural metric for embeddings. K-means defaults to Euclidean.
-
-Tuning the threshold was the hardest part of this stage. 0.35 was the sweet spot after several tries
+The hard part: tuning the threshold. Too loose and "Spain's economy" clusters with "Spain's central bank." Too tight and one story splits into five. I stared at sample clusters for a week and adjusted until felt right. There is no formula. Let the algorithm find natural groupings, and drop singletons as noise.
 
 Once I have clusters, I rank them by size and outlet diversity (more outlets means a more covered story). I take the top five. For each cluster I pick a representative article (the one closest to the centroid), and I select up to five articles per cluster, prioritizing outlet diversity (one per outlet, sorted by absolute bias score, so the loudest voices on each side make it in).
 
@@ -120,7 +119,7 @@ The output of this last agent is what you see on [sinsesgo](https://sinsesgo.es)
 
 ## The other use case: single-article reports
 
-The system has a second use case that does not run in production: a single-article report. You point it at any URL, the pipeline scrapes the article and runs the full agent chain on it (no clustering, just one article from end to end), and you get a Markdown report with verified facts, omissions, framing analysis, argumentation problems, and a coverage map of who else covered the story.
+The daily briefing is what shipped. But the codebase carries a second use case that does not run in production yet: a single-article report. Point it at any URL and it scrapes the article, runs the full agent chain on it (no clustering, just depth), and outputs a Markdown report with verified facts, omissions, framing analysis, argumentation problems, and a coverage map.
 
 This path adds three agents that the briefing skips:
 
@@ -128,7 +127,7 @@ This path adds three agents that the briefing skips:
 - **Number Validator.** Takes the numeric claims the parser found and checks them against official sources (INE, BDE, Eurostat, CNMC) via [Tavily](https://tavily.com). Catches tricks like "the deficit fell" when the official source shows it rose.
 - **Presentator.** Fuses every other agent's output into a single Markdown report.
 
-This was the original idea. The daily briefing came later, when I realized the per-article report was too expensive to expose publicly. A single report runs nine agents and costs about 0.15€ in inference. If I let anyone paste any URL, a small group of users could spend 100€ a day in tokens out of my pocket. The code is still there, fully tested, and could power a paid tier if I ever validate the demand. For now it stays as an internal command.
+This was the original idea. The daily briefing came later when I realized the economics didn't work: a single report runs nine agents and costs 0.15€ in inference. Open it to the public and a small group of power users could spend 100€ a day on tokens. The code is production-ready, fully tested, waiting. It's a proof of concept for a future paid tier. Right now I'm focusing on building audience on the free briefing, then will revisit demand for the per-article report.
 
 ## Problems I hit
 
@@ -145,16 +144,16 @@ The two main savings: capping the briefing at five topics per day, and running t
 
 **Prompt drift across model updates.** Every time a model version changes, a few agents start producing slightly different outputs. I ended up with a small set of regression evals that run each agent on a fixed corpus of articles and compare outputs against a snapshot. Not perfect, but enough to catch the worst regressions.
 
-**Outlet bias scoring.** I curated the bias of the top 18 outlets manually. New domains are inferred, but I still manually review the inferred scores once a week.
+**Outlet bias scoring.** I curated the bias of the top 18 outlets manually. New domains are inferred, but I still manually review the inferred scores and monitor outlet drift once a week. This is part of the ongoing maintenance, the pipeline is live but not set-and-forget.
 
 ## What is next
 
-The briefing is live and stable. The next experiments are:
+The briefing is live and stable, and I improve it every week. Right now I'm experimenting with:
 
-- **Feedback loop.** A button on each topic summary to flag a bad omission or a misclassified claim.
-- **More outlets.** 18 is a start. I want regional outlets and a couple of right-wing and left-wing fringes that the current set misses.
-- **A subscription tier** for the per-article report, if the public briefing builds enough audience to justify it.
+- **Feedback loop.** A button on each topic summary to flag a bad omission or a misclassified claim. Helps me catch what the agents miss.
+- **More outlets.** 18 outlets is a start. I want regional outlets and a couple of political fringes that the current set misses to widen the spectrum.
+- **A subscription tier** for the per-article report, if the public briefing builds enough audience to justify it. The code is ready; demand validation is next.
 
 If you want to see the output, the latest briefing is at [sinsesgo](https://sinsesgo.es). If you want the short version of the pipeline, the [funcionamiento](https://sinsesgo.es/funcionamiento) page links back to this post.
 
-This project sits at the intersection of three things I care about: AI, the media we read every day, and shipping real software. I learned more about agents in the two months it took to ship sinsesgo than in the previous year of reading about them, and I now have a tool I use every day. If it helps one more reader cross the aisle and check what the other side is saying, the cost of running it is already paid back.
+This project sits at the intersection of three things I care about: AI, the media we read every day, and shipping real software. I learned more about agents in the two months it took to ship [sinsesgo](https://sinsesgo.es) than in the previous year of reading about them, and I now have a tool I use every day. If it helps one more reader cross the aisle and check what the other side is saying, the cost of running it is already paid back.
