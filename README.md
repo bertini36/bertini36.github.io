@@ -18,7 +18,7 @@ Clone the repo and install dependencies:
 ```bash
 git clone https://github.com/bertini36/blog.git
 cd blog
-pnpm install
+make install
 ```
 
 ### 🏃‍♂️ Running Locally
@@ -26,7 +26,7 @@ pnpm install
 Start the development server:
 
 ```bash
-pnpm dev
+make run
 ```
 
 Visit `http://localhost:4321` to see your blog in action!
@@ -34,7 +34,15 @@ Visit `http://localhost:4321` to see your blog in action!
 ### 🏗️ Build for Production
 
 ```bash
-pnpm build
+make build
+```
+
+### 📦 Other Commands
+
+```bash
+make preview          # Preview the production build locally
+make optimize-images  # Optimize images in the project
+make clean            # Remove dist, .astro, and node_modules
 ```
 
 ## 🤝 Contributing
