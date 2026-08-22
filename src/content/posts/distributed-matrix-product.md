@@ -21,7 +21,7 @@ For distribution, I'm using [MPI](https://www.open-mpi.org/) (Message Passing In
 
 ![Distributed matrix product](/images/posts/distributed_matrix_product/mpi_distributed_matrix_multiplication_diagram.svg)
 
-For parallel computation within each node, we leverage GPUs. Each node of MareNostrum III has an NVIDIA K80 graphics card, which can be used for parallel computing via NVIDIA's [CUDA](https://en.wikipedia.org/wiki/CUDA) (Compute Unified Device Architecture) platform. GPUs are essentially large arrays of simple processors that can dramatically speed up certain computations.
+For parallel computation within each node, I leverage GPUs. Each node of MareNostrum III has an NVIDIA K80 graphics card, which can be used for parallel computing via NVIDIA's [CUDA](https://en.wikipedia.org/wiki/CUDA) (Compute Unified Device Architecture) platform. GPUs are essentially large arrays of simple processors that can dramatically speed up certain computations.
 
 The computation is decomposed into many threads that execute concurrently. Each thread calculates a single element of the resulting matrix. CUDA requires defining a block structure (groups of threads), with each thread's data domain determined by its `threadId` and `blockId`.
 

@@ -11,11 +11,11 @@ Existing solutions didn't quite cut it. They were either too cluttered, missed t
 
 I used this opportunity to "vibe code" the project from scratch, leveraging **[Antigravity](https://antigravity.google/)** to accelerate the process.
 
-The experience was refreshing. Instead of wrestling with complex configurations for hours, I could focus on the selection of data sources and the design. [Antigravity](https://antigravity.google/) helped specifically with the integration parts, analyzing the data sources website HTML structure and generating the scraping logic, which made the development flow much smoother. It felt like pair programming with a partner who handles the tedious parts while I make the executive decisions.
+The experience was refreshing. Instead of wrestling with complex configurations for hours, I could focus on the selection of data sources and the design. [Antigravity](https://antigravity.google/) helped specifically with the integration parts, analyzing each data source's website HTML structure and generating the scraping logic, which made the development flow much smoother. It felt like pair programming with a partner who handles the tedious parts while I make the executive decisions.
 
 ## The App
 
-**[NewsAggr](https://newsaggr.online/)** is the result. It's an elegant, distraction-free news aggregator designed for focus. I'm gradually adding new features and improving existing ones based on feedback from friends. 
+**[NewsAggr](https://newsaggr.online/)** is the result. It's an elegant, distraction-free news aggregator designed for focus. I'm gradually adding new features and improving existing ones based on feedback from friends.
 
 It features:
 - **Unified Feed**: All my tech and news sources in one place.
