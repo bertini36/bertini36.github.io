@@ -21,7 +21,7 @@ const sortedPosts = posts.sort(
         {
           sortedPosts.map((post) => (
             <li>
-              <a href={`/${post.slug}`} title={post.data.description}>
+              <a href={`/${post.id}`} title={post.data.description}>
                 {post.data.title}
               </a>
             </li>
