@@ -1,0 +1,69 @@
+---
+import Diagram from "./Diagram.astro";
+import type { DiagramEdge, DiagramNode } from "../../lib/diagram";
+
+const nodes: DiagramNode[] = [
+  {
+    id: "build",
+    name: "1. Build Model",
+    x: 30,
+    y: 40,
+    w: 140,
+    h: 56,
+    detail: {
+      kind: "step",
+      text: "A probabilistic model is built based on existing domain knowledge.",
+    },
+  },
+  {
+    id: "infer",
+    name: "2. Infer Patterns",
+    x: 230,
+    y: 40,
+    w: 140,
+    h: 56,
+    detail: {
+      kind: "step",
+      text: "Patterns are discovered using the model and an inference method.",
+    },
+  },
+  {
+    id: "critique",
+    name: "3. Critique Model",
+    x: 430,
+    y: 40,
+    w: 140,
+    h: 56,
+    detail: {
+      kind: "step",
+      text: "The model is validated. If it is not good enough, we return to step 1.",
+    },
+  },
+];
+
+const edges: DiagramEdge[] = [
+  { from: "build", to: "infer" },
+  { from: "infer", to: "critique" },
+  {
+    from: "critique",
+    to: "build",
+    label: "4. Revise",
+    fromSide: "bottom",
+    toSide: "bottom",
+    via: [
+      [500, 150],
+      [100, 150],
+    ],
+    detail: { text: "If the model is not good enough, the loop starts again at step 1." },
+  },
+];
+---
+
+<Diagram
+  title="Box's loop: build a model, infer patterns, critique the model, revise"
+  width={600}
+  height={170}
+  nodes={nodes}
+  edges={edges}
+  hint="Select a step to see what happens in it. The loop repeats several times during model construction."
+/>

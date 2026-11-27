@@ -5,6 +5,16 @@ description: "A comprehensive guide to Variational Inference: from the fundament
 heroImage: "/images/posts/variational_inference/variational_inference_illustration.jpg"
 ---
 
+import BoxLoop from "../../components/figures/BoxLoop.astro";
+import OnlineLearning from "../../components/figures/OnlineLearning.astro";
+import ProbabilisticModel from "../../components/figures/ProbabilisticModel.astro";
+import GlobalLocalModel from "../../components/figures/GlobalLocalModel.astro";
+import VariationalStrategy from "../../components/figures/VariationalStrategy.astro";
+import KLDivergence from "../../components/figures/KLDivergence.astro";
+import ElboDecomposition from "../../components/figures/ElboDecomposition.astro";
+import Algorithm from "../../components/figures/Algorithm.astro";
+import SaddleSurface from "../../components/figures/SaddleSurface.astro";
+
 In this post, I'll be discussing probabilistic machine learning. Over the past months, I've been learning about this field, specifically a type of inference known as Variational Inference, which was the topic of my [master's thesis](https://github.com/bertini36/GMM/blob/master/docs/doc.pdf). I'd like to share a summary of my experience.
 
 ## Probabilistic Machine Learning
@@ -19,7 +29,7 @@ Unlike discriminant models that only model the probability of the target variabl
 
 The construction of these models with latent variables follows the Box Loop philosophy, created by statistician [George E. P. Box](https://en.wikipedia.org/wiki/George_E._P._Box). This loop is iterated several times during model construction:
 
-![Box loop](/images/posts/variational_inference/boxs_loop_probabilistic_modeling.svg)
+<BoxLoop />
 
 1. First, a probabilistic model is built based on existing domain knowledge
 2. Patterns are discovered using the model and an inference method
@@ -46,7 +56,7 @@ Using likelihood to estimate θ is called Maximum Likelihood Estimation (MLE), w
 
 A simple example: Initially, we believe (prior) that the height of Barcelona's population follows a Normal distribution. After observing sample heights (evidence), our belief about this distribution must be updated. The posterior distribution reflects this updated belief.
 
-![Online learning](/images/posts/variational_inference/bayesian_online_learning_loop.svg)
+<OnlineLearning />
 
 It's an iterative process: the posterior from one iteration becomes the prior for the next.
 
@@ -66,13 +76,13 @@ $$p(x_1, \ldots, x_n, \theta_1, \ldots, \theta_m)$$
 
 [Probabilistic graphical models](https://en.wikipedia.org/wiki/Graphical_model) provide a practical way to represent these models. They're directed graphs where nodes are random variables and edges represent dependency relationships. Plates (rectangles with a count) denote vectors of random variables.
 
-![Graphical model](/images/posts/variational_inference/probabilistic_graphical_model_example.svg)
+<ProbabilisticModel />
 
 ### Local and Global Variables
 
 Probabilistic models distinguish between global variables (shared across all data points) and local variables (specific to each data point). Shaded nodes represent observed variables.
 
-![Global and local variables](/images/posts/variational_inference/graphical_model_global_local_variables.svg)
+<GlobalLocalModel />
 
 ## Variational Inference
 
@@ -80,7 +90,7 @@ Probabilistic models distinguish between global variables (shared across all dat
 
 Variational Inference defines a distribution q(θ|λ) whose parameters λ are optimized to reduce the distance from the posterior p(θ|x). This new distribution is the variational model, and the posterior is the probabilistic model. The goal is to optimize λ to minimize the divergence between them.
 
-![Variational inference](/images/posts/variational_inference/variational_inference_illustration.jpg)
+<VariationalStrategy />
 
 ### Kullback-Leibler Divergence
 
@@ -96,7 +106,7 @@ $$KL[q(\theta|\lambda)||p(\theta|x)] = \int q(\theta|\lambda) \ln \frac{q(\theta
 
 The visualization below compares forward and reverse KL when approximating a bimodal distribution:
 
-![KL comparison](/images/posts/variational_inference/kl_divergence_forward_vs_reverse.png)
+<KLDivergence />
 
 ### Mean-Field Assumption
 
@@ -127,7 +137,7 @@ $$\boxed{\ln p(x) = KL[q(\theta|\lambda)||p(\theta|x)] + ELBO(q(\theta|\lambda),
 
 This derivation shows that minimizing KL[q(θ|λ)||p(θ|x)] is equivalent to maximizing ELBO(q(θ|λ), p(x,θ)), which is much easier to evaluate. An intractable integral has been transformed into an expectation over a known distribution.
 
-![ELBO visualization](/images/posts/variational_inference/elbo_and_kl_divergence_relation.svg)
+<ElboDecomposition />
 
 Variational Inference uses ELBO as the stopping criterion. When the ELBO value stops increasing across iterations, we've found good values for the variational parameters λ that bring us close to the probabilistic model (the posterior).
 
@@ -152,7 +162,7 @@ $$= \int \prod_i q_i(\theta_i|\lambda_i) \left( \ln p(x, \theta) - \sum_i \ln q_
 
 ## Variational Inference Algorithm
 
-![Variational Inference Algorithm](/images/posts/variational_inference/variational_inference_algorithm_pseudocode.png)
+<Algorithm name="vi" />
 
 This algorithm represents the basic idea of VI. In practice, several additional considerations are necessary. First, the variational model may contain both local and global variables that must be updated in specific ways. You also need to choose an inference method: Coordinate Ascent, Gradient Ascent, or Stochastic Gradient Descent. The choice does not change the basic VI structure; it only affects how the λ parameters are updated in each iteration.
 
@@ -184,7 +194,7 @@ This family enables conjugacy relationships between distributions, when the join
 
 ### CAVI Algorithm
 
-![Coordinate Ascent Variational Inference Algorithm](/images/posts/variational_inference/cavi_algorithm_pseudocode.png)
+<Algorithm name="cavi" />
 
 This CAVI version already distinguishes between updating local and global variables.
 
@@ -202,7 +212,7 @@ Recent years have seen optimizations like Momentum, Adagrad, Adadelta, RMSprop, 
 
 ### GAVI Algorithm
 
-![Gradient Ascent Variational Inference Algorithm](/images/posts/variational_inference/gavi_algorithm_pseudocode.png)
+<Algorithm name="gavi" />
 
 A problem with using the gradient is that it assumes the latent variable space is Euclidean, implying distances between distributions are measured by Euclidean distance of their parameters. The solution is the natural gradient, which accounts for the true distance between distributions.
 
@@ -241,13 +251,13 @@ $$
 
 This technique yields Stochastic Gradient Ascent Variational Inference (SGAVI) or Stochastic Natural Gradient Ascent Variational Inference (SNGAVI) when using natural gradients. These algorithms can avoid saddle points thanks to gradient estimation noise.
 
-![Saddle point](/images/posts/variational_inference/optimization_saddle_point_surface.png)
+<SaddleSurface />
 
 ### Algorithm
 
 When updating variational parameters via closed analytical formulas, the algorithm is Stochastic Coordinate Ascent Variational Inference (SCAVI). When using stochastic optimization, it's SGAVI. The stochastic version uses a correction term incorporating calculations from previous iterations:
 
-![Stochastic Variational Inference Algorithm](/images/posts/variational_inference/svi_algorithm_pseudocode.png)
+<Algorithm name="svi" />
 
 ## Black Box Variational Inference
 
@@ -277,7 +287,7 @@ $$\nabla_\lambda ELBO(q(\theta|\lambda), p(x, \theta)) \approx \frac{1}{S} \sum_
 
 ### Algorithm
 
-![Black Box Variational Inference Algorithm](/images/posts/variational_inference/bbvi_algorithm_pseudocode.png)
+<Algorithm name="bbvi" />
 
 ## Considerations
 

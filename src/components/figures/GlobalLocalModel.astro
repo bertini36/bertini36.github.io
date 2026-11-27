@@ -1,0 +1,71 @@
+---
+import Diagram from "./Diagram.astro";
+import type { DiagramEdge, DiagramNode } from "../../lib/diagram";
+
+const nodes: DiagramNode[] = [
+  {
+    id: "beta",
+    name: "β",
+    lines: ['<tspan class="mi">β</tspan>'],
+    shape: "circle",
+    x: 125,
+    y: 125,
+    w: 50,
+    h: 50,
+    detail: {
+      kind: "global variable",
+      text: "Shared across all data points. It sits outside the plate, so it appears once.",
+    },
+  },
+  {
+    id: "z",
+    name: "zₙ",
+    lines: ['<tspan class="mi">z<tspan font-size="10" dy="4">n</tspan></tspan>'],
+    shape: "circle",
+    x: 425,
+    y: 105,
+    w: 50,
+    h: 50,
+    detail: {
+      kind: "local variable",
+      text: "Specific to each data point. It sits inside plate N, so there is one per data point.",
+    },
+  },
+  {
+    id: "x",
+    name: "xₙ",
+    lines: ['<tspan class="mi">x<tspan font-size="10" dy="4">n</tspan></tspan>'],
+    shape: "circle",
+    shaded: true,
+    x: 425,
+    y: 195,
+    w: 50,
+    h: 50,
+    detail: {
+      kind: "observed local variable",
+      text: "Shaded, so it is observed. One per data point, inside plate N.",
+    },
+  },
+];
+
+const edges: DiagramEdge[] = [
+  { from: "beta", to: "z", via: [] },
+  { from: "beta", to: "x", via: [] },
+  { from: "z", to: "x" },
+];
+---
+
+<Diagram
+  title="Global variable β and local variables zₙ and xₙ"
+  width={600}
+  height={300}
+  nodes={nodes}
+  edges={edges}
+  plates={[{ x: 350, y: 80, w: 200, h: 190, label: "N" }]}
+  notes={[
+    { x: 150, y: 40, lines: ["GLOBAL VARIABLES", "(Shared across all data)"], strong: true },
+    { x: 450, y: 40, lines: ["LOCAL VARIABLES", "(Specific to each data point)"], strong: true },
+  ]}
+  dividers={[[300, 20, 300, 290]]}
+  hint="Select a variable to see whether it is global, local or observed."
+/>

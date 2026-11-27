@@ -1,0 +1,77 @@
+---
+import { algorithms } from "./algorithms";
+
+interface Props {
+  name: keyof typeof algorithms;
+}
+
+const { title, lines } = algorithms[Astro.props.name];
+---
+
+<figure class="fig">
+  <div class="algo">
+    <p class="algo-title"><b>{title}</b></p>
+    <ol class="algo-lines">
+      {
+        lines.map((line, index) => (
+          <li class="algo-line" style={`--depth:${line.depth}`}>
+            <span class="algo-no">{index + 1}</span>
+            <span class="algo-code" set:html={line.html} />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</figure>
+
+<style>
+  .algo {
+    border-top: 2px solid var(--text-primary);
+    border-bottom: 2px solid var(--text-primary);
+    overflow-x: auto;
+  }
+  .algo-title {
+    margin: 0;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--text-primary);
+    font-size: 15px;
+  }
+  .algo-lines {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+  }
+  .algo-line {
+    display: flex;
+    gap: 12px;
+    margin: 0;
+    padding: 2px 4px;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .algo-no {
+    width: 1.5em;
+    flex: none;
+    text-align: right;
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+  .algo-code {
+    padding-left: calc(var(--depth) * 1.4em);
+    border-left: calc(min(var(--depth), 1) * 1px) solid var(--fig-line);
+  }
+  .algo :global(b) {
+    font-weight: 600;
+  }
+  .algo :global(.frac) {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 0.75em;
+    line-height: 1.1;
+  }
+  .algo :global(.frac > span:first-child) {
+    border-bottom: 1px solid currentColor;
+  }
+</style>

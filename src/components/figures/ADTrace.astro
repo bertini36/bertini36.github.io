@@ -1,0 +1,261 @@
+---
+interface Props {
+  mode: "forward" | "reverse";
+}
+
+interface Row {
+  id: string;
+  html: string;
+  value: string;
+  uses?: string[];
+  strong?: boolean;
+}
+
+const { mode } = Astro.props;
+
+const v = (n: string) => `<i class="mi">v</i><sub>${n}</sub>`;
+const dot = (n: string) => `<span class="dot"><i class="mi">v</i></span><sub>${n}</sub>`;
+const bar = (n: string) => `<span class="bar"><i class="mi">v</i></span><sub>${n}</sub>`;
+const partial = (num: string, den: string) =>
+  `<span class="frac"><span>∂${v(num)}</span><span>∂${v(den)}</span></span>`;
+
+const evaluation: Row[] = [
+  { id: "e-1", html: `${v("−1")} = <i class="mi">x</i><sub>1</sub>`, value: "= 2" },
+  { id: "e0", html: `${v("0")} = <i class="mi">x</i><sub>2</sub>`, value: "= 5" },
+  { id: "e1", html: `${v("1")} = ln ${v("−1")}`, value: "= ln 2", uses: ["e-1"] },
+  { id: "e2", html: `${v("2")} = ${v("−1")} × ${v("0")}`, value: "= 2 × 5", uses: ["e-1", "e0"] },
+  { id: "e3", html: `${v("3")} = sin ${v("0")}`, value: "= sin 5", uses: ["e0"] },
+  { id: "e4", html: `${v("4")} = ${v("1")} + ${v("2")}`, value: "= 0.693 + 10", uses: ["e1", "e2"] },
+  { id: "e5", html: `${v("5")} = ${v("4")} − ${v("3")}`, value: "= 10.693 + 0.959", uses: ["e4", "e3"] },
+  { id: "ey", html: `<i class="mi">y</i> = ${v("5")}`, value: "= 11.652", uses: ["e5"], strong: true },
+];
+
+const derivative: Row[] = [
+  { id: "d-1", html: `${dot("−1")} = <span class="dot"><i class="mi">x</i></span><sub>1</sub>`, value: "= 1" },
+  { id: "d0", html: `${dot("0")} = <span class="dot"><i class="mi">x</i></span><sub>2</sub>`, value: "= 0" },
+  { id: "d1", html: `${dot("1")} = ${dot("−1")}/${v("−1")}`, value: "= 1/2", uses: ["d-1", "e-1"] },
+  {
+    id: "d2",
+    html: `${dot("2")} = ${dot("−1")}×${v("0")} + ${dot("0")}×${v("−1")}`,
+    value: "= 1×5 + 0×2",
+    uses: ["d-1", "e0", "d0", "e-1"],
+  },
+  { id: "d3", html: `${dot("3")} = ${dot("0")} × cos ${v("0")}`, value: "= 0 × cos 5", uses: ["d0", "e0"] },
+  { id: "d4", html: `${dot("4")} = ${dot("1")} + ${dot("2")}`, value: "= 0.5 + 5", uses: ["d1", "d2"] },
+  { id: "d5", html: `${dot("5")} = ${dot("4")} − ${dot("3")}`, value: "= 5.5 − 0", uses: ["d4", "d3"] },
+  {
+    id: "dy",
+    html: `<span class="dot"><i class="mi">y</i></span> = ${dot("5")}`,
+    value: "= 5.5",
+    uses: ["d5"],
+    strong: true,
+  },
+];
+
+// Listed in computation order; the table shows them bottom-up.
+const adjoint: Row[] = [
+  { id: "a5", html: `${bar("5")} = <span class="bar"><i class="mi">y</i></span>`, value: "= 1" },
+  { id: "a4", html: `${bar("4")} = ${bar("5")} ${partial("5", "4")} = ${bar("5")} × 1`, value: "= 1", uses: ["a5"] },
+  { id: "a3", html: `${bar("3")} = ${bar("5")} ${partial("5", "3")} = ${bar("5")} × (−1)`, value: "= −1", uses: ["a5"] },
+  { id: "a1", html: `${bar("1")} = ${bar("4")} ${partial("4", "1")} = ${bar("4")} × 1`, value: "= 1", uses: ["a4"] },
+  { id: "a2", html: `${bar("2")} = ${bar("4")} ${partial("4", "2")} = ${bar("4")} × 1`, value: "= 1", uses: ["a4"] },
+  { id: "a0b", html: `${bar("0")} = ${bar("3")} ${partial("3", "0")} = ${bar("3")} × cos ${v("0")}`, value: "= −0.284", uses: ["a3", "e0"] },
+  { id: "a-1b", html: `${bar("−1")} = ${bar("2")} ${partial("2", "−1")} = ${bar("2")} × ${v("0")}`, value: "= 5", uses: ["a2", "e0"] },
+  { id: "a0", html: `${bar("0")} = ${bar("0")} + ${bar("2")} ${partial("2", "0")} = ${bar("0")} + ${bar("2")} × ${v("−1")}`, value: "= 1.716", uses: ["a0b", "a2", "e-1"] },
+  { id: "a-1", html: `${bar("−1")} = ${bar("−1")} + ${bar("1")} ${partial("1", "−1")} = ${bar("−1")} + ${bar("1")}/${v("−1")}`, value: "= 5.5", uses: ["a-1b", "a1", "e-1"] },
+  { id: "ax2", html: `<span class="bar"><i class="mi">x</i></span><sub>2</sub> = ${bar("0")}`, value: "= 1.716", uses: ["a0"], strong: true },
+  { id: "ax1", html: `<span class="bar"><i class="mi">x</i></span><sub>1</sub> = ${bar("−1")}`, value: "= 5.5", uses: ["a-1"], strong: true },
+];
+
+const right = mode === "forward" ? derivative : adjoint;
+const rightRows = mode === "forward" ? right : [...right].reverse();
+const rightTitle = mode === "forward" ? "Forward Derivative Trace" : "Reverse Adjoint Trace";
+const leftTitle = "Forward Evaluation Trace";
+
+const allRows = [...evaluation, ...right];
+const uses = Object.fromEntries(allRows.map((row) => [row.id, row.uses ?? []]));
+---
+
+<figure class="fig" data-fig="trace" data-uses={JSON.stringify(uses)}>
+  <div class="fig-card">
+    <div class="trace-scroll">
+      <div class="trace">
+        <section class="trace-table">
+          <h4>{leftTitle} <span aria-hidden="true">↓</span></h4>
+          <table>
+            <tbody>
+              {
+                evaluation.map((row) => (
+                  <tr
+                    data-row={row.id}
+                    tabindex="0"
+                    class={row.strong ? "strong" : ""}
+                  >
+                    <td class="math" set:html={row.html} />
+                    <td class="math" set:html={row.value} />
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </section>
+        <section class="trace-table shaded">
+          <h4>
+            {rightTitle}
+            <span aria-hidden="true">{mode === "forward" ? "↓" : "↑"}</span>
+          </h4>
+          <table>
+            <tbody>
+              {
+                rightRows.map((row) => (
+                  <tr
+                    data-row={row.id}
+                    tabindex="0"
+                    class={row.strong ? "strong" : ""}
+                  >
+                    <td class="math" set:html={row.html} />
+                    <td class="math" set:html={row.value} />
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+    <div class="fig-controls">
+      <span class="fig-readout" data-readout>
+        Hover or focus a row to highlight the rows it uses.
+      </span>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .trace-scroll {
+    overflow-x: auto;
+  }
+  .trace {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-width: 640px;
+  }
+  .trace-table {
+    padding: 8px 12px;
+  }
+  .trace-table.shaded {
+    background: var(--fig-surface);
+    border-left: 1px solid var(--fig-border);
+  }
+  h4 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--fig-border);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  tr {
+    outline: none;
+    cursor: default;
+    transition: opacity 0.2s ease, background 0.15s ease;
+  }
+  td {
+    padding: 4px 6px;
+    white-space: nowrap;
+  }
+  td:last-child {
+    text-align: right;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  tr.strong td {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  tr.is-focus {
+    background: var(--text-primary);
+  }
+  tr.is-focus td {
+    color: var(--bg-primary);
+  }
+  tr.is-dep {
+    background: var(--fig-surface-strong);
+  }
+  tr:focus-visible {
+    background: var(--fig-surface-strong);
+  }
+  tr :global(sub) {
+    font-size: 0.7em;
+  }
+  tr :global(.dot),
+  tr :global(.bar) {
+    position: relative;
+    display: inline-block;
+  }
+  tr :global(.dot)::after {
+    content: "";
+    position: absolute;
+    top: 0.05em;
+    left: 50%;
+    width: 2px;
+    height: 2px;
+    margin-left: -0.5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  tr :global(.bar)::before {
+    content: "";
+    position: absolute;
+    top: 0.1em;
+    left: 0;
+    right: 0;
+    border-top: 1px solid currentColor;
+  }
+  tr :global(.frac) {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 0.7em;
+    line-height: 1.1;
+  }
+  tr :global(.frac > span:first-child) {
+    border-bottom: 1px solid currentColor;
+  }
+</style>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>('[data-fig="trace"]')
+    .forEach((root) => {
+      const uses: Record<string, string[]> = JSON.parse(root.dataset.uses!);
+      const rows = [...root.querySelectorAll<HTMLElement>("[data-row]")];
+      const byId = new Map(rows.map((row) => [row.dataset.row!, row]));
+      const readout = root.querySelector<HTMLElement>("[data-readout]")!;
+      const idle = readout.textContent;
+
+      function highlight(id: string | null) {
+        rows.forEach((row) => row.classList.remove("is-focus", "is-dep"));
+        if (!id) {
+          readout.textContent = idle;
+          return;
+        }
+        byId.get(id)!.classList.add("is-focus");
+        uses[id].forEach((dep) => byId.get(dep)!.classList.add("is-dep"));
+        readout.textContent = uses[id].length
+          ? "Highlighted rows feed the selected one."
+          : "This row has no inputs.";
+      }
+
+      rows.forEach((row) => {
+        row.addEventListener("mouseenter", () => highlight(row.dataset.row!));
+        row.addEventListener("focus", () => highlight(row.dataset.row!));
+        row.addEventListener("mouseleave", () => highlight(null));
+        row.addEventListener("blur", () => highlight(null));
+      });
+    });
+</script>

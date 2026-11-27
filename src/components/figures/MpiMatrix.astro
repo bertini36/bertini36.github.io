@@ -1,0 +1,46 @@
+---
+import Diagram from "./Diagram.astro";
+import type { DiagramNode } from "../../lib/diagram";
+
+const nodes: DiagramNode[] = [1, 2, 3, 4].map((rank) => ({
+  id: `node${rank}`,
+  name: `Node ${rank}`,
+  lines: [`NODE ${rank}`],
+  x: 100,
+  y: 50 + (rank - 1) * 75,
+  w: 300,
+  h: 75,
+  detail: {
+    kind: "mpi process",
+    text: `Computes rows ${4 * (rank - 1) + 1} to ${4 * rank} of C.`,
+    facts: [
+      "A 4 × 16 block of the 16 × 16 result.",
+      "Receives all of A and B, so it needs no data from the other nodes.",
+    ],
+  },
+}));
+---
+
+<Diagram
+  title="Rows of the result matrix C split across 4 MPI nodes"
+  width={520}
+  height={380}
+  nodes={nodes}
+  notes={[
+    { x: 60, y: 208, lines: ["C ="], anchor: "middle", strong: true },
+    { x: 250, y: 34, lines: ["16"] },
+    { x: 412, y: 92, lines: ["4"], anchor: "start" },
+    { x: 412, y: 167, lines: ["4"], anchor: "start" },
+    { x: 412, y: 242, lines: ["4"], anchor: "start" },
+    { x: 412, y: 317, lines: ["4"], anchor: "start" },
+    { x: 468, y: 208, lines: ["16"], anchor: "start" },
+  ]}
+  dividers={[
+    [100, 42, 400, 42],
+    [452, 50, 462, 50],
+    [462, 50, 462, 350],
+    [462, 350, 452, 350],
+  ]}
+  hint="Select a node to see which rows of C it computes. Example: 16 × 16 matrices on 4 nodes."
+  minWidth={420}
+/>
