@@ -1,0 +1,114 @@
+---
+---
+
+<figure class="fig" data-fig="online">
+  <div class="fig-card">
+    <div class="fig-inner" style="min-width:520px">
+      <svg viewBox="0 0 600 300" role="img" aria-label="Bayesian online learning: the posterior of one iteration becomes the prior of the next" data-canvas>
+        <title>Bayesian online learning: the posterior of one iteration becomes the prior of the next</title>
+      </svg>
+    </div>
+    <div class="fig-controls">
+      <button class="fig-btn" data-prev>← Previous</button>
+      <button class="fig-btn" data-next>Next iteration →</button>
+      <button class="fig-btn" data-reset>Reset</button>
+      <span class="fig-readout" data-readout></span>
+    </div>
+  </div>
+  <figcaption class="fig-caption">
+    Illustrative heights in cm. Each iteration observes three new samples.
+  </figcaption>
+</figure>
+
+<script>
+  import { linePath, linspace, normalPdf, svgEl } from "../../lib/plot";
+
+  const OBSERVATION_SD = 8;
+  const START = { mean: 170, sd: 15 };
+  const BATCHES = [
+    [178, 181, 175],
+    [172, 180, 176],
+    [174, 179, 177],
+    [173, 178, 182],
+    [176, 175, 180],
+  ];
+  const X_MIN = 140;
+  const X_MAX = 210;
+
+  const root = document.querySelector<HTMLElement>('[data-fig="online"]')!;
+  const canvas = root.querySelector<SVGSVGElement>("[data-canvas]")!;
+  const readout = root.querySelector<HTMLElement>("[data-readout]")!;
+  const prevButton = root.querySelector<HTMLButtonElement>("[data-prev]")!;
+  const nextButton = root.querySelector<HTMLButtonElement>("[data-next]")!;
+
+  // Normal prior with known observation variance: precisions add.
+  const posteriors = BATCHES.reduce(
+    (acc, batch) => {
+      const prior = acc[acc.length - 1];
+      const precision = 1 / prior.sd ** 2 + batch.length / OBSERVATION_SD ** 2;
+      const mean =
+        (prior.mean / prior.sd ** 2 +
+          batch.reduce((a, b) => a + b, 0) / OBSERVATION_SD ** 2) /
+        precision;
+      return [...acc, { mean, sd: Math.sqrt(1 / precision) }];
+    },
+    [START],
+  );
+  const peak = normalPdf(0, 0, posteriors[posteriors.length - 1].sd) * 1.1;
+
+  const toX = (value: number) => 50 + ((value - X_MIN) / (X_MAX - X_MIN)) * 500;
+  const toY = (density: number) => 250 - (density / peak) * 190;
+
+  let iteration = 1;
+
+  function curve(dist: { mean: number; sd: number }) {
+    return linePath(linspace(X_MIN, X_MAX, 141).map((x) => [toX(x), toY(normalPdf(x, dist.mean, dist.sd))]));
+  }
+
+  function label(content: string, attrs: Record<string, string | number>) {
+    const node = svgEl("text", attrs, canvas);
+    node.textContent = content;
+  }
+
+  function draw() {
+    canvas.replaceChildren();
+    const prior = posteriors[iteration - 1];
+    const posterior = posteriors[iteration];
+
+    svgEl("path", { d: "M50 250H550M50 250V50", stroke: "var(--text-primary)", "stroke-width": 1.5, fill: "none" }, canvas);
+    for (const tick of [150, 170, 190, 210]) {
+      svgEl("path", { d: `M${toX(tick)} 250v5`, stroke: "var(--fig-line)" }, canvas);
+      label(String(tick), { x: toX(tick), y: 268, "text-anchor": "middle", class: "fig-muted" });
+    }
+
+    svgEl("path", { d: curve(prior), fill: "none", stroke: "var(--fig-line)", "stroke-width": 2.5, "stroke-dasharray": "5 5" }, canvas);
+    svgEl("path", { d: curve(posterior), fill: "none", stroke: "var(--text-primary)", "stroke-width": 2.5 }, canvas);
+
+    BATCHES[iteration - 1].forEach((value) =>
+      svgEl("circle", { cx: toX(value), cy: 250, r: 4.5, fill: "var(--text-primary)" }, canvas),
+    );
+
+    label(`Prior (Iteration ${iteration})`, { x: Math.max(toX(prior.mean) - 12, 100), y: toY(normalPdf(prior.mean, prior.mean, prior.sd)) - 8, "text-anchor": "end", class: "fig-muted" });
+    label(`Posterior (Iteration ${iteration})`, { x: toX(posterior.mean) + 14, y: toY(normalPdf(posterior.mean, posterior.mean, posterior.sd)) + 4, class: "fig-strong" });
+    label("Observed Data", { x: toX(BATCHES[iteration - 1][1]), y: 290, "text-anchor": "middle", class: "fig-muted" });
+    label(`Posterior (t=${iteration}) becomes Prior for Iteration ${iteration + 1}`, { x: 575, y: 20, "text-anchor": "end", class: "fig-muted" });
+
+    readout.textContent = `Iteration ${iteration} of ${BATCHES.length} · posterior mean ${posterior.mean.toFixed(1)} cm, sd ${posterior.sd.toFixed(1)}`;
+    prevButton.disabled = iteration === 1;
+    nextButton.disabled = iteration === BATCHES.length;
+  }
+
+  prevButton.addEventListener("click", () => {
+    iteration -= 1;
+    draw();
+  });
+  nextButton.addEventListener("click", () => {
+    iteration += 1;
+    draw();
+  });
+  root.querySelector("[data-reset]")!.addEventListener("click", () => {
+    iteration = 1;
+    draw();
+  });
+  draw();
+</script>

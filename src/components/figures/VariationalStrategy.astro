@@ -1,0 +1,116 @@
+---
+---
+
+<figure class="fig" data-fig="strategy">
+  <div class="fig-card">
+    <div class="fig-inner" style="min-width:520px">
+      <svg viewBox="0 0 640 310" role="img" aria-label="Variational inference: a family of distributions q searches for the one closest to the true posterior" data-canvas>
+        <title>Variational inference: a family of distributions q searches for the one closest to the true posterior</title>
+      </svg>
+    </div>
+    <div class="fig-pane" aria-live="polite">
+      <p data-text></p>
+    </div>
+  </div>
+  <figcaption class="fig-caption">
+    Select any q in the hypothesis class to measure its divergence from the true posterior.
+  </figcaption>
+</figure>
+
+<script>
+  import { buildTip } from "../../lib/diagram";
+  import { klDivergence, linePath, linspace, normalPdf, svgEl } from "../../lib/plot";
+
+  const posterior = (x: number) =>
+    0.65 * normalPdf(x, 0.4, 0.8) + 0.35 * normalPdf(x, 2, 0.7);
+
+  const candidates = [
+    { box: [350, 90], mean: 0.7, sd: 1.0 },
+    { box: [490, 30], mean: 2.2, sd: 0.6 },
+    { box: [500, 130], mean: -1, sd: 1.4 },
+    { box: [410, 215], mean: 1, sd: 0.35 },
+  ].map((c) => ({
+    ...c,
+    kl: klDivergence((x) => normalPdf(x, c.mean, c.sd), posterior, -8, 10),
+  }));
+  const best = candidates.reduce((a, b) => (b.kl < a.kl ? b : a));
+
+  const BOX_W = 110;
+  const BOX_H = 66;
+  const root = document.querySelector<HTMLElement>('[data-fig="strategy"]')!;
+  const canvas = root.querySelector<SVGSVGElement>("[data-canvas]")!;
+  const text = root.querySelector<HTMLElement>("[data-text]")!;
+  let selected = best;
+
+  const miniPath = (
+    density: (x: number) => number,
+    left: number,
+    top: number,
+    w: number,
+    h: number,
+    peak: number,
+  ) =>
+    linePath(
+      linspace(-3, 5, 81).map((x): [number, number] => [
+        left + ((x + 3) / 8) * w,
+        top + h - (density(x) / peak) * h,
+      ]),
+    );
+
+  function label(content: string, attrs: Record<string, string | number>) {
+    svgEl("text", attrs, canvas).textContent = content;
+  }
+
+  function draw() {
+    canvas.replaceChildren(svgEl("title"));
+    canvas.firstChild!.textContent =
+      "Variational inference: a family of distributions q searches for the one closest to the true posterior";
+
+    label("true", { x: 20, y: 34, class: "fig-muted" });
+    label("posterior", { x: 20, y: 50, class: "fig-muted" });
+    label("p(θ|x)", { x: 20, y: 70, class: "fig-strong" });
+    svgEl("path", { d: miniPath(posterior, 100, 40, 160, 100, 0.55), fill: "none", stroke: "var(--text-primary)", "stroke-width": 2.5 }, canvas);
+    svgEl("path", { d: "M100 140H260M120 30V140", stroke: "var(--fig-line)", "stroke-width": 1 }, canvas);
+    svgEl("circle", { cx: 280, cy: 100, r: 5, fill: "var(--text-primary)" }, canvas);
+
+    svgEl("path", { d: "M330 60Q330 15 400 12H560Q625 15 628 80V245Q620 295 560 298H410Q335 296 328 230Z", fill: "var(--fig-surface)", stroke: "var(--fig-line)", "stroke-width": 1.5 }, canvas);
+    label("hypothesis class", { x: 620, y: 28, "text-anchor": "end", class: "fig-muted" });
+
+    candidates.forEach((candidate, index) => {
+      const [left, top] = candidate.box;
+      const active = candidate === selected;
+      const group = svgEl("g", { tabindex: 0, role: "button", "data-index": index, "aria-label": `q with mean ${candidate.mean} and sd ${candidate.sd}`, style: "cursor:pointer;outline:none" }, canvas);
+      svgEl("rect", { x: left - 6, y: top - 6, width: BOX_W + 12, height: BOX_H + 22, rx: 6, fill: active ? "var(--bg-primary)" : "transparent", stroke: active ? "var(--text-primary)" : "transparent", "stroke-width": 1.5 }, group);
+      svgEl("path", { d: miniPath((x) => normalPdf(x, candidate.mean, candidate.sd), left, top, BOX_W, BOX_H, 1.2), fill: "none", stroke: active ? "var(--text-primary)" : "var(--fig-line)", "stroke-width": 2 }, group);
+      svgEl("path", { d: `M${left} ${top + BOX_H}H${left + BOX_W}`, stroke: "var(--fig-line)" }, group);
+      svgEl("circle", { cx: left - 6, cy: top + BOX_H / 2, r: 4, fill: active ? "var(--text-primary)" : "var(--fig-line)" }, group);
+      if (candidate === best) {
+        svgEl("text", { x: left + BOX_W / 2, y: top + BOX_H + 12, "text-anchor": "middle", class: "fig-muted" }, group).textContent = "best proxy";
+      }
+      const select = () => {
+        selected = candidate;
+        draw();
+        canvas.querySelector<SVGElement>(`[data-index="${index}"]`)?.focus();
+      };
+      group.addEventListener("click", select);
+      group.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          select();
+        }
+      });
+    });
+
+    const [left, top] = selected.box;
+    const startX = left - 10;
+    const startY = top + BOX_H / 2;
+    svgEl("path", { d: `M${startX} ${startY}L286 100`, stroke: "var(--text-primary)", "stroke-width": 1.5, "stroke-dasharray": "5 4", fill: "none" }, canvas);
+    svgEl("path", { d: buildTip([[startX, startY], [286, 100]]), fill: "var(--text-primary)" }, canvas);
+    label("divergence", { x: 20, y: 215, class: "fig-strong" });
+    label("KL[q(θ|λ)||p(θ|x)]", { x: 20, y: 233, class: "fig-muted" });
+
+    text.textContent = `q = N(${selected.mean}, ${selected.sd}): KL[q(θ|λ)||p(θ|x)] = ${selected.kl.toFixed(2)}${selected === best ? ". The lowest of the four, so the best proxy." : "."}`;
+  }
+
+  draw();
+</script>

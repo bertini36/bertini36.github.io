@@ -1,0 +1,182 @@
+---
+---
+
+<figure class="fig" data-fig="elbo">
+  <div class="fig-card">
+    <div class="fig-inner" style="min-width:480px">
+      <svg viewBox="0 0 600 350" role="img" aria-label="Log evidence decomposed into KL divergence and ELBO" data-canvas>
+        <title>Log evidence decomposed into KL divergence and ELBO</title>
+      </svg>
+    </div>
+    <div class="fig-controls">
+      <label>
+        Fit of q(θ|λ)
+        <input type="range" min="0" max="1" step="0.01" value="0.47" data-fit />
+      </label>
+      <button class="fig-btn" data-maximize>Maximize ELBO</button>
+      <button class="fig-btn" data-reset>Reset</button>
+      <span class="fig-readout" data-readout></span>
+    </div>
+    <div class="fig-pane" aria-live="polite">
+      <p class="fig-pane-empty" data-hint>
+        Select KL, ELBO or ln p(x). Drag the slider: ln p(x) stays fixed, so
+        every unit the KL loses goes to the ELBO.
+      </p>
+      <div hidden data-body>
+        <div class="fig-pane-head">
+          <strong data-title></strong>
+        </div>
+        <p data-text></p>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<script>
+  import { buildTip } from "../../lib/diagram";
+  import { svgEl } from "../../lib/plot";
+
+  const TOP = 50;
+  const HEIGHT = 250;
+  const MAX_KL = 150;
+
+  const explanations = {
+    evidence: {
+      title: "ln p(x), the log evidence",
+      text: "Fixed for a given model and data. It equals KL[q(θ|λ)||p(θ|x)] + ELBO(q(θ|λ), p(x,θ)).",
+    },
+    kl: {
+      title: "KL[q(θ|λ)||p(θ|x)]",
+      text: "Distance between the variational model and the posterior. Minimizing it is equivalent to maximizing the ELBO.",
+    },
+    elbo: {
+      title: "ELBO",
+      text: "Model Evidence Lower Bound. An expectation over a known distribution, much easier to evaluate than the KL.",
+    },
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-fig="elbo"]')!;
+  const canvas = root.querySelector<SVGSVGElement>("[data-canvas]")!;
+  const slider = root.querySelector<HTMLInputElement>("[data-fit]")!;
+  const readout = root.querySelector<HTMLElement>("[data-readout]")!;
+  const hint = root.querySelector<HTMLElement>("[data-hint]")!;
+  const body = root.querySelector<HTMLElement>("[data-body]")!;
+  let selected: keyof typeof explanations | null = null;
+
+  function text(
+    content: string,
+    attrs: Record<string, string | number>,
+    parent: Element,
+  ) {
+    const node = svgEl("text", attrs, parent);
+    node.innerHTML = content;
+    return node;
+  }
+
+  function bracket(side: "left" | "right", y1: number, y2: number, x: number, parent: Element, stroke = "var(--fig-line)") {
+    const dx = side === "left" ? -10 : 10;
+    svgEl("path", {
+      d: `M${x + dx} ${y1}H${x + dx * 2}V${y2}H${x + dx}`,
+      fill: "none",
+      stroke,
+      "stroke-width": 1.5,
+      "pointer-events": "none",
+    }, parent);
+  }
+
+  function select(key: keyof typeof explanations) {
+    selected = key;
+    draw();
+    canvas.querySelector<SVGElement>(`[data-key="${key}"]`)?.focus();
+    hint.hidden = true;
+    body.hidden = false;
+    body.querySelector("[data-title]")!.textContent = explanations[key].title;
+    body.querySelector("[data-text]")!.textContent = explanations[key].text;
+  }
+
+  function region(
+    key: keyof typeof explanations,
+    attrs: Record<string, string | number>,
+    parent: Element,
+  ) {
+    const rect = svgEl("rect", { ...attrs, "data-key": key, tabindex: 0, role: "button", "aria-label": explanations[key].title, style: "cursor:pointer;outline:none" }, parent);
+    rect.addEventListener("click", () => select(key));
+    rect.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        select(key);
+      }
+    });
+    return rect;
+  }
+
+  function draw() {
+    canvas.replaceChildren(svgEl("title", {}));
+    canvas.firstChild!.textContent = "Log evidence decomposed into KL divergence and ELBO";
+    const fit = Number(slider.value);
+    const klHeight = MAX_KL * (1 - fit);
+    const boundary = TOP + klHeight;
+    const active = (key: string) => selected === key;
+
+    region("evidence", { x: 120, y: TOP, width: 130, height: HEIGHT, fill: "transparent" }, canvas);
+    if (klHeight > 0.5) {
+      region("kl", { x: 250, y: TOP, width: 100, height: klHeight, fill: active("kl") ? "var(--text-primary)" : "var(--fig-line)", "fill-opacity": active("kl") ? 1 : 0.55, stroke: "var(--text-primary)", "stroke-width": 1.5 }, canvas);
+    }
+    region("elbo", { x: 250, y: boundary, width: 100, height: TOP + HEIGHT - boundary, fill: active("elbo") ? "var(--text-primary)" : "var(--fig-surface-strong)", stroke: "var(--text-primary)", "stroke-width": 1.5 }, canvas);
+
+    svgEl("rect", { x: 250, y: TOP, width: 100, height: HEIGHT, fill: "none", stroke: active("evidence") ? "var(--text-primary)" : "var(--fig-line)", "stroke-width": 1.5, "stroke-dasharray": "4 4", "pointer-events": "none" }, canvas);
+
+    const onKl = active("kl") ? "var(--bg-primary)" : "var(--text-primary)";
+    const onElbo = active("elbo") ? "var(--bg-primary)" : "var(--text-primary)";
+    if (klHeight > 22) text("KL", { x: 300, y: TOP + klHeight / 2 + 5, "text-anchor": "middle", class: "fig-strong", style: `fill:${onKl}`, "pointer-events": "none" }, canvas);
+    text("ELBO", { x: 300, y: (boundary + TOP + HEIGHT) / 2 + 5, "text-anchor": "middle", class: "fig-strong", style: `fill:${onElbo}`, "pointer-events": "none" }, canvas);
+
+    bracket("left", TOP, TOP + HEIGHT, 250, canvas, active("evidence") ? "var(--text-primary)" : "var(--fig-line)");
+    text('<tspan class="mi">ln p(x)</tspan>', { x: 214, y: TOP + HEIGHT / 2 - 2, "text-anchor": "end", "pointer-events": "none" }, canvas);
+    text("(Log Evidence)", { x: 214, y: TOP + HEIGHT / 2 + 16, "text-anchor": "end", class: "fig-muted", "pointer-events": "none" }, canvas);
+
+    if (klHeight > 0.5) {
+      bracket("right", TOP, boundary, 350, canvas);
+      text('<tspan class="mi">KL(q || p)</tspan>', { x: 374, y: TOP + klHeight / 2 + 5, "text-anchor": "start" }, canvas);
+    }
+    bracket("right", boundary, TOP + HEIGHT, 350, canvas);
+    text('<tspan class="mi">L(λ)</tspan>', { x: 374, y: (boundary + TOP + HEIGHT) / 2 + 5, "text-anchor": "start" }, canvas);
+
+    const arrow = (x: number, y1: number, y2: number, label: string, labelY: number) => {
+      const dir = y2 > y1 ? 1 : -1;
+      svgEl("path", { d: `M${x} ${y1}V${y2 - dir * 8}`, stroke: "var(--fig-line)", "stroke-width": 1.5, fill: "none" }, canvas);
+      svgEl("path", { d: buildTip([[x, y1], [x, y2]]), fill: "var(--fig-line)" }, canvas);
+      text(label, { x, y: labelY, "text-anchor": "middle", class: "fig-muted" }, canvas);
+    };
+    arrow(530, 250, 195, "Maximize ELBO", 275);
+    arrow(530, 75, 130, "Minimize KL", 62);
+
+    text("Log Evidence Decomposition", { x: 300, y: 335, "text-anchor": "middle", class: "fig-strong" }, canvas);
+    readout.textContent = `KL ${Math.round((klHeight / HEIGHT) * 100)}% · ELBO ${Math.round(((HEIGHT - klHeight) / HEIGHT) * 100)}% of ln p(x) (illustrative)`;
+  }
+
+  let frame = 0;
+  function animateTo(target: number) {
+    cancelAnimationFrame(frame);
+    const step = () => {
+      const current = Number(slider.value);
+      const next = current + Math.sign(target - current) * 0.015;
+      slider.value = String(Math.abs(target - next) < 0.015 ? target : next);
+      draw();
+      if (Number(slider.value) !== target) frame = requestAnimationFrame(step);
+    };
+    step();
+  }
+
+  slider.addEventListener("input", () => {
+    cancelAnimationFrame(frame);
+    draw();
+  });
+  root.querySelector("[data-maximize]")!.addEventListener("click", () => animateTo(1));
+  root.querySelector("[data-reset]")!.addEventListener("click", () => {
+    cancelAnimationFrame(frame);
+    slider.value = "0.47";
+    draw();
+  });
+  draw();
+</script>

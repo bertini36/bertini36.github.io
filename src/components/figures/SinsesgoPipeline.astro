@@ -1,0 +1,73 @@
+---
+import Diagram from "./Diagram.astro";
+import type { DiagramEdge, DiagramNode } from "../../lib/diagram";
+
+const stage = (
+  id: string,
+  number: string,
+  name: string,
+  index: number,
+  text: string,
+  facts: string[],
+): DiagramNode => ({
+  id,
+  name,
+  lines: [number, name],
+  x: 6 + index * 176,
+  y: 10,
+  w: 140,
+  h: 56,
+  detail: { kind: `stage ${number}`, text, facts },
+});
+
+const nodes: DiagramNode[] = [
+  stage(
+    "ingestion",
+    "01",
+    "Data ingestion",
+    0,
+    "Fetches every outlet's feed, recovers from malformed XML, filters out noise and scrapes the full article body.",
+    ["Runs every six hours.", "Each outlet carries a bias score from -1 to +1."],
+  ),
+  stage(
+    "embeddings",
+    "02",
+    "Embeddings",
+    1,
+    "One 1536-dimensional vector per article, stored in a pgvector column.",
+    ["Model: OpenAI text-embedding-3-small.", "Drives topic clustering and opposite article retrieval."],
+  ),
+  stage(
+    "clustering",
+    "03",
+    "Topic clustering",
+    2,
+    "Groups the articles published in the 24 hours before the 07:00 cutoff by topic with agglomerative clustering, then ranks the clusters.",
+    ["scikit-learn, cosine distance, average linkage.", "Ranked by size and outlet diversity."],
+  ),
+  stage(
+    "agents",
+    "04",
+    "Agent pipeline",
+    3,
+    "Each cluster goes through a chain of agents, mostly LangGraph graphs, that ends in the topic card shown on the site.",
+    ["Models routed through OpenRouter.", "The fact-checker runs after the briefing is generated."],
+  ),
+];
+
+const edges: DiagramEdge[] = [
+  { from: "ingestion", to: "embeddings" },
+  { from: "embeddings", to: "clustering" },
+  { from: "clustering", to: "agents" },
+];
+---
+
+<Diagram
+  title="The sinsesgo pipeline: data ingestion, embeddings, topic clustering, agent pipeline"
+  width={680}
+  height={76}
+  nodes={nodes}
+  edges={edges}
+  minWidth={600}
+  hint="Select a stage to see what it does. Each stage feeds the next."
+/>

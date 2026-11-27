@@ -1,0 +1,123 @@
+---
+import Diagram from "./Diagram.astro";
+import type { DiagramEdge, DiagramNode } from "../../lib/diagram";
+
+const nodes: DiagramNode[] = [
+  {
+    id: "user",
+    name: "User",
+    x: 20,
+    y: 100,
+    w: 130,
+    h: 44,
+    detail: {
+      kind: "client",
+      text: "Reaches the app over HTTPS and signs in through an OAuth provider.",
+    },
+  },
+  {
+    id: "pages",
+    name: "Cloudflare Pages",
+    x: 230,
+    y: 100,
+    w: 170,
+    h: 44,
+    detail: {
+      kind: "hosting + backend",
+      text: "Hosts the frontend and provides the serverless backend (Pages Functions).",
+    },
+  },
+  {
+    id: "d1",
+    name: "Cloudflare D1 Database",
+    lines: ["Cloudflare D1", "Database"],
+    x: 440,
+    y: 30,
+    w: 140,
+    h: 52,
+    detail: {
+      kind: "storage",
+      text: "A serverless SQLite database that stores articles and user preferences.",
+    },
+  },
+  {
+    id: "sources",
+    name: "News Sources",
+    x: 440,
+    y: 170,
+    w: 140,
+    h: 44,
+    detail: {
+      kind: "external",
+      text: "The sites the articles come from.",
+      facts: [
+        "Fetched server-side during the user request, only if the cache is stale.",
+        "Adaptive TTLs balance freshness against source rate limits.",
+        "No background cron jobs.",
+      ],
+    },
+  },
+  {
+    id: "auth",
+    name: "Google / GitHub",
+    x: 230,
+    y: 220,
+    w: 170,
+    h: 44,
+    detail: {
+      kind: "external",
+      text: "OAuth providers used to sign in.",
+    },
+  },
+];
+
+const edges: DiagramEdge[] = [
+  {
+    from: "user",
+    to: "pages",
+    label: "HTTPS",
+    detail: { text: "The user talks to Cloudflare Pages over HTTPS." },
+  },
+  {
+    from: "pages",
+    to: "d1",
+    label: "Reads/Writes",
+    fromSide: "top",
+    toSide: "left",
+    detail: { text: "Pages Functions read and write articles and preferences." },
+  },
+  {
+    from: "pages",
+    to: "sources",
+    label: "Fetches",
+    fromSide: "bottom",
+    toSide: "left",
+    dashed: true,
+    detail: {
+      text: "On-demand hydration: the fetch happens during the user request when the cache is stale.",
+    },
+  },
+  {
+    from: "user",
+    to: "auth",
+    label: "OAuth",
+    fromSide: "bottom",
+    toSide: "left",
+    dashed: true,
+    detail: { text: "The user signs in with Google or GitHub." },
+  },
+];
+---
+
+<Diagram
+  title="NewsAggr serverless architecture"
+  width={600}
+  height={290}
+  nodes={nodes}
+  edges={edges}
+  hint="Select any element to see details. The user reaches Cloudflare Pages, which reads and writes D1 and fetches the news sources."
+  legend={[
+    { dashed: false, label: "calls" },
+    { dashed: true, label: "flows to / uses" },
+  ]}
+/>

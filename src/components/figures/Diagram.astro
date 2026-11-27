@@ -1,0 +1,417 @@
+---
+import {
+  buildPath,
+  buildTip,
+  labelPoint,
+  routeEdge,
+  type DiagramEdge,
+  type DiagramNode,
+  type DiagramNote,
+  type DiagramPlate,
+  type Detail,
+} from "../../lib/diagram";
+
+interface Props {
+  title: string;
+  width: number;
+  height: number;
+  nodes: DiagramNode[];
+  edges?: DiagramEdge[];
+  plates?: DiagramPlate[];
+  notes?: DiagramNote[];
+  dividers?: [number, number, number, number][];
+  hint: string;
+  caption?: string;
+  legend?: { dashed: boolean; label: string }[];
+  minWidth?: number;
+}
+
+const {
+  title,
+  width,
+  height,
+  nodes,
+  edges = [],
+  plates = [],
+  notes = [],
+  dividers = [],
+  hint,
+  caption,
+  legend = [],
+  minWidth = 520,
+} = Astro.props;
+
+const nodeById = Object.fromEntries(nodes.map((node) => [node.id, node]));
+
+const routed = edges.map((edge, index) => {
+  const points = routeEdge(nodeById[edge.from], nodeById[edge.to], edge);
+  return {
+    ...edge,
+    id: `e${index}`,
+    d: buildPath(points, true),
+    tip: buildTip(points),
+    labelAt: edge.label ? labelPoint(points) : null,
+  };
+});
+
+function describeEdge(edge: DiagramEdge): Detail {
+  const from = nodeById[edge.from].name;
+  const to = nodeById[edge.to].name;
+  return {
+    title: edge.label ? `${edge.label}` : `${from} → ${to}`,
+    kind: "connection",
+    text: `${from} → ${to}`,
+    ...edge.detail,
+  };
+}
+
+const data = {
+  nodes: Object.fromEntries(
+    nodes.map((node) => [
+      node.id,
+      { name: node.name, kind: "node", title: node.name, ...node.detail },
+    ]),
+  ),
+  edges: routed.map((edge) => ({
+    id: edge.id,
+    from: edge.from,
+    to: edge.to,
+    detail: describeEdge(edge),
+  })),
+};
+
+const lineHeight = 16;
+---
+
+<figure class="fig" data-fig="diagram" data-hint={hint}>
+  <div class="fig-card">
+    <div class="fig-inner" style={`min-width:${minWidth}px`}>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        role="img"
+        aria-label={title}
+        data-canvas
+      >
+        <title>{title}</title>
+        {
+          plates.map((plate) => (
+            <>
+              <rect
+                class="plate"
+                x={plate.x}
+                y={plate.y}
+                width={plate.w}
+                height={plate.h}
+                rx="4"
+              />
+              <text
+                class="fig-muted"
+                x={plate.x + plate.w - 8}
+                y={plate.y + plate.h - 8}
+                text-anchor="end"
+                set:html={plate.label}
+              />
+            </>
+          ))
+        }
+        {
+          dividers.map(([x1, y1, x2, y2]) => (
+            <line
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke="var(--fig-border)"
+              stroke-dasharray="4 4"
+            />
+          ))
+        }
+        {
+          notes.map((note) =>
+            note.lines.map((line, index) => (
+              <text
+                x={note.x}
+                y={note.y + index * lineHeight}
+                text-anchor={note.anchor ?? "middle"}
+                class={note.strong && index === 0 ? "fig-strong" : "fig-muted"}
+                set:html={line}
+              />
+            ))
+          )
+        }
+        {
+          routed.map((edge) => (
+            <g
+              class={`edge${edge.dashed ? " dashed" : ""}`}
+              data-edge={edge.id}
+              tabindex="0"
+              role="button"
+              aria-label={`${nodeById[edge.from].name} to ${nodeById[edge.to].name}${edge.label ? `: ${edge.label}` : ""}`}
+            >
+              <path class="hit" d={edge.d} />
+              <path class="line" d={edge.d} />
+              <path class="tip" d={edge.tip} />
+              {edge.labelAt &&
+                edge.label!.split("\n").map((line, index, all) => (
+                  <text
+                    class="fig-muted"
+                    x={edge.labelAt![0]}
+                    y={edge.labelAt![1] + (index - (all.length - 1) / 2) * 15 + 4}
+                    text-anchor="middle"
+                  >
+                    {line}
+                  </text>
+                ))}
+            </g>
+          ))
+        }
+        {
+          nodes.map((node) => (
+            <g
+              class={`node${node.shaded ? " shaded" : ""}`}
+              data-node={node.id}
+              tabindex="0"
+              role="button"
+              aria-label={node.name}
+            >
+              {node.shape === "circle" ? (
+                <ellipse
+                  class="shape"
+                  cx={node.x + node.w / 2}
+                  cy={node.y + node.h / 2}
+                  rx={node.w / 2}
+                  ry={node.h / 2}
+                />
+              ) : (
+                <rect
+                  class="shape"
+                  x={node.x}
+                  y={node.y}
+                  width={node.w}
+                  height={node.h}
+                  rx="6"
+                />
+              )}
+              {node.html ? (
+                <foreignObject
+                  x={node.x}
+                  y={node.y}
+                  width={node.w}
+                  height={node.h}
+                >
+                  <div class="fo" set:html={node.html} />
+                </foreignObject>
+              ) : (
+                (node.lines ?? [node.name]).map((line, index, all) => (
+                  <text
+                    x={node.x + node.w / 2}
+                    y={
+                      node.y +
+                      node.h / 2 +
+                      (index - (all.length - 1) / 2) * lineHeight +
+                      4.5
+                    }
+                    text-anchor="middle"
+                    set:html={line}
+                  />
+                ))
+              )}
+            </g>
+          ))
+        }
+      </svg>
+      {
+        legend.length > 0 && (
+          <p class="fig-caption">
+            {legend.map((item) => (
+              <>
+                <span class={`fig-key${item.dashed ? " dashed" : ""}`} />
+                {item.label}
+              </>
+            ))}
+          </p>
+        )
+      }
+    </div>
+    <div class="fig-pane" aria-live="polite">
+      <p class="fig-pane-empty">{hint}</p>
+      <div class="fig-pane-body" hidden>
+        <button class="fig-pane-close" aria-label="Clear selection">×</button>
+        <div class="fig-pane-head">
+          <strong class="fig-pane-title"></strong>
+          <span class="fig-pane-kind"></span>
+        </div>
+        <p class="fig-pane-text"></p>
+        <ul class="fig-pane-facts"></ul>
+        <pre class="fig-pane-code"></pre>
+        <div class="fig-chips"></div>
+      </div>
+    </div>
+  </div>
+  {caption && <figcaption class="fig-caption">{caption}</figcaption>}
+  <script type="application/json" class="fig-data" set:html={JSON.stringify(data)} />
+</figure>
+
+<script>
+  interface Detail {
+    title?: string;
+    kind?: string;
+    text?: string;
+    facts?: string[];
+    code?: string;
+  }
+
+  interface FigureData {
+    nodes: Record<string, Detail & { name: string }>;
+    edges: { id: string; from: string; to: string; detail: Detail }[];
+  }
+
+  function setupDiagram(root: HTMLElement) {
+    const data: FigureData = JSON.parse(
+      root.querySelector(".fig-data")!.textContent!,
+    );
+    const nodeEls = [...root.querySelectorAll<SVGGElement>("[data-node]")];
+    const edgeEls = [...root.querySelectorAll<SVGGElement>("[data-edge]")];
+    const canvas = root.querySelector<SVGSVGElement>("[data-canvas]")!;
+    const empty = root.querySelector<HTMLElement>(".fig-pane-empty")!;
+    const body = root.querySelector<HTMLElement>(".fig-pane-body")!;
+    const titleEl = body.querySelector<HTMLElement>(".fig-pane-title")!;
+    const kindEl = body.querySelector<HTMLElement>(".fig-pane-kind")!;
+    const textEl = body.querySelector<HTMLElement>(".fig-pane-text")!;
+    const factsEl = body.querySelector<HTMLElement>(".fig-pane-facts")!;
+    const codeEl = body.querySelector<HTMLElement>(".fig-pane-code")!;
+    const chipsEl = body.querySelector<HTMLElement>(".fig-chips")!;
+
+    function clear() {
+      [...nodeEls, ...edgeEls].forEach((el) =>
+        el.classList.remove("is-dim", "is-focus", "is-linked", "is-on"),
+      );
+      body.hidden = true;
+      empty.hidden = false;
+    }
+
+    function show(detail: Detail, chips: { label: string; run: () => void }[]) {
+      empty.hidden = true;
+      body.hidden = false;
+      titleEl.textContent = detail.title ?? "";
+      kindEl.textContent = detail.kind ?? "";
+      textEl.textContent = detail.text ?? "";
+      textEl.hidden = !detail.text;
+      factsEl.replaceChildren(
+        ...(detail.facts ?? []).map((fact) => {
+          const li = document.createElement("li");
+          li.textContent = fact;
+          return li;
+        }),
+      );
+      factsEl.hidden = !detail.facts?.length;
+      codeEl.textContent = detail.code ?? "";
+      codeEl.hidden = !detail.code;
+      chipsEl.replaceChildren(
+        ...chips.map(({ label, run }) => {
+          const button = document.createElement("button");
+          button.className = "fig-chip";
+          button.textContent = label;
+          button.addEventListener("click", run);
+          return button;
+        }),
+      );
+    }
+
+    function focusNode(id: string) {
+      const linkedEdges = data.edges.filter(
+        (edge) => edge.from === id || edge.to === id,
+      );
+      const linkedNodes = new Set(
+        linkedEdges.flatMap((edge) => [edge.from, edge.to]),
+      );
+      clear();
+      nodeEls.forEach((el) => {
+        const nodeId = el.dataset.node!;
+        el.classList.toggle("is-focus", nodeId === id);
+        el.classList.toggle(
+          "is-linked",
+          nodeId !== id && linkedNodes.has(nodeId),
+        );
+        el.classList.toggle("is-dim", nodeId !== id && !linkedNodes.has(nodeId));
+      });
+      edgeEls.forEach((el) => {
+        const on = linkedEdges.some((edge) => edge.id === el.dataset.edge);
+        el.classList.toggle("is-on", on);
+        el.classList.toggle("is-dim", !on);
+      });
+      show(
+        data.nodes[id],
+        linkedEdges.map((edge) => {
+          const outgoing = edge.from === id;
+          const other = outgoing ? edge.to : edge.from;
+          return {
+            label: `${outgoing ? "→" : "←"} ${data.nodes[other].name}`,
+            run: () => focusNode(other),
+          };
+        }),
+      );
+    }
+
+    function focusEdge(id: string) {
+      const edge = data.edges.find((item) => item.id === id)!;
+      clear();
+      nodeEls.forEach((el) => {
+        const linked = el.dataset.node === edge.from || el.dataset.node === edge.to;
+        el.classList.toggle("is-linked", linked);
+        el.classList.toggle("is-dim", !linked);
+      });
+      edgeEls.forEach((el) => {
+        const on = el.dataset.edge === id;
+        el.classList.toggle("is-on", on);
+        el.classList.toggle("is-dim", !on);
+      });
+      show(edge.detail, [edge.from, edge.to].map((nodeId) => ({
+        label: data.nodes[nodeId].name,
+        run: () => focusNode(nodeId),
+      })));
+    }
+
+    function activate(el: Element) {
+      const group = el as SVGGElement;
+      if (group.dataset.node) focusNode(group.dataset.node);
+      else if (group.dataset.edge) focusEdge(group.dataset.edge);
+    }
+
+    [...nodeEls, ...edgeEls].forEach((el) => {
+      el.addEventListener("click", (event) => {
+        event.stopPropagation();
+        activate(el);
+      });
+      el.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          activate(el);
+        }
+        const step =
+          event.key === "ArrowRight" || event.key === "ArrowDown"
+            ? 1
+            : event.key === "ArrowLeft" || event.key === "ArrowUp"
+              ? -1
+              : 0;
+        if (step && el.hasAttribute("data-node")) {
+          event.preventDefault();
+          const next =
+            nodeEls[(nodeEls.indexOf(el as SVGGElement) + step + nodeEls.length) % nodeEls.length];
+          next.focus();
+          activate(next);
+        }
+      });
+    });
+
+    canvas.addEventListener("click", clear);
+    body.querySelector(".fig-pane-close")!.addEventListener("click", clear);
+    root.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") clear();
+    });
+  }
+
+  document
+    .querySelectorAll<HTMLElement>('[data-fig="diagram"]')
+    .forEach(setupDiagram);
+</script>

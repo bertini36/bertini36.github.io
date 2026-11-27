@@ -12,6 +12,10 @@
   --title-color: #171717;
   --link-underline: #737373;
   --link-underline-hover: #a3a3a3;
+  --fig-surface: #f5f5f5;
+  --fig-surface-strong: #e5e5e5;
+  --fig-border: #d4d4d4;
+  --fig-line: #737373;
 }
 
 /* Dark mode (system preference) */
@@ -23,6 +27,10 @@
     --title-color: #f2f2f2;
     --link-underline: #737373;
     --link-underline-hover: #525252;
+    --fig-surface: #232323;
+    --fig-surface-strong: #333333;
+    --fig-border: #404040;
+    --fig-line: #8a8a8a;
   }
 }
 
@@ -262,43 +270,337 @@ footer a {
   margin-bottom: 24px;
 }
 
-/* Algorithm Cards */
-.algorithm-card {
-  border: 1px solid var(--text-secondary);
-  padding: 1.5em;
-  border-radius: 4px;
-  margin: 1.5em 0;
+/* Interactive figures */
+.fig,
+.prose .fig {
+  margin: 2em 0;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.fig-card {
+  border: 1px solid var(--fig-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.fig svg {
   display: block;
+  width: 100%;
+  height: auto;
 }
 
-.algorithm-card-content {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  display: block;
-  font-size: 0.9em;
+.fig-inner {
+  min-width: 520px;
+  padding: 12px;
 }
 
-.algorithm-card-content ol {
-  margin: 0;
-  padding-left: 1.25em;
-  list-style-type: decimal;
+.fig svg text {
+  font-family: 'M PLUS 1 Code', monospace;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  fill: var(--text-primary);
 }
 
-.algorithm-card-content ol li {
-  margin-bottom: 0.5em;
-  padding-left: 0.5em;
+.fig svg text.fig-muted {
+  fill: var(--text-secondary);
+  font-size: 12px;
 }
 
-.algorithm-card-content ul {
-  margin: 0.5em 0;
-  padding-left: 1.5em;
-  list-style-type: none;
-}
-
-.algorithm-card-content ul li {
-  margin-bottom: 0.25em;
-}
-
-/* Ensure bold text in algorithms stands out */
-.algorithm-card-content strong {
+.fig svg text.fig-strong {
   font-weight: 600;
+}
+
+/* Math in figures matches the post's KaTeX formulas: same fonts, 1.1em. */
+.fig .mi {
+  font-family: KaTeX_Math, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 1.1em;
+}
+
+.fig .math {
+  font-family: KaTeX_Main, 'Times New Roman', serif;
+  font-size: 1.1em;
+}
+
+.fig .math .mi {
+  font-size: 1em;
+}
+
+.fig .fig-caption {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 8px 0 0;
+  text-align: center;
+}
+
+.fig-pane {
+  border-top: 1px solid var(--fig-border);
+  padding: 12px 16px;
+  min-height: 96px;
+  font-size: 13px;
+  line-height: 1.5;
+  position: relative;
+}
+
+.fig-pane p {
+  margin: 0 0 8px;
+}
+
+.fig-pane-empty {
+  color: var(--text-secondary);
+}
+
+.fig-pane-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-right: 28px;
+}
+
+.fig-pane-kind {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border: 1px solid var(--fig-border);
+  border-radius: 999px;
+  padding: 0 8px;
+}
+
+.fig-pane-title {
+  font-weight: 600;
+}
+
+.fig-pane ul {
+  margin: 0 0 8px;
+  padding-left: 1.25em;
+  list-style: disc;
+}
+
+.fig-pane li {
+  margin: 0;
+  padding: 0;
+}
+
+.fig-pane pre {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+.fig-pane-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--text-secondary);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 2px 6px;
+}
+
+.fig-pane-close:hover {
+  color: var(--text-primary);
+}
+
+.fig-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fig-chip,
+.fig-btn {
+  font: inherit;
+  font-size: 12px;
+  color: var(--text-primary);
+  background: none;
+  border: 1px solid var(--fig-line);
+  border-radius: 999px;
+  padding: 2px 10px;
+  cursor: pointer;
+  letter-spacing: 0;
+}
+
+.fig-chip:hover,
+.fig-btn:hover {
+  background: var(--fig-surface-strong);
+}
+
+.fig-btn[aria-pressed="true"] {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.fig-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--fig-border);
+  font-size: 13px;
+}
+
+.fig-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fig-controls input[type="range"] {
+  accent-color: var(--text-primary);
+  width: 140px;
+}
+
+.fig-readout {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+/* Diagram nodes and edges */
+.fig .node {
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.15s ease;
+}
+
+.fig .node .shape {
+  fill: var(--bg-primary);
+  stroke: var(--fig-line);
+  stroke-width: 1.5;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+.fig .node.shaded .shape {
+  fill: var(--fig-surface-strong);
+}
+
+.fig .node:hover .shape,
+.fig .node:focus-visible .shape {
+  stroke: var(--text-primary);
+}
+
+.fig .node.is-linked .shape {
+  fill: var(--fig-surface-strong);
+  stroke: var(--text-primary);
+}
+
+.fig .node.is-focus .shape {
+  fill: var(--text-primary);
+  stroke: var(--text-primary);
+}
+
+.fig .node.is-focus text {
+  fill: var(--bg-primary);
+}
+
+.fig .fo {
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  pointer-events: none;
+  color: var(--text-primary);
+  font-family: 'M PLUS 1 Code', monospace;
+}
+
+.fig .fo code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  background: none;
+  color: inherit;
+  padding: 0;
+  white-space: pre-wrap;
+}
+
+.fig .node.is-focus .fo {
+  color: var(--bg-primary);
+}
+
+.fig .edge {
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.15s ease;
+}
+
+.fig .edge .line {
+  fill: none;
+  stroke: var(--fig-line);
+  stroke-width: 1.5;
+}
+
+.fig .edge.dashed .line {
+  stroke-dasharray: 5 4;
+}
+
+.fig .edge .hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+}
+
+.fig .edge:hover .line,
+.fig .edge:focus-visible .line,
+.fig .edge.is-on .line {
+  stroke: var(--text-primary);
+}
+
+.fig .edge text {
+  stroke: var(--bg-primary);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  pointer-events: none;
+}
+
+.fig-key {
+  display: inline-block;
+  width: 22px;
+  border-top: 1.5px solid var(--fig-line);
+  vertical-align: middle;
+  margin: 0 6px 0 12px;
+}
+
+.fig-key.dashed {
+  border-top-style: dashed;
+}
+
+.fig .edge .tip {
+  fill: var(--fig-line);
+}
+
+.fig .edge:hover .tip,
+.fig .edge:focus-visible .tip,
+.fig .edge.is-on .tip {
+  fill: var(--text-primary);
+}
+
+.fig .is-dim {
+  opacity: 0.25;
+}
+
+.fig .plate {
+  fill: none;
+  stroke: var(--fig-line);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fig .edge.is-on .line {
+    stroke-dasharray: 6 4;
+    animation: fig-dash 0.8s linear infinite;
+  }
+
+  @keyframes fig-dash {
+    to {
+      stroke-dashoffset: -10;
+    }
+  }
 }

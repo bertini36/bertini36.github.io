@@ -1,0 +1,101 @@
+---
+---
+
+<figure class="fig" data-fig="kl">
+  <div class="fig-card">
+    <div class="fig-inner" style="min-width:480px">
+      <svg viewBox="0 0 600 260" role="img" aria-label="Approximating a bimodal distribution p with a Gaussian q under forward and reverse KL" data-canvas>
+        <title>Approximating a bimodal distribution p with a Gaussian q under forward and reverse KL</title>
+      </svg>
+    </div>
+    <div class="fig-controls">
+      <button class="fig-btn" data-preset="forward">(a) min KL[p||q]</button>
+      <button class="fig-btn" data-preset="left">(b) min KL[q||p], left mode</button>
+      <button class="fig-btn" data-preset="right">(c) min KL[q||p], right mode</button>
+    </div>
+    <div class="fig-controls">
+      <label>mean of q <input type="range" min="-5" max="5" step="0.01" data-mean /></label>
+      <label>sd of q <input type="range" min="0.3" max="4" step="0.01" data-sd /></label>
+    </div>
+    <div class="fig-controls fig-readout" data-readout></div>
+  </div>
+  <figcaption class="fig-caption">
+    p is the bimodal distribution, q the Gaussian. Forward KL covers both modes; reverse KL locks onto one.
+  </figcaption>
+</figure>
+
+<script>
+  import { klDivergence, linePath, linspace, normalPdf, svgEl } from "../../lib/plot";
+
+  const COMPONENTS = [
+    { weight: 0.5, mean: -3, sd: 0.8 },
+    { weight: 0.5, mean: 3, sd: 0.8 },
+  ];
+  const LO = -12;
+  const HI = 12;
+  const p = (x: number) =>
+    COMPONENTS.reduce((sum, c) => sum + c.weight * normalPdf(x, c.mean, c.sd), 0);
+
+  const forwardMean = COMPONENTS.reduce((s, c) => s + c.weight * c.mean, 0);
+  const forwardSd = Math.sqrt(
+    COMPONENTS.reduce((s, c) => s + c.weight * (c.sd ** 2 + c.mean ** 2), 0) - forwardMean ** 2,
+  );
+
+  const presets = {
+    forward: { mean: forwardMean, sd: forwardSd },
+    left: { mean: COMPONENTS[0].mean, sd: COMPONENTS[0].sd },
+    right: { mean: COMPONENTS[1].mean, sd: COMPONENTS[1].sd },
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-fig="kl"]')!;
+  const canvas = root.querySelector<SVGSVGElement>("[data-canvas]")!;
+  const meanInput = root.querySelector<HTMLInputElement>("[data-mean]")!;
+  const sdInput = root.querySelector<HTMLInputElement>("[data-sd]")!;
+  const readout = root.querySelector<HTMLElement>("[data-readout]")!;
+  const buttons = [...root.querySelectorAll<HTMLButtonElement>("[data-preset]")];
+
+  const toX = (x: number) => 50 + ((x + 8) / 16) * 500;
+  const toY = (density: number) => 230 - (density / 0.5) * 190;
+  const xs = linspace(-8, 8, 321);
+
+  function draw() {
+    canvas.replaceChildren();
+    const mean = Number(meanInput.value);
+    const sd = Number(sdInput.value);
+    const q = (x: number) => normalPdf(x, mean, sd);
+
+    svgEl("path", { d: "M50 230H550", stroke: "var(--fig-line)", "stroke-width": 1.5 }, canvas);
+    const pPoints = xs.map((x): [number, number] => [toX(x), toY(p(x))]);
+    svgEl("path", { d: `${linePath(pPoints)}L550 230L50 230Z`, fill: "var(--fig-surface-strong)", stroke: "var(--fig-line)", "stroke-width": 1.5 }, canvas);
+    svgEl("path", { d: linePath(xs.map((x): [number, number] => [toX(x), toY(q(x))])), fill: "none", stroke: "var(--text-primary)", "stroke-width": 2.5 }, canvas);
+
+    const legend = (y: number, content: string, stroke: string, fill: string) => {
+      svgEl("rect", { x: 400, y: y - 9, width: 18, height: 10, fill, stroke, "stroke-width": 1.5 }, canvas);
+      svgEl("text", { x: 426, y, class: "fig-muted" }, canvas).textContent = content;
+    };
+    legend(32, "p(θ|x), bimodal", "var(--fig-line)", "var(--fig-surface-strong)");
+    legend(52, "q(θ|λ), Gaussian", "var(--text-primary)", "var(--text-primary)");
+
+    const forward = klDivergence(p, q, LO, HI);
+    const reverse = klDivergence(q, p, LO, HI);
+    readout.textContent = `KL[p||q] = ${forward.toFixed(2)} · KL[q||p] = ${reverse.toFixed(2)} · q = N(${mean.toFixed(2)}, ${sd.toFixed(2)})`;
+  }
+
+  function apply(name: keyof typeof presets) {
+    meanInput.value = presets[name].mean.toFixed(2);
+    sdInput.value = presets[name].sd.toFixed(2);
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.preset === name)));
+    draw();
+  }
+
+  buttons.forEach((button) =>
+    button.addEventListener("click", () => apply(button.dataset.preset as keyof typeof presets)),
+  );
+  [meanInput, sdInput].forEach((input) =>
+    input.addEventListener("input", () => {
+      buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
+      draw();
+    }),
+  );
+  apply("forward");
+</script>

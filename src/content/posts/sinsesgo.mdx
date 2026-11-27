@@ -1,0 +1,149 @@
+---
+title: "sinsesgo: An autonomous daily briefing on Spanish media bias"
+date: 2026-04-27
+description: "How I built a fully autonomous pipeline of agents that ingests, clusters and contrasts the daily news from 21 Spanish outlets across the political spectrum"
+---
+
+import SinsesgoPipeline from "../../components/figures/SinsesgoPipeline.astro";
+
+For years I’ve read Spanish news with a thumb on the scroll bar and one eye on the source. The same event can read like a triumph in one outlet and a scandal in another, and that gap keeps widening. What I wanted was simple: a tool that reads the same story across the spectrum, surfaces what everyone agrees on, and highlights what each side leaves out.
+
+[Ground News](https://ground.news/daily-briefing) does this for the English-speaking world. Their daily briefing was the inspiration. But Ground News does not cover Spanish outlets in any meaningful depth, and most of their bias signal comes from the source label, not from the content of each article. I wanted something focused on Spain, that read every article in full, and that ran on its own every day without me touching it.
+
+That project is **[sinsesgo](https://sinsesgo.es)**. Every day, a cron job pulls articles from 21 Spanish outlets, clusters them by topic, picks the most covered stories of the day, analyzes them through a pipeline of agents, and builds a briefing that contrasts how the left and right framed each one. No login, no paywall, no human in the loop.
+
+This post is for the technical readers who land on the [funcionamiento page](https://sinsesgo.es/funcionamiento) and want the long version. I will walk through the pipeline end to end: data ingestion, embeddings, clustering, and the agents that do the analysis.
+
+## Why I built it
+
+Two reasons converged on the same project.
+
+The first is professional. I work with LLMs every day and I wanted to spend time inside the agent ecosystem: orchestration graphs, retries, structured outputs, multi-model routing, RAG over a real corpus. Reading posts and tutorials only takes you so far. Building a pipeline that has to run unattended every day, parse messy real-world inputs, and produce something a stranger can read forces you to learn the parts that toy projects skip.
+
+The second is personal. I want to read the news without picking a side first. Every Spanish outlet I open has a clear lean, and switching between two of them does not give you the truth, it gives you two opinions and a headache. What I actually want is a single place that reads the same story across the spectrum, tells me which facts every outlet agrees on, and lists the ones each side leaves out. That tool did not exist for Spanish media, so I built it.
+
+[sinsesgo](https://sinsesgo.es) goes deeper than Ground News. It does not just signal bias at the outlet level; it reads every article. Every article goes through a chain of agents that examine the headline framing, the logical fallacies, the sources quoted, and the specific facts the outlet chose to omit, applied to Spain’s media landscape with the granularity that geographic focus allows.
+
+## The pipeline
+
+The system runs four stages in sequence. Each stage feeds the next.
+
+<SinsesgoPipeline />
+
+The whole pipeline is a [Django](https://www.djangoproject.com/) project with [PostgreSQL](https://www.postgresql.org/) and [pgvector](https://github.com/pgvector/pgvector), orchestrated with [LangGraph](https://github.com/langgraph/langgraph). Two cron jobs on [Render](https://render.com/) trigger the stages: ingestion runs every six hours, and the briefing runs once every morning.
+
+### Stage 1: Data ingestion
+
+First problem: RSS feeds are chaos. Some outlets publish full bodies. Others truncate to 200 characters and force a scrape. A few publish broken XML. The ingestion command handles this by walking every outlet, fetching the feed, detecting and recovering from malformed XML, and filtering out sports, gossip and lifestyle noise.
+
+What survives is a raw record with URL, headline, snippet, author and date. The next step scrapes the full article body and writes to the database. Each outlet carries a bias score from -1 (far left) to +1 (far right), taken from published studies.
+
+### Stage 2: Embeddings
+
+I store a 1536-dimensional vector per article in a `pgvector` column. The model is OpenAI `text-embedding-3-small`. The text I embed is whatever is longest available: full body, falling back to the snippet, falling back to the headline.
+
+`text-embedding-3-small` is cheap (about $0.02 per million tokens) and good enough for clustering articles by topic.
+
+The embedding column drives two later behaviors:
+
+1. **Topic clustering** for the daily briefing.
+2. **Opposite article retrieval** for one of the agents, which finds politically opposite outlets covering the same event with `pgvector` cosine distance plus a temporal proximity boost.
+
+### Stage 3: Topic clustering
+
+This is where the briefing starts to take shape. Given the embeddings of the articles published in the 24 hours before the 07:00 cutoff, I cluster them to find the main topics. I use **Agglomerative Clustering** from [scikit-learn](https://scikit-learn.org/) with cosine distance and average linkage.
+
+Why agglomerative? Two reasons:
+
+1. Some days have one dominant story; others have ten. I don't know the count in advance. K-means forces a number; agglomerative discovers it.
+2. Cosine distance is the right metric for embeddings. K-means defaults to Euclidean.
+
+The hard part: tuning the threshold. Too loose and "Spain's economy" clusters with "Spain's central bank." Too tight and one story splits into five. I stared at sample clusters for a week and adjusted until felt right. There is no formula. Let the algorithm find natural groupings, and drop singletons as noise.
+
+Once I have clusters, I rank them by size and outlet diversity (more outlets means a more covered story). I take the top ones, eight or nine in recent editions. A cluster needs at least two outlets on each side to become a section; the ones that fail feed a separate block of stories only one side covered. For each cluster I pick a representative article (the one closest to the centroid), and I select up to seven articles per cluster, prioritizing outlet diversity (one per outlet, sorted by absolute bias score, so the loudest voices on each side make it in).
+
+### Stage 4: The agent pipeline
+
+Every agent is a [LangGraph](https://github.com/langgraph/langgraph) graph that produces a typed result, except the image agent. The briefing runs the classifier on each cluster, then the parser once per article, then four analysis agents in parallel per article, then one summary agent that fuses everything into the topic card you see on the site. A group of agents then add the extras of the card, and the fact-checker validates it before any channel publishes.
+
+Models are routed through [OpenRouter](https://openrouter.ai/) so I can swap them without touching the code. They split between four tiers:
+
+> **Gatekeeper and per-article analysis** &middot; `google/gemini-3.1-flash-lite`
+> classifier, parser, framing, argumentation, perspective balance, omissions
+
+> **Writing and verification** &middot; `google/gemini-3-flash-preview`
+> topic summary, figure auditor, topic evolution, word choice, fact-checker
+
+> **Descriptive summaries** &middot; `google/gemini-2.5-flash`
+> international coverage
+
+> **Cheapest tier** &middot; `google/gemini-2.5-flash-lite`
+> single-bloc stories, entity context, fact-checker queries
+
+Here is what each agent does:
+
+**1. Classifier.** Decides if the topic is worth analyzing, reading the cluster's representative article. Celebrity, fashion, advertising, lifestyle and food topics stop here.
+
+**2. Article Parser.** Extracts the main topic and the verifiable claims, each tagged as consummated, announced or hypothetical. Its output feeds every downstream agent.
+
+**3. Framing Analyzer.** Looks at how the headline relates to the body, loaded words, scare quotes and emotional language. Punctuation is counted in Python, not by the LLM, because LLMs are bad at counting and it is free in code.
+
+**4. Argumentation Analyzer.** Detects six types of fallacies (ad hominem, straw man, false dilemma, slippery slope, appeal to authority, appeal to emotion), seven cognitive biases, unattributed generalizations, and intent attributions without evidence.
+
+**5. Perspective Balance Analyzer.** Identifies who speaks in the article (named sources, anonymous sources), their stance toward the main thesis, and counts direct quotes versus paraphrases. Surfaces missing perspectives.
+
+**6. Omissions Detector.** This one needed the embeddings. For the article under analysis, it pulls articles from politically opposite outlets (bias distance >= 0.5) covering the same event within a ±3-day window, ranked by cosine similarity and recency. Then it asks the model to find facts that the opposites report and the source omits. Output is a list of omissions with a verbatim quote, a severity rating, and the URL of the source.
+
+**7. Topic Summary.** Takes the cluster (up to seven articles, all their pre-computed agent results) and synthesizes a structured output: a 6-10 word title, a one-liner, one to four cross-referenced verified facts, a "why it matters" paragraph, a quality note, and two narratives (left and right). If the story ran the day before, it also gets yesterday's section and writes one line on what is new. A fact only gets in if at least two outlets of the topic report it with the same value, preferably from opposite sides. Coverage counts and references are built in Python, not by the LLM, because it would lie about percentages.
+
+**8. International Coverage.** For each topic, searches eight international outlets (BBC News, The Guardian, The Independent, Deutsche Welle, France 24, Euronews, Al Jazeera, CBS News) and summarizes in a paragraph how they tell it. If none covered the topic, the section does not appear. These outlets stay out of the bias analysis.
+
+**9. Figure Auditor.** Checks every figure a section prints against what the cluster's outlets wrote. Python counts which outlets state each value and marks it as corroborated, disputed, single source or unsupported. The model only reads whether the token is really a quantity, spots outlets that give a different value for the same magnitude, and names the official registry that publishes the indicator.
+
+**10. Topic Evolution.** Writes "How we got here": one dated line for each of the previous seven days on which the briefing already covered the story.
+
+**11. Single-Bloc Stories.** Writes "What only one side tells": stories that two or more outlets of one side covered and the other side did not mention. Python decides which stories qualify; one batched call turns the headlines into a neutral sentence.
+
+**12. Word Choice.** Writes "The dictionary of the day": the two terms each side used for the same fact, linked to their headlines. Python groups the headlines and validates every pair; one batched call per briefing.
+
+**13. Entity Context.** Proposes the names a reader may not know (acronyms, small towns, offices, laws) and picks among the descriptions Wikidata already published. It runs once the briefing is live, and each description waits for approval before it shows.
+
+**14. Fact-checker.** Runs after the briefing is generated and before any channel publishes it. It takes every verified fact and the topic one-liner from each section and validates them against open-web search results via [Tavily](https://tavily.com) and a registry of more than 35 official sources (BOE, INE, Banco de España, Eurostat, the ECB, fact-checkers like Maldita.es and Newtral). Each search costs money, so only the biggest topics of the day get it.
+
+The flow has three nodes: first, a cheap LLM generates a short keyword query per fact (stripping negations and long prose down to named entities, which Tavily handles better than a full sentence); then Tavily runs both the literal fact and the keyword query in parallel and merges the deduplicated hits; finally, a second LLM reads the snippets and assigns one of four verdicts: `confirmed`, `misleading`, `needs_correction`, or `unverifiable`. Confirmed facts are kept. A misleading fact is true, so it is kept with a caveat printed next to it. Facts that need correction get their text updated to match the snippet. Unverifiable facts are dropped from the section entirely. The one-liner is corrected if wrong but never dropped, because an empty card preview is a worse outcome than an unverified one-liner.
+
+The hardest class of error to catch is temporal hallucination: the summary agent consistently confuses plans with executed actions. The fact-checker prompt treats verb tense as a first-class signal and flags any mismatch between the tense in the fact and the tense in the snippets as `needs_correction`, rewriting the fact in the correct tense grounded in the source.
+
+**15. Editorial Image.** Illustrates each section as an early 1900s press engraving. It is the only agent that calls OpenAI directly instead of going through OpenRouter, and the only one that is not a graph: one call picks two or three of the articles' photos and writes the visual brief, and a second one draws it. It only runs when the `EDITORIAL_IMAGES_ENABLED` flag is on.
+
+Numbers get their own guards, because a wrong figure is the error a reader repeats. The summary agent may only print a figure in the title, kicker, one-liner and update line if at least two outlets of the topic published it; otherwise it rewrites the line. A deterministic scanner then checks the rest of the prose and cuts any sentence with a number that no cluster article states verbatim. The Figure Auditor and the fact-checker's search in official registries, which runs for any fact with a figure, cover the numbers that stay.
+
+The coverage bar you see on the site is computed as follows. Each outlet has a bias score from -1 (far left) to +1 (far right) and sits on the left or the right. The backend counts how many articles of the cluster land on each side. A blindspot is a story that two or more outlets of one side published and none of the other side did; it goes to its own section, outside the main summary.
+
+## Problems I hit
+
+A few rough edges that took real time:
+
+**RSS feeds are inconsistent.** Some outlets publish the full body in the feed. Others publish a 200-character teaser and force a scrape. A few publish broken XML. The parser handles most of it, but I had to add malformed-feed detection and a fallback path that scrapes the homepage when the feed comes back empty.
+
+**Clustering threshold tuning.** No formula. You stare at sample clusters for a week and adjust until the same story stops splitting and unrelated stories stop merging.
+
+**Cost control.** Every daily briefing has to fit a budget I am paying out of pocket. I tuned the cluster and article limits until each briefing landed around 2.50€ in inference cost.
+The two main savings: capping the briefing at the most covered topics of the day (eight or nine in recent editions), and running the fact-checker on the biggest topics only.
+
+**LLM hallucinations, especially on verb tense.** The verified facts the summary agent produces go straight onto the website. LLMs are good at extracting content but blur the line between what happened and what was announced. The most common failure was temporal: the model would write a fact in the past tense for an event that was still a proposal, or use the present tense for something already voted on. Numerical hallucinations (wrong figures, wrong percentages) were the second most common class. Building the fact-checker as a post-processing step with explicit tense-verification rules in the prompt caught most of these before they ever reached readers.
+
+**Prompt drift across model updates.** Every time a model version changes, a few agents start producing slightly different outputs. I ended up with a small set of regression evals that run each agent on a fixed corpus of articles and compare outputs against a snapshot. Not perfect, but enough to catch the worst regressions.
+
+**Outlet bias scoring.** I take each outlet's position from published studies, converted to the -1 to +1 scale. No study covers all 21 outlets, so the site shows how much evidence backs each one. Four rest only on their declared editorial line and ownership.
+
+## What is next
+
+The briefing is live and stable, and I improve it every week. Right now I'm experimenting with:
+
+- **Feedback loop.** A button on each topic summary to flag a bad omission or a misclassified claim. Helps me catch what the agents miss.
+- **More outlets.** 21 outlets is a start. I want regional outlets and a couple of political fringes that the current set misses to widen the spectrum.
+
+If you want to see the output, the latest briefing is at [sinsesgo](https://sinsesgo.es). If you want the short version of the pipeline, the [funcionamiento](https://sinsesgo.es/funcionamiento) page links back to this post.
+
+This project sits at the intersection of three things I care about: AI, the media we read every day, and shipping real software. I learned more about agents in the two months it took to ship [sinsesgo](https://sinsesgo.es) than in the previous year of reading about them, and I now have a tool I use every day. If it helps one more reader cross the aisle and check what the other side is saying, the cost of running it is already paid back.
