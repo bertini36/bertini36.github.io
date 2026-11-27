@@ -5,6 +5,8 @@ description: "How to distribute and parallelize matrix multiplication across mul
 heroImage: "/images/posts/distributed_matrix_product/marenostrum_supercomputer_bsc.jpg"
 ---
 
+import MpiMatrix from "../../components/figures/MpiMatrix.astro";
+
 One of the main challenges with any algorithm today is its ability to scale, whether that means running across multiple cores (parallelization) or across multiple nodes (distribution). The massive amounts of data available have driven the development of technologies that make parallelization and distribution easier and more automated. Virtually every computationally expensive algorithm now has a distributed version. Tasks like finding prime numbers, running complex simulations, or training statistical prediction models that would take years to complete can now produce results in hours thanks to the combined power of many computers.
 
 This is exactly what supercomputing centers like the [Barcelona Supercomputing Center (BSC)](https://www.bsc.es/) specialize in. BSC operates a supercomputer called MareNostrum, which allows users to run computationally expensive algorithms or process massive datasets in a distributed manner. MareNostrum III, for example, has 3,108 nodes, each with 2 processors of 8 cores (over 49,728 cores in total).
@@ -19,7 +21,7 @@ Since each element of the resulting matrix is independent of the others, we can 
 
 For distribution, I'm using [MPI](https://www.open-mpi.org/) (Message Passing Interface). MPI functions allow data to be shared across nodes and specify, using process IDs, which part of the result matrix each node should calculate.
 
-![Distributed matrix product](/images/posts/distributed_matrix_product/mpi_distributed_matrix_multiplication_diagram.svg)
+<MpiMatrix />
 
 For parallel computation within each node, I leverage GPUs. Each node of MareNostrum III has an NVIDIA K80 graphics card, which can be used for parallel computing via NVIDIA's [CUDA](https://en.wikipedia.org/wiki/CUDA) (Compute Unified Device Architecture) platform. GPUs are essentially large arrays of simple processors that can dramatically speed up certain computations.
 

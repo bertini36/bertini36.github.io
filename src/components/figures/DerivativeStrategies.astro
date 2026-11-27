@@ -1,0 +1,153 @@
+---
+import Diagram from "./Diagram.astro";
+import type { DiagramEdge, DiagramNode } from "../../lib/diagram";
+
+const closedForm = "(1−2x)^2 (1−8x+8x^2)^2";
+const derivative =
+  "128x(1−x)(−8+16x)(1−2x)^2(1−8x+8x^2)^2 + 64(1−x)(1−2x)^2(1−8x+8x^2)^2 − 64x(1−2x)^2(1−8x+8x^2)^2 − 256x(1−x)(1−2x)(1−8x+8x^2)^2";
+
+const code = (text: string) => `<code>${text}</code>`;
+const verdict = (exact: boolean) =>
+  `<div class="math" style="text-align:right;margin-top:4px"><i class="mi">f</i>′(<i class="mi">x</i><sub>0</sub>) ${exact ? "=" : "≈"} <i class="mi">f</i>′(<i class="mi">x</i><sub>0</sub>)<br>${exact ? "Exact" : "Approximate"}</div>`;
+
+const nodes: DiagramNode[] = [
+  {
+    id: "definition",
+    name: "Function definition",
+    x: 10,
+    y: 10,
+    w: 270,
+    h: 130,
+    html: `<span class="math"><i class="mi">l</i><sub>1</sub> = <i class="mi">x</i><br><i class="mi">l</i><sub><i class="mi">n</i>+1</sub> = 4<i class="mi">l</i><sub><i class="mi">n</i></sub>(1 − <i class="mi">l</i><sub><i class="mi">n</i></sub>)<br><br><i class="mi">f</i>(<i class="mi">x</i>) = <i class="mi">l</i><sub>4</sub> = 64x(1−x)(1−2x)²(1−8x+8x²)²</span>`,
+    detail: {
+      kind: "function",
+      text: "The function as a recurrence and as a closed form.",
+      code: `l1 = x\nl(n+1) = 4 l(n) (1 − l(n))\n\nf(x) = l4 = 64x(1−x)${closedForm}`,
+    },
+  },
+  {
+    id: "derivative",
+    name: "Derivative formula",
+    x: 450,
+    y: 10,
+    w: 250,
+    h: 130,
+    html: `<span class="math"><i class="mi">f</i>′(<i class="mi">x</i>) = 128x(1−x)(−8+16x)(1−2x)²(1−8x+8x²)² + 64(1−x)(1−2x)²(1−8x+8x²)² − 64x(1−2x)²(1−8x+8x²)² − 256x(1−x)(1−2x)(1−8x+8x²)²</span>`,
+    detail: {
+      kind: "derivative",
+      text: "The derivative of the closed form, obtained by manual differentiation.",
+      code: `f'(x) = ${derivative}`,
+    },
+  },
+  {
+    id: "code",
+    name: "Function as code",
+    x: 10,
+    y: 200,
+    w: 270,
+    h: 190,
+    html: `${code("f(x):\n  v = x\n  for i = 1 to 3\n    v = 4v(1 − v)\n  return v")}<br><br>or, in closed-form,<br><br>${code("f(x):\n  return 64x (1−x) (1−2x)^2\n    (1−8x+8x^2)^2")}`,
+    detail: {
+      kind: "code",
+      text: "The function written as a loop or in closed form.",
+    },
+  },
+  {
+    id: "symbolic",
+    name: "Derivative as code",
+    shaded: true,
+    x: 450,
+    y: 200,
+    w: 250,
+    h: 190,
+    html: `${code("f'(x):\n  return " + derivative)}${verdict(true)}`,
+    detail: {
+      kind: "symbolic result",
+      text: "Exact, but the expression is long and hard to evaluate.",
+      facts: ["f'(x0) = f'(x0): exact."],
+    },
+  },
+  {
+    id: "automatic",
+    name: "Automatic differentiation",
+    shaded: true,
+    x: 10,
+    y: 450,
+    w: 270,
+    h: 135,
+    html: `${code("f'(x):\n  (v,v') = (x,1)\n  for i = 1 to 3\n    (v,v') = (4v(1−v), 4v'−8vv')\n  return (v,v')")}${verdict(true)}`,
+    detail: {
+      kind: "automatic differentiation",
+      text: "The program is decomposed into elementary operations with known derivatives, and the chain rule is applied to each one.",
+      facts: ["f'(x0) = f'(x0): exact."],
+    },
+  },
+  {
+    id: "numerical",
+    name: "Numerical differentiation",
+    shaded: true,
+    x: 450,
+    y: 450,
+    w: 250,
+    h: 135,
+    html: `${code("f'(x):\n  return (f(x + h) − f(x)) / h")}${verdict(false)}`,
+    detail: {
+      kind: "numerical differentiation",
+      text: "Uses the definition of the derivative to approximate values from samples of the original function.",
+      facts: ["f'(x0) ≈ f'(x0): approximate."],
+    },
+  },
+];
+
+const edges: DiagramEdge[] = [
+  {
+    from: "definition",
+    to: "derivative",
+    label: "Manual\nDifferentiation",
+    fromSide: "right",
+    toSide: "left",
+    detail: { text: "Differentiating the closed form by hand." },
+  },
+  { from: "definition", to: "code", label: "Coding", fromSide: "bottom", toSide: "top" },
+  { from: "derivative", to: "symbolic", label: "Coding", fromSide: "bottom", toSide: "top" },
+  {
+    from: "code",
+    to: "symbolic",
+    label: "Symbolic\nDifferentiation\nof the Closed-form",
+    fromSide: "right",
+    toSide: "left",
+    detail: {
+      text: "Automatic manipulation of mathematical expressions. It can produce lengthy expressions that are hard to evaluate.",
+    },
+  },
+  {
+    from: "code",
+    to: "automatic",
+    label: "Automatic\nDifferentiation",
+    fromSide: "bottom",
+    toSide: "top",
+  },
+  {
+    from: "code",
+    to: "numerical",
+    label: "Numerical\nDifferentiation",
+    fromSide: "right",
+    fromT: 0.9,
+    toSide: "left",
+    via: [
+      [365, 371],
+      [365, 517],
+    ],
+  },
+];
+---
+
+<Diagram
+  title="Four ways to get the derivative of the same function"
+  width={710}
+  height={600}
+  nodes={nodes}
+  edges={edges}
+  minWidth={640}
+  hint="Select a box or an arrow. Shaded boxes are the resulting derivative code, marked exact or approximate."
+/>

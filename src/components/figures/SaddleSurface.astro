@@ -1,0 +1,113 @@
+---
+---
+
+<figure class="fig" data-fig="saddle">
+  <div class="fig-card">
+    <div class="fig-inner" style="min-width:420px">
+      <svg viewBox="0 0 420 320" role="img" aria-label="Saddle point surface, drag to rotate" data-canvas tabindex="0" style="touch-action:none;cursor:grab">
+        <title>Saddle point surface, drag to rotate</title>
+      </svg>
+    </div>
+    <div class="fig-controls">
+      <button class="fig-btn" data-reset>Reset view</button>
+      <span class="fig-readout">Drag to rotate, or use the arrow keys.</span>
+    </div>
+  </div>
+</figure>
+
+<script>
+  import { svgEl } from "../../lib/plot";
+
+  const GRID = 20;
+  const SCALE = 105;
+  const DEFAULT_VIEW = { azimuth: -0.7, elevation: 0.5 };
+  const view = { ...DEFAULT_VIEW };
+
+  const root = document.querySelector<HTMLElement>('[data-fig="saddle"]')!;
+  const canvas = root.querySelector<SVGSVGElement>("[data-canvas]")!;
+
+  const height = (x: number, y: number) => x * x - y * y;
+
+  function project(x: number, y: number, z: number): [number, number, number] {
+    const rx = x * Math.cos(view.azimuth) - y * Math.sin(view.azimuth);
+    const ry = x * Math.sin(view.azimuth) + y * Math.cos(view.azimuth);
+    return [
+      210 + rx * SCALE,
+      170 - (z * Math.cos(view.elevation) + ry * Math.sin(view.elevation)) * SCALE * 0.8,
+      ry,
+    ];
+  }
+
+  function draw() {
+    canvas.replaceChildren(svgEl("title"));
+    canvas.firstChild!.textContent = "Saddle point surface, drag to rotate";
+
+    const step = 2 / GRID;
+    const quads: { points: [number, number][]; depth: number; z: number }[] = [];
+    for (let i = 0; i < GRID; i++) {
+      for (let j = 0; j < GRID; j++) {
+        const x = -1 + i * step;
+        const y = -1 + j * step;
+        const corners = [[x, y], [x + step, y], [x + step, y + step], [x, y + step]].map(([cx, cy]) =>
+          project(cx, cy, height(cx, cy)),
+        );
+        quads.push({
+          points: corners.map(([px, py]): [number, number] => [px, py]),
+          depth: corners.reduce((sum, c) => sum + c[2], 0) / 4,
+          z: height(x + step / 2, y + step / 2),
+        });
+      }
+    }
+    quads
+      .sort((a, b) => b.depth - a.depth)
+      .forEach(({ points, z }) => {
+        svgEl("polygon", {
+          points: points.map((p) => p.join(",")).join(" "),
+          style: `fill:color-mix(in srgb, var(--text-primary) ${8 + ((z + 1) / 2) * 32}%, var(--bg-primary));stroke:var(--fig-line);stroke-width:0.6`,
+        }, canvas);
+      });
+
+    const [cx, cy] = project(0, 0, 0);
+    svgEl("circle", { cx, cy, r: 5, fill: "var(--text-primary)", stroke: "var(--bg-primary)", "stroke-width": 1.5 }, canvas);
+    svgEl("text", { x: cx + 10, y: cy - 8, class: "fig-muted" }, canvas).textContent = "saddle point";
+  }
+
+  let last: { x: number; y: number } | null = null;
+  canvas.addEventListener("pointerdown", (event) => {
+    last = { x: event.clientX, y: event.clientY };
+    canvas.setPointerCapture(event.pointerId);
+    canvas.style.cursor = "grabbing";
+  });
+  canvas.addEventListener("pointermove", (event) => {
+    if (!last) return;
+    view.azimuth += (event.clientX - last.x) * 0.01;
+    view.elevation = Math.min(1.4, Math.max(0, view.elevation + (event.clientY - last.y) * 0.01));
+    last = { x: event.clientX, y: event.clientY };
+    draw();
+  });
+  const release = () => {
+    last = null;
+    canvas.style.cursor = "grab";
+  };
+  canvas.addEventListener("pointerup", release);
+  canvas.addEventListener("pointercancel", release);
+  canvas.addEventListener("keydown", (event) => {
+    const moves: Record<string, [number, number]> = {
+      ArrowLeft: [-0.1, 0],
+      ArrowRight: [0.1, 0],
+      ArrowUp: [0, -0.1],
+      ArrowDown: [0, 0.1],
+    };
+    const move = moves[event.key];
+    if (!move) return;
+    event.preventDefault();
+    view.azimuth += move[0];
+    view.elevation = Math.min(1.4, Math.max(0, view.elevation + move[1]));
+    draw();
+  });
+  root.querySelector("[data-reset]")!.addEventListener("click", () => {
+    Object.assign(view, DEFAULT_VIEW);
+    draw();
+  });
+  draw();
+</script>
