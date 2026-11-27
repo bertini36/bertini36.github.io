@@ -5,6 +5,8 @@ description: "Building a distraction-free, serverless news aggregator from scrat
 heroImage: "/images/posts/news_aggregator/newsaggr_home.png"
 ---
 
+import NewsAggrArchitecture from "../../components/figures/NewsAggrArchitecture.astro";
+
 I've always had a specific way of consuming news. I needed to consult my main sources in a consolidated, fast, and simple way, and of course, directly from my mobile device. Most importantly, I wanted an experience completely free of spam and intrusive ads.
 
 Existing solutions didn't quite cut it. They were either too cluttered, missed the specific niche sources I follow, or just didn't feel right. I also needed a reliable way to save articles to read later, without relying on yet another third-party service.
@@ -29,16 +31,10 @@ It features:
 
 To keep things fast and low-maintenance, I chose a serverless architecture.
 
-```mermaid
-graph TD
-    User[User] -->|HTTPS| CF[Cloudflare Pages]
-    CF -->|Reads/Writes| D1[Cloudflare D1 Database]
-    CF -->|Fetches| Sources[News Sources]
-    User -->|OAuth| Auth[Google/GitHub]
-```
+<NewsAggrArchitecture />
 
 
-<br>
+<br />
 
 The stack is simple but powerful:
 - **Cloudflare Pages**: Hosts the frontend and provides the serverless backend (Pages Functions).
