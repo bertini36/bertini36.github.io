@@ -27,7 +27,7 @@ const nodes: DiagramNode[] = [
     "Data ingestion",
     0,
     "Fetches every outlet's feed, recovers from malformed XML, filters out noise and scrapes the full article body.",
-    ["Runs several times a day.", "Each outlet carries a bias score from -1 to +1."],
+    ["Runs every six hours.", "Each outlet carries a bias score from -1 to +1."],
   ),
   stage(
     "embeddings",
@@ -42,7 +42,7 @@ const nodes: DiagramNode[] = [
     "03",
     "Topic clustering",
     2,
-    "Groups the day's articles by topic with agglomerative clustering, then ranks the clusters.",
+    "Groups the articles published in the 24 hours before the 07:00 cutoff by topic with agglomerative clustering, then ranks the clusters.",
     ["scikit-learn, cosine distance, average linkage.", "Ranked by size and outlet diversity."],
   ),
   stage(
@@ -50,7 +50,7 @@ const nodes: DiagramNode[] = [
     "04",
     "Agent pipeline",
     3,
-    "Each cluster goes through a chain of LangGraph agents that ends in the topic card shown on the site.",
+    "Each cluster goes through a chain of agents, mostly LangGraph graphs, that ends in the topic card shown on the site.",
     ["Models routed through OpenRouter.", "The fact-checker runs after the briefing is generated."],
   ),
 ];
