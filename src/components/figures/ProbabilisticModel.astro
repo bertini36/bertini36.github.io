@@ -1,0 +1,65 @@
+---
+import Diagram from "./Diagram.astro";
+import type { DiagramEdge, DiagramNode } from "../../lib/diagram";
+
+const circle = (
+  id: string,
+  symbol: string,
+  cx: number,
+  detail: { text: string },
+  shaded = false,
+): DiagramNode => ({
+  id,
+  name: symbol,
+  lines: [`<tspan class="mi">${symbol}</tspan>`],
+  shape: "circle",
+  shaded,
+  x: cx - 22,
+  y: 128,
+  w: 44,
+  h: 44,
+  detail: { kind: shaded ? "observed variable" : "latent variable", ...detail },
+});
+
+const nodes: DiagramNode[] = [
+  circle("alpha", "α", 100, {
+    text: "Outside both plates, so it appears once in the model.",
+  }),
+  circle("theta", "θ", 220, {
+    text: "Inside plate M: repeated M times.",
+  }),
+  circle("z", "z", 320, {
+    text: "Inside plates M and N: repeated M × N times.",
+  }),
+  circle(
+    "w",
+    "w",
+    390,
+    { text: "Shaded, so it is observed. Inside plates M and N: repeated M × N times." },
+    true,
+  ),
+  circle("beta", "β", 530, {
+    text: "Outside both plates: one copy shared by every repetition.",
+  }),
+];
+
+const edges: DiagramEdge[] = [
+  { from: "alpha", to: "theta" },
+  { from: "theta", to: "z" },
+  { from: "z", to: "w" },
+  { from: "beta", to: "w", fromSide: "left", toSide: "right" },
+];
+---
+
+<Diagram
+  title="Probabilistic graphical model with plates M and N"
+  width={600}
+  height={300}
+  nodes={nodes}
+  edges={edges}
+  plates={[
+    { x: 160, y: 50, w: 300, h: 200, label: "M" },
+    { x: 270, y: 70, w: 160, h: 160, label: "N" },
+  ]}
+  hint="Select a node or an edge. Edges are dependencies, plates repeat the variables inside them, shaded nodes are observed."
+/>
